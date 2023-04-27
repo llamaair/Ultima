@@ -1377,5 +1377,6 @@ client.load_extension('cogs.serverlogs')
 client.load_extension('cogs.welcome')
 client.load_extension('cogs.report')
 client.load_extension('cogs.autorole')
+client.load_extension('cogs.starboard')
 
 client.run(TOKEN)
