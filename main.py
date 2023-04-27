@@ -1,7 +1,7 @@
 import discord
-import dotenv
+from dotenv import load_dotenv
 import os
-from requests
+import requests
 import urllib
 import random
 import datetime
@@ -39,3 +39,7 @@ async def on_guild_remove():
 async def ping(ctx):
     latency = (str(client.latency)).split('.')[1][1:3]
     await ctx.respond(f"Pong! Replied in {latency} ms")
+
+client.load_extension("cogs.moderation")
+
+client.run(TOKEN)
