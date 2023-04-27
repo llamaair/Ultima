@@ -1,11 +1,36 @@
 import discord
-from discord.ext import bridge, commands
-from datetime import timedelta
+from discord.ext import commands
+import asyncio
 import time
+from discord.ext import bridge
+from datetime import timedelta
+
+global badword
+badword = ["ass", "fucker", "fuck", "cunt", "bitch", "anal", "nigga", "nigger", "pussy", "dick", "slut", "whore", "cock", "arse"]
+
+class Vieww(discord.ui.View):
+    @discord.ui.button(label="Yes", style=discord.ButtonStyle.primary)
+    async def but_one_callback(self, button, interaction):
+        global badword
+        lis = []
+        count = 0
+        for member in interaction.guild.members:
+            for word in badword:
+                if word.lower() in str(member.nick).lower():
+                    await member.edit(nick="Moderated nickname")
+                    count+=1
+                    lis.append(member.name)
+                    
+        await interaction.response.send_message("Successfully changed all members with bad nicks nicknames :white_check_mark:")
 
 class moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @bridge.bridge_command()
+    async def testo(self, ctx):
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.nickscan(ctx))
 
     @bridge.bridge_command(description="Kick people")
     @commands.has_permissions(kick_members=True)
@@ -76,6 +101,33 @@ class moderation(commands.Cog):
             embed = discord.Embed(title="Timeout removed", description=f"You have been unmuted in {ctx.guild}", color=discord.Colour.green())
         except:
             await ctx.respond("Failed to remove timeout from {member}. Possible reasons for this could be that the member isn't timed out.", ephemeral=True)
+
+    @bridge.bridge_command(description="Warn a member")
+    @commands.has_permissions(moderate_members=True)
+    async def warn(self, ctx, member: discord.Member, *, reason):
+        await ctx.respond("Warning sent",ephemeral=True)
+        await member.send(f"{member.mention}, you have been warned by {ctx.author.mention} for {reason} in {ctx.guild.name}")
+        
+    @bridge.bridge_command()
+    async def testo(self, ctx):
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.nickscan(ctx))
+        
+    @bridge.bridge_command(description="Scan through all members nicks")
+    @commands.has_permissions(moderate_members=True)
+    async def nickscan(self, ctx):
+        msg = await ctx.respond("Scanning nicks...")
+        count = 0
+        global badword
+        lis = []
+        for member in ctx.guild.members:
+            for word in badword:
+                if word.lower() in str(member.nick).lower():
+                    count+=1
+                    lis.append(member.name)
+        view = Vieww()
+        await ctx.respond(f"Found {count} member/s with bad nicks. Do you wish to moderate these nicks?", view=view)
+        await view.wait()
 
 def setup(bot):
     bot.add_cog(moderation(bot))
