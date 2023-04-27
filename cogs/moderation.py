@@ -1,5 +1,7 @@
 import discord
 from discord.ext import bridge, commands
+from datetime import timedelta
+import time
 
 class moderation(commands.Cog):
     def __init__(self, bot):
