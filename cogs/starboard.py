@@ -12,7 +12,7 @@ class starboard(commands.Cog): # create a class for our cog that inherits from c
 
     @bridge.bridge_command(description="Enable or disable starboard")
     @commands.has_permissions(administrator = True)
-    async def serverlogs(self, ctx):
+    async def starboard(self, ctx):
         with open("starboard.json") as f:
             automodguild = json.load(f)
 
