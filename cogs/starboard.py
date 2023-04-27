@@ -45,7 +45,7 @@ class starboard(commands.Cog): # create a class for our cog that inherits from c
         for channel in user.guild.channels:
             if str(channel.name) == "⭐starboard":
                 embed = discord.Embed(title="Starred image", description=f"By {reaction.message.author}")
-                embed.set_image(url=reaction.message.attatchments[0].url)
+                embed.set_image(url=reaction.message.attachments[0].url)
                 await channel.send(embed=embed)
                 
 
