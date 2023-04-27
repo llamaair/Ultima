@@ -38,5 +38,5 @@ class fun(commands.Cog):
                 f"Hey {username}! Don't be mad but i won :slight_smile: My choice was {bot_choice}."
             )
                 
-    def setup(bot):
-        bot.add_cog(fun(bot))
+def setup(bot):
+    bot.add_cog(fun(bot))
