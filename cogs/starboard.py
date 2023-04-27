@@ -40,9 +40,9 @@ class starboard(commands.Cog): # create a class for our cog that inherits from c
             return
         with open("starboard.json") as f:
             automodguild = json.load(f)
-        if reaction.guild.id not in automodguild:
+        if user.guild.id not in automodguild:
             return
-        for channel in reaction.guild.channels:
+        for channel in user.guild.channels:
             if str(channel.name) == "⭐starboard":
                 embed = discord.Embed(title="Starred image", description=f"By {reaction.message.author}")
                 embed.set_image(url=reaction.message.attatchments[0].url)
