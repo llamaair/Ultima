@@ -1378,5 +1378,6 @@ client.load_extension('cogs.welcome')
 client.load_extension('cogs.report')
 client.load_extension('cogs.autorole')
 client.load_extension('cogs.starboard')
+client.load_extension('cogs.afk')
 
 client.run(TOKEN)
