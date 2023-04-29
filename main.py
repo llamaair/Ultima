@@ -194,31 +194,34 @@ async def roleall(ctx, roleid):
     await ctx.respond(f"Gave the role with id {roleid} to all server members!")
         
     
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
-
 @client.bridge_command(description="See the location of the ISS")
 async def iss(ctx):
+    
     response = requests.get('http://api.open-notify.org/iss-now.json')
     data = response.json()
-
+    
     latitude = str(data['iss_position']['latitude'])
     longitude = str(data['iss_position']['longitude'])
-
-    geolocator = Nominatim(user_agent="FetchBot_Bot")
+    
+    geolocator = Nominatim(user_agent="FetchBot Bot")
+    location = geolocator.reverse(latitude+","+longitude)
 
     try:
-        location = geolocator.reverse(latitude+","+longitude, exactly_one=True, timeout=10)
         address = location.raw['address']
 
-        country = address.get('country', '-')
-        city = address.get('town', '-')
-        state = address.get('state', '-')
-        postcode = address.get('postcode', '-')
-        await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}\nCity: {city}\nState: {state}\nCountry: {country}\nZipcode: {postcode}')
-    except (GeocoderTimedOut, KeyError):
-        await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}')
+        # traverse the data
 
+        country = address.get('country', '-')
+        city = address.get('city', '-')
+        state = address.get('state', '-')
+
+        code = address.get('country_code','-')
+        zipcode = address.get('postcode','-')
+
+        await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}\nCountry: {country}\nCity: {city}\nState: {state}\nCountry code: {code}\nZipcode: {zipcode}')
+
+    except:
+        await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}')
 
 
     
