@@ -28,12 +28,11 @@ class recording(commands.Cog):
 
     async def once_done(self, sink: discord.sinks, channel:discord.TextChannel, user_id, *args):
         recorded_users = [
-            f"<@{self.user_id}>"
+            f"<@{user_id}>"
             for user_id, audio in sink.audio_data.items()
-
         ]
         await sink.vc.disconnect()
-        files = [discord.File(self.audio.file, f"{user_id}.{sink.encoding}") for user_id, audio in sink.audio_data.items()]
+        files = [discord.File(audio.file, f"{user_id}.{sink.encoding}") for user_id, audio in sink.audio_data.items()]
         await channel.send(f"Finished recording audio for: {', '.join(recorded_users)}.", files=files)
 
     @bridge.bridge_command(description="Stop the recording")
