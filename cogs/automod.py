@@ -21,7 +21,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
     async def autorule(self, ctx):
         metadata = discord.AutoModActionMetadata("This message was blocked for spam.")
         await ctx.guild.create_auto_moderation_rule(name="Anti-mention", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.mention_spam, trigger_metadata=discord.AutoModTriggerMetadata(mention_total_limit=5), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
-        await ctx.guild.create_auto_moderation_rule(name="Anti-spam", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.spam, actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
+        await ctx.guild.create_auto_moderation_rule(name="Anti-spam", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.spam, trigger_metadata=None, actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
         await ctx.respond("AutoMod Enabled!")
 
 
