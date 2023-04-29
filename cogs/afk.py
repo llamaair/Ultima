@@ -10,7 +10,7 @@ class afk(commands.Cog):
     async def afk(self, ctx):
         pass
 
-    @afk.bridge_command(description="Set your AFK message")
+    @afk.command(description="Set your AFK message")
     async def set(self, ctx, status:str):
         with open("afkstatus.json", "r") as f:
             afkstat = json.load(f)
@@ -22,7 +22,7 @@ class afk(commands.Cog):
         
         await ctx.respond(f"Set the AFK message to {status} :white_check_mark:", ephemeral=True)
 
-    @afk.bridge_command(description="Set your AFK status")
+    @afk.command(description="Set your AFK status")
     async def status(self, ctx):
         with open("afk.json", "r") as f:
             afkk = json.load(f)
