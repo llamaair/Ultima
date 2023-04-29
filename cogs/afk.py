@@ -54,10 +54,10 @@ class afk(commands.Cog):
             rollv = json.load(w)
 
         for item in rolla:
-            if f"<@{item}>" in message:
+            if f"<@{item}>" in message.content:
                 stat = rollv.get(str(item))
+                await message.reply(stat)
 
-        await message.reply(stat)
 
 
 def setup(bot):
