@@ -34,6 +34,10 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         await ctx.respond("Settings saved!")
         
         
+    @bridge.bridge_command(description="Automod rule creation")
+    async def autorule(self, ctx):
+        await ctx.guild.create_auto_moderation_rule(name="Rule")
+
     @bridge.bridge_command(description="Flag or unflag a member to make automod stricter for them")
     @commands.has_permissions(administrator = True)
     async def flag(self, ctx, flaguser:discord.Member):
