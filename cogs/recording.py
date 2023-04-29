@@ -20,19 +20,20 @@ class recording(commands.Cog):
         vc.start_recording(
             discord.sinks.WaveSink(),
             self.once_done,
-            ctx.channel
+            ctx.channel,
+            ctx.author.id
         )
 
         await ctx.respond("Started recording!")
 
-    async def once_done(self, sink: discord.sinks, channel:discord.TextChannel, *args):
+    async def once_done(self, sink: discord.sinks, channel:discord.TextChannel, user_id, *args):
         recorded_users = [
             f"<@{self.user_id}>"
             for user_id, audio in sink.audio_data.items()
 
         ]
         await sink.vc.disconnect()
-        files = [discord.File(self.audio.file, f"{self.user_id}.{sink.encoding}") for user_id, audio in sink.audio_data.items()]
+        files = [discord.File(self.audio.file, f"{user_id}.{sink.encoding}") for user_id, audio in sink.audio_data.items()]
         await channel.send(f"Finished recording audio for: {', '.join(recorded_users)}.", files=files)
 
     @bridge.bridge_command(description="Stop the recording")
