@@ -101,7 +101,12 @@ async def ticketing(ctx):
     await ctx.send(embed=embed, view=MyView())
     
 
-    
+def guild(guild_id):
+   def predicate(ctx):
+      return ctx.guild and ctx.guild.id == guild_id
+   return commands.check(predicate)
+
+
 #Defining startup
 @client.event
 async def on_ready():
