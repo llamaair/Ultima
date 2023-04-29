@@ -1385,6 +1385,5 @@ client.load_extension('cogs.autorole')
 client.load_extension('cogs.starboard')
 client.load_extension('cogs.afk')
 client.load_extension('cogs.image')
-client.load_extension('cogs.tictactoe')
 
 client.run(TOKEN)
