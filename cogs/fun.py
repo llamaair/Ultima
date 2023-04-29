@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import random
+import json
 import requests
 from discord.ext import bridge
 
@@ -12,23 +13,23 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         self.bot = bot
 
 
-    #@bridge.bridge_command(description="Get a cute cat picture")
-    #async def cat(self, ctx):
-        #response = requests.get('https://aws.random.cat/meow')
-        #if response.status_code == 200:
-            #data = response.json()
-            #await ctx.respond(data['file'])
-        #else:
-            #await ctx.respond('Unable to retrieve cat picture.')
+    @bridge.bridge_command(description="Get a cute cat picture")
+    async def cat(self, ctx):
+        response = requests.get('https://api.thecatapi.com/v1/images/search')
+        if response.status_code == 200:
+            data = json.loads(response.text)
+            await ctx.respond(data[0]['url'])
+        else:
+            await ctx.respond('Unable to retrieve cat picture.')
             
-    #@bridge.bridge_command(description="Get a cute dog picture")
-    #async def dog(self, ctx):
-        #response = requests.get('https://dog.ceo/api/breeds/image/random')
-        #if response.status_code == 200:
-            #data = response.json()
-            #await ctx.respond(data['message'])
-        #else:
-            #await ctx.respond('Unable to retrieve dog picture.')
+    @bridge.bridge_command(description="Get a cute dog picture")
+    async def dog(self, ctx):
+        response = requests.get('https://dog.ceo/api/breeds/image/random')
+        if response.status_code == 200:
+            data = response.json()
+            await ctx.respond(data['message'])
+        else:
+            await ctx.respond('Unable to retrieve dog picture.')
         
     @bridge.bridge_command(description="Get a random quote")
     async def quote(self, ctx):
