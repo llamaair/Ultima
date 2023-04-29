@@ -1,6 +1,6 @@
 import discord
 from discord.ext import bridge, commands
-import PyNaCl
+import pynacl
 
 class recording(commands.Cog):
     def __init__(self, bot):
