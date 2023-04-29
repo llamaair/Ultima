@@ -218,10 +218,11 @@ async def iss(ctx):
         code = address.get('country_code','-')
         zipcode = address.get('postcode','-')
 
-    except:
-        return await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}')
-    else : 
         await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}\nCountry: {country}\nCity: {city}\nState: {state}\nCountry code: {code}\nZipcode: {zipcode}')
+
+    except:
+        await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}')
+
 
     
 @client.event
