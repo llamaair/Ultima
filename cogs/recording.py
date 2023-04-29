@@ -7,8 +7,12 @@ class recording(commands.Cog):
 
     connections = {}
 
-    @bridge.bridge_command(description="Start recording in a voice channel")
+    @bridge.bridge_group()
     async def record(self, ctx):
+        pass
+
+    @record.command(description="Start recording in a voice channel")
+    async def start(self, ctx):
         voice = ctx.author.voice
 
         if not voice:
@@ -35,8 +39,8 @@ class recording(commands.Cog):
         files = [discord.File(audio.file, f"{user_id}.{sink.encoding}") for user_id, audio in sink.audio_data.items()]
         await channel.send(f"Finished recording audio for: {', '.join(recorded_users)}.", files=files)
 
-    @bridge.bridge_command(description="Stop the recording")
-    async def stop_recording(self, ctx):
+    @record.command(description="Stop the recording")
+    async def stop(self, ctx):
         if ctx.guild.id in self.connections:
             vc = self.connections[ctx.guild.id]
             vc.stop_recording()
