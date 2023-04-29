@@ -36,7 +36,8 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         
     @bridge.bridge_command(description="Automod rule creation")
     async def autorule(self, ctx):
-        await ctx.guild.create_auto_moderation_rule(name="Anti-spam", event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.mention_spam, trigger_metadata=discord.AutoModTriggerMetadata(mention_total_limit=5), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, None)])
+        metadata = discord.AutoModActionMetadata(reason="This message was blocked for spam.")
+        await ctx.guild.create_auto_moderation_rule(name="Anti-spam", event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.mention_spam, trigger_metadata=discord.AutoModTriggerMetadata(mention_total_limit=5), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
         await ctx.respond("Done!")
 
     @bridge.bridge_command(description="Flag or unflag a member to make automod stricter for them")
