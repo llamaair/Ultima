@@ -11,6 +11,7 @@ class image(commands.Cog):
 
     @bridge.bridge_command(description="Generate an image from a prompt")
     async def image(self, ctx, prompt:str):
+        await ctx.defer()
         API_KEY = "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"
         response = requests.post(
     "https://api.openai.com/v1/images/generations",
