@@ -19,7 +19,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
     @bridge.bridge_command(description="Enable or disable automod")
     @commands.has_permissions(administrator = True)
     async def automod(self, ctx):
-        await create_auto_moderation_rule(name="Mention spam block", event_type=on_message, trigger_type=spam, enabled=True)
+        await ctx.create_auto_moderation_rule(name="Mention spam block", event_type=on_message, trigger_type=spam, enabled=True)
         
 
     
