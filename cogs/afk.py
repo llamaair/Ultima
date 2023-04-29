@@ -12,7 +12,6 @@ class afk(commands.Cog):
         pass
 
     @afk.command(description="Set your AFK message")
-    @guild(1101567240911990946)
     async def set(self, ctx, status:str):
         with open("afkstatus.json", "r") as f:
             afkstat = json.load(f)
@@ -25,7 +24,6 @@ class afk(commands.Cog):
         await ctx.respond(f"Set the AFK message to {status} :white_check_mark:", ephemeral=True)
 
     @afk.command(description="Set your AFK status")
-    @guild(1101567240911990946)
     async def status(self, ctx):
         with open("afk.json", "r") as f:
             afkk = json.load(f)
