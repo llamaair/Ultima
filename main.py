@@ -194,7 +194,7 @@ async def roleall(ctx, roleid):
     await ctx.respond(f"Gave the role with id {roleid} to all server members!")
         
     
-from geopy.geocoders import Photon
+from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 
 @client.bridge_command(description="See the location of the ISS")
@@ -205,7 +205,7 @@ async def iss(ctx):
     latitude = str(data['iss_position']['latitude'])
     longitude = str(data['iss_position']['longitude'])
 
-    geolocator = Photon(user_agent="geoapiExercises")
+    geolocator = Nominatim(user_agent="FetchBot_Bot")
 
     try:
         location = geolocator.reverse(latitude+","+longitude, exactly_one=True, timeout=10)
