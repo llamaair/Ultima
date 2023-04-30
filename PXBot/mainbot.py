@@ -28,24 +28,30 @@ class PXBot(commands.Cog):
             await ctx.respond("No upcoming matches found")
             return
 
-        # Get the date and time of the next match
-        current_match = None
+        # Find the next upcoming match that hasn't already happened
         for match in matches:
-            if match["status"] == "FINISHED":
-                current_match = match
-            else:
+            match_date = parser.isoparse(match["utcDate"]).astimezone(timezone("Europe/London"))
+            if match_date > datetime.now(timezone("Europe/London")):
                 next_match = match
                 break
-
-        if current_match:
-            next_match_date = parser.parse(next_match["utcDate"]).astimezone(timezone("Europe/London"))
-            next_match_date_string = next_match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
-            await ctx.respond(f"The last Arsenal match was played against {current_match['awayTeam']['name']} on {current_match['utcDate']}. The next match is against {next_match['homeTeam']['name']} on {next_match_date_string}.")
         else:
-            next_match_date = parser.parse(next_match["utcDate"]).astimezone(timezone("Europe/London"))
-            next_match_date_string = next_match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
-            opponent = next_match["homeTeam"]["name"] if next_match["awayTeam"]["id"] == self.ARSENAL_TEAM_ID else next_match["awayTeam"]["name"]
-            await ctx.respond(f"The next Arsenal match is against {opponent} on {next_match_date_string}")
-    
+            await ctx.respond("No upcoming matches found")
+            return
+
+        # Get the date and time of the next match
+        match_date_string = match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
+
+        # Get the opponent
+        home_team = next_match.get("homeTeam")
+        away_team = next_match.get("awayTeam")
+        if home_team and away_team:
+            opponent = home_team["name"] if home_team["id"] != self.ARSENAL_TEAM_ID else away_team["name"]
+        else:
+            opponent = "Unknown"
+
+        # Create the embed
+        embed = discord.Embed(title="Next Arsenal Match", description=f"Against {opponent} on {match_date_string}", color=discord.Color.green())
+        await ctx.respond(embed=embed)
+
 def setup(bot):
     bot.add_cog(PXBot(bot))
