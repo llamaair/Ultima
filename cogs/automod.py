@@ -22,7 +22,23 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         metadata = discord.AutoModActionMetadata("This message was blocked for spam.")
         await ctx.guild.create_auto_moderation_rule(name="Anti-mention", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.mention_spam, trigger_metadata=discord.AutoModTriggerMetadata(mention_total_limit=5), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
         await ctx.guild.create_auto_moderation_rule(name="Anti-spam", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.spam, trigger_metadata=discord.AutoModTriggerMetadata(), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
-        await ctx.guild.create_auto_moderation_rule(name="Words", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.keyword_preset, trigger_metadata=discord.AutoModTriggerMetadata(presets=discord.AutoModKeywordPresetType["profanity", "sexual_content", "slurs"]), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
+        preset_type = discord.AutoModKeywordPresetType
+        preset_list = [preset_type.profanity, preset_type.sexual_content, preset_type.slurs]
+        trigger = discord.AutoModTrigger(type=discord.AutoModTriggerType.keyword_preset, data=preset_list)
+        trigger_metadata = discord.AutoModTriggerMetadata(presets=[trigger])
+
+        metadata = discord.AutoModActionMetadata()
+        action = discord.AutoModAction(discord.AutoModActionType.block_message, metadata)
+
+        await ctx.guild.create_auto_moderation_rule(
+        name="Words", 
+        reason="Automod", 
+        enabled=True, 
+        event_type=discord.AutoModEventType.message_send, 
+        trigger_type=discord.AutoModTriggerType.keyword_preset, 
+        trigger_metadata=trigger_metadata, 
+        actions=[action]
+        )
         await ctx.respond("AutoMod Enabled!")
 
 
