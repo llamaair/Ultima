@@ -45,8 +45,8 @@ class OpenAICog(commands.Cog):
                     stop=None,
                     presence=None,
                     frequency_penalty=0,
-                    best_of=None,
-                    logprobs=None,
+                    best_of=1,
+                    logprobs=0,
                 )
 
                 # Store the prompt and response in chat history
