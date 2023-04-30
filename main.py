@@ -35,6 +35,7 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 TOKEN2 = os.getenv("DISCORD_TOKEN2")
 TOKEN3 = os.getenv("DISCORD_TOKEN3")
+TOKEN4 = os.getenv("DISCORD_TOKEN4")
 intents = discord.Intents.all()
 
 client = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
@@ -42,6 +43,8 @@ client = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 client2 = bridge.Bot(command_prefix="?", intents=intents, help_command=None)
 
 client3 = bridge.Bot(command_prefix=">", intents=intents, help_command=None)
+
+client4 = bridge.Bot(command_prefix="<", intents=intents, help_command=None)
 
 client.persistent_views_added=False
 
@@ -139,6 +142,11 @@ async def on_ready():
 @client3.event
 async def on_ready():
    print(f"Successfully logged in as {client3.user.name}")
+   await client4.start(TOKEN4)
+  
+@client4.event
+async def on_ready():
+   print(f"Successfully logged in as {client4.user.name}")
 
 @client.event
 async def on_guild_join(guild):
@@ -1410,10 +1418,13 @@ client2.load_extension('PXBot.mainbot')
 
 client3.load_extension('ChatBot.mainchatbot')
 
+client4.load_extension('EDBot.mainED')
+
 async def main():
    await client.start(TOKEN)
    await client2.start(TOKEN2)
    await client3.start(TOKEN3)
+   await client4.start(TOKEN4)
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
