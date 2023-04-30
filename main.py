@@ -33,9 +33,12 @@ from dotenv import load_dotenv
 #---------------------------#
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+TOKEN2 = os.getenv("DISCORD_TOKEN2")
 intents = discord.Intents.all()
 
 client = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
+
+client2 = bridge.Bot(command_prefix="?", intents=intents, help_command=None)
 
 
 client.persistent_views_added=False
@@ -69,7 +72,10 @@ class CloseTicket(discord.ui.View):
         await asyncio.sleep(2)
         await interaction.channel.delete()
         
-    
+@client2.bridge_command(description="Test for bridge2")
+async def test(ctx):
+   await ctx.respond("This bot works!")    
+
     
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
@@ -1389,3 +1395,4 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 
 client.run(TOKEN)
+client2.run(TOKEN2)
