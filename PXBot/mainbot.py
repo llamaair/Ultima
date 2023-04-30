@@ -55,7 +55,7 @@ class PXBot(commands.Cog):
         await ctx.respond(embed=embed)
 
     @bridge.bridge_command()
-    async def movie(self, ctx, category=discord.Option(choices=["action", "comedy", "drama", "horror", "romance", "sci_fi", "thriller"])):
+    async def movie(self, ctx, category:discord.Option(choices=["action", "comedy", "drama", "horror", "romance", "sci_fi", "thriller"]), amount=1):
         
         url = f"https://www.imdb.com/search/title?genres={category}"
         page = requests.get(url)
@@ -66,6 +66,16 @@ class PXBot(commands.Cog):
             await ctx.respond(f"No {category} movies found :pensive:")
             return
         
+        movielist = []
+
+        num = amount
+        if amount>1:
+            while num>0:
+                movielist.append(movies[num].text)
+                num-=1
+            await ctx.respond(f"Here are {amount} movies I suggest in the category: {category}:\n" + "\n".join(movielist))
+
+
         movie = movies[0].text
         await ctx.respond(f"Here's a {category} movie I suggest: {movie}")
 
