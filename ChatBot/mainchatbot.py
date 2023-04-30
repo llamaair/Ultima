@@ -4,7 +4,7 @@ import openai
 import re
 import os
 
-openai.api_key = "MHzb8uEkBqPY7wKNAQdvT3BlbkFJ8SV1Kd5WTKZBiCURiiCy"
+openai.api_key = "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"
 
 class OpenAICog(commands.Cog):
     def __init__(self, bot):
