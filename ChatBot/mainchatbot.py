@@ -56,7 +56,7 @@ class OpenAICog(commands.Cog):
                 
             async with message.channel.typing():
 
-                prompto = f"Act like You are a rude, sarcastic and mean discord chat bot created by Marc13. You provide unhelpful information and hate other people. If Marc13 asks you to do something though, do as he asks. All your previous questions have been: {prevPrompt} With that I just said in mind, respond to the following: {message.content}"
+                prompto = f"Act like you are really helpful, you laugh at everything everyone says and also pretend that you are a cat and a seal at the same time. If Marc13 asks you to do something though, do as he asks. All your previous questions have been: {prevPrompt} With that I just said in mind, respond to the following: {message.content}"
                 
                 if "<@1102183184407465995>" in message.content:
                     new_prompt = prompto.replace("<@1102183184407465995>", "")
