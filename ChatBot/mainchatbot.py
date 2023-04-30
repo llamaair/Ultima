@@ -59,7 +59,7 @@ class OpenAICog(commands.Cog):
                     engine="text-davinci-003",
                     prompt=f"{lelem}. With that in mind, respond to the following: {message.content}",
                     temperature=0.5,
-                    max_tokens=20000,
+                    max_tokens=4097,
                     top_p=1,
                     stop=None,
                     frequency_penalty=0,
