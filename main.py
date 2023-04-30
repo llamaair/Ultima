@@ -131,7 +131,7 @@ async def on_ready():
 
 @client2.event
 async def on_ready():
-   print(f"Successfully connected as {client.user.name}")
+   print(f"Successfully connected as {client2.user.name}")
 
 @client.event
 async def on_guild_join(guild):

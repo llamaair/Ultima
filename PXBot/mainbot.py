@@ -3,6 +3,7 @@ import os
 import requests
 from datetime import datetime
 from pytz import timezone
+from dateutil import parser
 from discord.ext import commands, bridge
 
 class PXBot(commands.Cog):
@@ -27,12 +28,12 @@ class PXBot(commands.Cog):
             await ctx.respond("No upcoming matches found")
             return
 
-    # Get the date and time of the next match
+        # Get the date and time of the next match
         next_match = matches[0]
-        match_date = datetime.fromisoformat(next_match["utcDate"]).astimezone(timezone("Europe/London"))
+        match_date = parser.parse(next_match["utcDate"]).astimezone(timezone("Europe/London"))
         match_date_string = match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
 
-    # Get the opponent
+        # Get the opponent
         home_team = next_match.get("homeTeam")
         away_team = next_match.get("awayTeam")
         if home_team and away_team:
