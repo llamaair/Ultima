@@ -72,7 +72,7 @@ class PXBot(commands.Cog):
             movie = movies[0].text
             await ctx.respond(f"Here's a {category} movie I suggest: {movie}")
         else:
-            await ctx.respond(f"Here are {amount} movies I suggest in the category: {category}:\n" + "\n".join(movielist))
+            await ctx.respond(f"Here are {amount} movies I suggest in the category: {category}:\n\n" + "\n".join(movielist))
 
 
 
