@@ -66,13 +66,14 @@ class PXBot(commands.Cog):
             await ctx.respond(f"No {category} movies found :pensive:")
             return
 
-        movielist = [movie.text for movie in movies[:amount]]
+        movielist = [movie.text for movie in movies][:int(amount)]
 
-        if amount == 1:
+        if int(amount) == 1:
             movie = movies[0].text
             await ctx.respond(f"Here's a {category} movie I suggest: {movie}")
         else:
             await ctx.respond(f"Here are {amount} movies I suggest in the category: {category}:\n" + "\n".join(movielist))
+
 
 
 def setup(bot):
