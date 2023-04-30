@@ -56,7 +56,7 @@ class PXBot(commands.Cog):
 
     @bridge.bridge_command()
     async def movie(self, ctx, category:discord.Option(choices=["action", "comedy", "drama", "horror", "romance", "sci_fi", "thriller"]), amount=1):
-        
+        await ctx.defer()
         url = f"https://www.imdb.com/search/title?genres={category}"
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -65,19 +65,15 @@ class PXBot(commands.Cog):
         if not movies:
             await ctx.respond(f"No {category} movies found :pensive:")
             return
-        
-        movielist = []
 
-        num = amount
-        if amount>1:
-            while num>0:
-                movielist.append(movies[num].text)
-                num-=1
+        movielist = [movie.text for movie in movies[:amount]]
+
+        if amount == 1:
+            movie = movies[0].text
+            await ctx.respond(f"Here's a {category} movie I suggest: {movie}")
+        else:
             await ctx.respond(f"Here are {amount} movies I suggest in the category: {category}:\n" + "\n".join(movielist))
 
-
-        movie = movies[0].text
-        await ctx.respond(f"Here's a {category} movie I suggest: {movie}")
 
 def setup(bot):
     bot.add_cog(PXBot(bot))
