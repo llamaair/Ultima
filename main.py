@@ -128,6 +128,10 @@ async def on_ready():
         print("Persistent views added")
     
 
+@client2.event
+async def on_ready():
+   print(f"Successfully connected as {client.user.name}")
+
 @client.event
 async def on_guild_join(guild):
     await client.change_presence(activity=discord.Activity(
