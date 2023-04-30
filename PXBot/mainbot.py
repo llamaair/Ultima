@@ -3,6 +3,7 @@ import os
 import requests
 from datetime import datetime
 from pytz import timezone
+from bs4 import BeautifulSoup
 from dateutil import parser
 from discord.ext import commands, bridge
 
@@ -52,6 +53,21 @@ class PXBot(commands.Cog):
         # Create the embed
         embed = discord.Embed(title="Next Arsenal Match", description=f"Against {opponent} on {match_date_string}", color=discord.Color.green())
         await ctx.respond(embed=embed)
+
+    @bridge.bridge_command()
+    async def movie(self, ctx, category=discord.Option(choices=["action", "comedy", "drama", "horror", "romance", "sci_fi", "thriller"])):
+        
+        url = f"https://www.imdb.com/search/title?genres={category}"
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        movies = soup.select('.lister-item-header a')
+
+        if not movies:
+            await ctx.respond(f"No {category} movies found :pensive:")
+            return
+        
+        movie = movies[0].text
+        await ctx.respond(f"Here's a {category} movie I suggest: {movie}")
 
 def setup(bot):
     bot.add_cog(PXBot(bot))
