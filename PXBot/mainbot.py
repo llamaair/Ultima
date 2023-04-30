@@ -29,18 +29,23 @@ class PXBot(commands.Cog):
             return
 
         # Get the date and time of the next match
-        next_match = matches[0]
-        match_date = parser.parse(next_match["utcDate"]).astimezone(timezone("Europe/London"))
-        match_date_string = match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
+        current_match = None
+        for match in matches:
+            if match["status"] == "FINISHED":
+                current_match = match
+            else:
+                next_match = match
+                break
 
-        # Get the opponent
-        home_team = next_match.get("homeTeam")
-        away_team = next_match.get("awayTeam")
-        if home_team and away_team:
-            opponent = home_team["name"] if home_team["id"] != self.ARSENAL_TEAM_ID else away_team["name"]
-            await ctx.respond(f"The next Arsenal match is against {opponent} on {match_date_string}")
+        if current_match:
+            next_match_date = parser.parse(next_match["utcDate"]).astimezone(timezone("Europe/London"))
+            next_match_date_string = next_match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
+            await ctx.respond(f"The last Arsenal match was played against {current_match['awayTeam']['name']} on {current_match['utcDate']}. The next match is against {next_match['homeTeam']['name']} on {next_match_date_string}.")
         else:
-            await ctx.respond("No upcoming matches found")
-
+            next_match_date = parser.parse(next_match["utcDate"]).astimezone(timezone("Europe/London"))
+            next_match_date_string = next_match_date.strftime("%a, %b %d %Y %I:%M %p %Z")
+            opponent = next_match["homeTeam"]["name"] if next_match["awayTeam"]["id"] == self.ARSENAL_TEAM_ID else next_match["awayTeam"]["name"]
+            await ctx.respond(f"The next Arsenal match is against {opponent} on {next_match_date_string}")
+    
 def setup(bot):
     bot.add_cog(PXBot(bot))
