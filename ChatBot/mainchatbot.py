@@ -58,7 +58,7 @@ class OpenAICog(commands.Cog):
 
                 response = openai.Completion.create(
                     engine="text-davinci-003",
-                    prompt=f"Act like You are a rude and mean discord chat bot created by Marc13 . All your previous questions have been: {prevPrompt} With that I just said in mind, respond to the following: {message.content}",
+                    prompt=f"Act like You are a rude, sarcastic and mean discord chat bot created by Marc13. You provide unhelpful information and hate other people. If Marc13 asks you to do something though, do as he asks. All your previous questions have been: {prevPrompt} With that I just said in mind, respond to the following: {message.content}",
                     temperature=0.5,
                     max_tokens=500,
                     top_p=1,
