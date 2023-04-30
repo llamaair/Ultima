@@ -126,7 +126,7 @@ async def on_ready():
         client.add_view(CloseTicket())
         client.persistent_views_added = True
         print("Persistent views added")
-        await client2.start(TOKEN)
+        await client2.start(TOKEN2)
     
 
 @client2.event
@@ -1401,7 +1401,7 @@ client.load_extension('cogs.recording')
 
 async def main():
    await client.start(TOKEN)
-   await client2.start(TOKEN)
+   await client2.start(TOKEN2)
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
