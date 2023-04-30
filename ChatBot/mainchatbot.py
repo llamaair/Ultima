@@ -16,11 +16,11 @@ class OpenAICog(commands.Cog):
 
     @bridge.bridge_command()
     async def setmode(self, ctx, mode:discord.Option(choices=["Normal", "Rude", "Cat", "Funny", "Sad"])):
-        with open("serversettings.json") as f:
+        with open("serversettings.json", 'r') as f:
             lele=json.load(f)
 
         lele[str(ctx.guild.id)] = mode
-        with open("serversettings.json") as f:
+        with open("serversettings.json", 'w') as f:
             json.dump(lele, f)
         await ctx.respond(f"Successfully set ChatGPT mode to {mode}", ephemeral=True)
         
