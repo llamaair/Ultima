@@ -24,7 +24,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         await ctx.guild.create_auto_moderation_rule(name="Anti-spam", reason="Automod", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.spam, trigger_metadata=discord.AutoModTriggerMetadata(), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
         preset_type = discord.AutoModKeywordPresetType
         preset_list = [preset_type.profanity, preset_type.sexual_content, preset_type.slurs]
-        trigger = discord.AutoModTrigger(type=discord.AutoModTriggerType.keyword_preset, data=preset_list)
+        trigger = discord.AutoModTriggerType.keyword_preset(data=preset_list)
         trigger_metadata = discord.AutoModTriggerMetadata(presets=[trigger])
 
         metadata = discord.AutoModActionMetadata()
