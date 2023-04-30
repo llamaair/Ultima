@@ -1398,5 +1398,9 @@ client.load_extension('cogs.afk')
 client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 
-client.run(TOKEN)
-client2.run(TOKEN2)
+async def main():
+   await client.start(TOKEN)
+   await client2.start(TOKEN)
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
