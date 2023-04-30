@@ -50,6 +50,7 @@ class OpenAICog(commands.Cog):
         elif lelem=="Sad":
             promp = "Act like you are sad, and that you think life has no meaning. Be sarcastic and unhelpful. Talk about how miserable you are. You are a discord bot created by the user Marc13"
         
+        prevPrompt = []
 
         if self.bot.user in message.mentions:
                 
@@ -57,7 +58,7 @@ class OpenAICog(commands.Cog):
 
                 response = openai.Completion.create(
                     engine="text-davinci-003",
-                    prompt=f"{lelem}. With that I just said in mind, respond to the following: {message.content}",
+                    prompt=f"Act like You are a rude and mean discord chat bot created by Marc13 . All your previous questions have been: {prevPrompt} With that I just said in mind, respond to the following: {message.content}",
                     temperature=0.5,
                     max_tokens=500,
                     top_p=1,
@@ -67,6 +68,7 @@ class OpenAICog(commands.Cog):
 
                 text = response['choices'][0]['text']
                 await message.reply(text)
+                prevPrompt.append(message.content)
 
 
 def setup(bot):
