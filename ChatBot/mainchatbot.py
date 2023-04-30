@@ -43,7 +43,6 @@ class OpenAICog(commands.Cog):
                     max_tokens=60,
                     n=1,
                     stop=None,
-                    presence=None,
                     frequency_penalty=0,
                     best_of=1,
                     logprobs=0,
