@@ -126,6 +126,7 @@ async def on_ready():
         client.add_view(CloseTicket())
         client.persistent_views_added = True
         print("Persistent views added")
+        await client2.run(TOKEN)
     
 
 @client2.event
