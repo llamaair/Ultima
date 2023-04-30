@@ -1399,6 +1399,8 @@ client.load_extension('cogs.afk')
 client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 
+client2.load_extension('PXBot.mainbot')
+
 async def main():
    await client.start(TOKEN)
    await client2.start(TOKEN2)
