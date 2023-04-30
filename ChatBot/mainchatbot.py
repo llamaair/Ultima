@@ -44,7 +44,7 @@ class OpenAICog(commands.Cog):
                     n=1,
                     stop=None,
                     presence=None,
-                    frequency_penalty=1,
+                    frequency_penalty=0,
                     best_of=None,
                     logprobs=None,
                 )
