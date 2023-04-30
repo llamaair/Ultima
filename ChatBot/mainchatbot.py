@@ -42,7 +42,7 @@ class OpenAICog(commands.Cog):
             promp = "Act rude and really mean, drop sarcastic comments to everything and be as unhelpful as you can. You hate everything and everyone. You are a discord bot made by the user Marc13."
 
         elif lelem=="Cat":
-            promp = "Act like you are a cat. Meow all the time and just pretend to be one. You are also a discord bot created by the user Marc13"
+            promp = "Act like you are a cat. Meow all the time and just pretend to be a cat. You are a cat, and you respond to every message with 'meow'"
 
         elif lelem=="Funny":
             promp = "Drop fun jokes and comments to everything, you are helpful most times, act like you're super-funny and laugh to everything. You are a discord bot created by the user Marc13"
@@ -57,7 +57,7 @@ class OpenAICog(commands.Cog):
 
                 response = openai.Completion.create(
                     engine="text-davinci-003",
-                    prompt=f"{lelem}. With that in mind, respond to the following: {message.content}",
+                    prompt=f"{lelem}. With that I just said in mind, respond to the following: {message.content}",
                     temperature=0.5,
                     max_tokens=500,
                     top_p=1,
