@@ -24,6 +24,7 @@ try:
 except:
     os.system("pip install geopy")
 from discord.ext.commands import check
+from discord.ext import tasks
 from dotenv import load_dotenv
 #---------------------------#
 #NAME: FetchBot
@@ -131,6 +132,7 @@ async def on_ready():
         client.add_view(CloseTicket())
         client.persistent_views_added = True
         print("Persistent views added")
+        check_for_commits.start()
         await client2.start(TOKEN2)
     
 
@@ -1399,6 +1401,26 @@ async def leaderboard(ctx):
     await ctx.respond(":x: Insufficent accounts stored in database!")
 
     
+REPO_URL = 'https://api.github.com/repos/llamaair/Xavier-Bot/branches/main'
+
+@tasks.loop(minutes=10)
+async def check_for_commits():
+    # Get the latest commit SHA from GitHub
+    response = requests.get(REPO_URL)
+    latest_commit_sha = response.json()['commit']['sha']
+
+    # Check if the latest commit SHA is different from the previous one
+    if latest_commit_sha != check_for_commits.last_commit_sha:
+        # Quit the Discord client
+        await client.close()
+        print('Bot has quit due to a new commit.')
+
+    # Update the last commit SHA
+    check_for_commits.last_commit_sha = latest_commit_sha
+
+# Initialize the last commit SHA
+check_for_commits.last_commit_sha = None
+
 
 client.load_extension('cogs.moderation')
 client.load_extension('cogs.fun')
