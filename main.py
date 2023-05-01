@@ -140,6 +140,7 @@ async def on_ready():
 async def on_ready():
    print(f"Successfully connected as {client2.user.name}")
    await client3.start(TOKEN3)
+   print("Starting no3")
 
 @client3.event
 async def on_ready():
