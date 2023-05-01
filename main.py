@@ -132,7 +132,6 @@ async def on_ready():
         client.add_view(CloseTicket())
         client.persistent_views_added = True
         print("Persistent views added")
-        check_for_commits.start()
         await client2.start(TOKEN2)
     
 
@@ -140,7 +139,6 @@ async def on_ready():
 async def on_ready():
    print(f"Successfully connected as {client2.user.name}")
    await client3.start(TOKEN3)
-   print("Starting no3")
 
 @client3.event
 async def on_ready():
@@ -1401,26 +1399,6 @@ async def leaderboard(ctx):
   except AttributeError:
     await ctx.respond(":x: Insufficent accounts stored in database!")
 
-    
-REPO_URL = 'https://api.github.com/repos/llamaair/Xavier-Bot/branches/main'
-
-@tasks.loop(minutes=10)
-async def check_for_commits():
-    # Get the latest commit SHA from GitHub
-    response = requests.get(REPO_URL)
-    latest_commit_sha = response.json()['commit']['sha']
-
-    # Check if the latest commit SHA is different from the previous one
-    if latest_commit_sha != check_for_commits.last_commit_sha:
-        # Quit the Discord client
-        await client.close()
-        print('Bot has quit due to a new commit.')
-
-    # Update the last commit SHA
-    check_for_commits.last_commit_sha = latest_commit_sha
-
-# Initialize the last commit SHA
-check_for_commits.last_commit_sha = None
 
 
 client.load_extension('cogs.moderation')
@@ -1436,7 +1414,6 @@ client.load_extension('cogs.starboard')
 client.load_extension('cogs.afk')
 client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
-#client.load_extension('cogs.CommitListener')
 
 client2.load_extension('PXBot.mainbot')
 
