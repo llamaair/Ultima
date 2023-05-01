@@ -1413,7 +1413,7 @@ client.load_extension('cogs.starboard')
 client.load_extension('cogs.afk')
 client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
-client.load_extension('cogs.CommitListener')
+#client.load_extension('cogs.CommitListener')
 
 client2.load_extension('PXBot.mainbot')
 
