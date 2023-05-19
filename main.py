@@ -252,7 +252,7 @@ async def iss(ctx):
 
 
     
-@client.event
+@client.listen()
 async def on_message(message):
     memelist1=["https://tenor.com/view/spaceship-interstellar-spacecraft-space-journey-outer-space-gif-18750730"]
     memelist2=["https://tenor.com/view/interstellar-rage-dontgogently-poem-death-gif-24693462"]

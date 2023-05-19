@@ -84,6 +84,7 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
 
             with open('levels.json', 'w') as f:
                 json.dump(users, f)
+        await self.bot.process_commands(message)
                 
 
 
