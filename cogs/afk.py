@@ -58,7 +58,6 @@ class afk(commands.Cog):
             if f"<@{item}>" in message.content:
                 stat = rollv.get(str(item))
                 await message.reply(stat)
-        await self.bot.process_commands(message)
 
 
 
