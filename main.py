@@ -1165,7 +1165,7 @@ async def donate(ctx, amount:int):
 
   await update_bank(ctx.author,-1*amount,"Wallet")
 
-  await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been transfered to {member.name}")
+  await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been donated to Ultima's public balance")
 
   global mainbal
   mainbal+=amount
