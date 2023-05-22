@@ -1164,7 +1164,6 @@ async def donate(ctx, amount:int):
     return 
 
   await update_bank(ctx.author,-1*amount,"Wallet")
-  await update_bank(member,amount,"Wallet")  
 
   await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been transfered to {member.name}")
 
