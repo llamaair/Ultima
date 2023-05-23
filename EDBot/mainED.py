@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands, bridge
 import requests
-import math
 
 class EDDNCog(commands.Cog):
     def __init__(self, bot):
@@ -22,19 +21,7 @@ class EDDNCog(commands.Cog):
                 else:
                     await ctx.respond(f"No station name found for the nearest station in {system}.")
             else:
-                # No stations in this system, try to find the nearest system with a station
-                response = requests.get(f"https://www.edsm.net/api-system-v1/sphere-systems?x=0&y=0&z=0&radius=50&showInformation=1")
-                if response.status_code == 200:
-                    systems = response.json().get("systems", [])
-                    nearest_system = min(systems, key=lambda system: system.get("distance", math.inf))
-                    nearest_system_name = nearest_system.get("name")
-                    nearest_system_distance = nearest_system.get("distance")
-                    if nearest_system_name and nearest_system_distance is not None:
-                        await ctx.respond(f"No stations found in {system}. The nearest system with a station is {nearest_system_name} ({nearest_system_distance:.2f} ly away).")
-                    else:
-                        await ctx.respond(f"No stations found in {system} or any nearby systems.")
-                else:
-                    await ctx.respond(f"Error getting nearby systems.")
+                await ctx.respond(f"No stations found in {system}.")
         else:
             await ctx.respond(f"Error getting stations for {system}.")
 
