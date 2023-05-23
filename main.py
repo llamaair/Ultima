@@ -39,7 +39,15 @@ TOKEN3 = os.getenv("DISCORD_TOKEN3")
 TOKEN4 = os.getenv("DISCORD_TOKEN4")
 intents = discord.Intents.all()
 
-client = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
+def get_prefix(message):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    server_id = str(message.guild.id)
+    custom_prefix = prefixes.get(server_id, '!')  # Default prefix is '!'
+    return custom_prefix
+
+client = bridge.Bot(command_prefix=get_prefix, intents=intents, help_command=None)
 
 client2 = bridge.Bot(command_prefix="?", intents=intents, help_command=None)
 
@@ -118,6 +126,24 @@ def guild(guild_id):
       return ctx.guild and ctx.guild.id == guild_id
    return commands.check(predicate)
 
+def get_prefix(client, message):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    server_id = str(message.guild.id)
+    custom_prefix = prefixes.get(server_id, '!')  # Default prefix is '!'
+    return custom_prefix
+
+@client.event
+async def on_guild_join(guild):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    server_id = str(guild.id)
+    prefixes[server_id] = '!'  # Set default prefix as '!' for the new server
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
 
 #Defining startup
 @client.event
@@ -134,6 +160,19 @@ async def on_ready():
         print("Persistent views added")
         await client2.start(TOKEN2)
     
+@client.bridge_command()
+@commands.has_permissions(administrator=True)
+async def setprefix(ctx, prefix):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    server_id = str(ctx.guild.id)
+    prefixes[server_id] = prefix
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+    await ctx.send(f"The prefix for this server has been set to: {prefix}")
 
 @client2.event
 async def on_ready():
