@@ -37,7 +37,10 @@ class autorole(commands.Cog):
         if role_id:
             role = member.guild.get_role(int(role_id))
             if role:
-                await member.add_roles(role)
+                try:
+                    await member.add_roles(role)
+                except:
+                    await member.guild.owner(f"Hey! It looks like I'm not able to assign roles when new users join. This is probably as the role I'm trying to assign is higher in the hierarchy than my highest role!")
 
 def setup(bot):
     bot.add_cog(autorole(bot))
