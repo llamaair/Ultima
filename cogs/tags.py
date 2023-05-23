@@ -45,6 +45,15 @@ class tags(commands.Cog):
             await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
     @bridge.bridge_command()
+    async def tags_list(self, ctx):
+        guild_tags = self.tags.get(str(ctx.guild.id), {})
+        if guild_tags:
+            tags_list = '\n'.join(guild_tags.keys())
+            await ctx.respond(f'Tags:\n{tags_list}')
+        else:
+            await ctx.respond('There are no tags in this server.')
+
+    @bridge.bridge_command()
     @commands.has_permissions(administrator=True)
     async def modify_tag(self, ctx, tag_name: str, *, new_response: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
