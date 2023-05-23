@@ -172,7 +172,7 @@ async def setprefix(ctx, prefix):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
-    await ctx.send(f"The prefix for this server has been set to: {prefix}")
+    await ctx.respond(f"The prefix for this server has been set to: {prefix}")
 
 @client2.event
 async def on_ready():
