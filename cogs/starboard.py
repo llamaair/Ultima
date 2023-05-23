@@ -35,18 +35,29 @@ class starboard(commands.Cog): # create a class for our cog that inherits from c
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        exists = False
         if reaction.emoji != "⭐":
             return
+
         with open("starboard.json") as f:
             automodguild = json.load(f)
+
         if user.guild.id not in automodguild:
             return
-        for channel in user.guild.channels:
-            if str(channel.name) == "⭐starboard":
-                embed = discord.Embed(title="Starred image", description=f"By {reaction.message.author}")
-                embed.set_image(url=reaction.message.attachments[0].url)
-                await channel.send(embed=embed)
+
+        if reaction.count > 3:
+            starboard_channel = discord.utils.get(user.guild.channels, name="⭐starboard")
+            if not starboard_channel:
+                overwrites = {
+                user.guild.default_role: discord.PermissionOverwrite(view_channel=True, send_messages=False)
+                }
+                starboard_channel = await user.guild.create_text_channel("⭐starboard", overwrites=overwrites, reason="StarBoard")
+
+            embed = discord.Embed(title="Starred message", description=reaction.message.content)
+            embed.set_author(name=reaction.message.author.display_name, icon_url=reaction.message.author.avatar_url)
+            embed.add_field(name="Original Message", value=f"[Jump to message]({reaction.message.jump_url})")
+
+            await starboard_channel.send(embed=embed)
+
                 
 
         
