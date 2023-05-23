@@ -14,28 +14,14 @@ class EDDNCog(commands.Cog):
             data = response.json()
             stations = data.get("stations", [])
             if len(stations) > 0:
-                station_distances = [(station["name"], station.get("distance_to_star")) for station in stations if station.get("distance_to_star") is not None]
-                if len(station_distances) > 0:
-                    nearest_station = min(station_distances, key=lambda x: x[1])
-                    await ctx.respond(f"The nearest station in {system} is {nearest_station[0]} ({nearest_station[1]:.2f} ls away).")
+                nearest_station = min(stations, key=lambda station: station.get("distance_to_star", float('inf')))
+                station_name = nearest_station.get("name")
+                if station_name:
+                    await ctx.respond(f"The nearest station in {system} is {station_name}.")
                 else:
-                    await ctx.respond(f"No valid distances found for stations in {system}.")
+                    await ctx.respond(f"No station name found for the nearest station in {system}.")
             else:
-                # No stations in this system, try to find the nearest system with a station
-                response = requests.get(f"https://www.edsm.net/api-system-v1/sphere-systems?x=0&y=0&z=0&radius=50&showInformation=1")
-                if response.status_code == 200:
-                    systems = response.json().get("systems", [])
-                    systems_with_stations = [(system["name"], system.get("distance")) for system in systems if system.get("information", {}).get("stations", 0) > 0]
-                    if len(systems_with_stations) > 0:
-                        nearest_system_with_station = min(systems_with_stations, key=lambda x: x[1])
-                        if nearest_system_with_station[1] is not None:
-                            await ctx.respond(f"No stations found in {system}. The nearest system with a station is {nearest_system_with_station[0]} ({nearest_system_with_station[1]:.2f} ly away).")
-                        else:
-                            await ctx.respond(f"The distance to the nearest system with a station from {system} is not available.")
-                    else:
-                        await ctx.respond(f"No stations found in {system} or any nearby systems.")
-                else:
-                    await ctx.respond(f"Error getting nearby systems.")
+                await ctx.respond(f"No stations found in {system}.")
         else:
             await ctx.respond(f"Error getting stations for {system}.")
 
