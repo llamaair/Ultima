@@ -1121,7 +1121,7 @@ async def rob(ctx):
   decider = random.randint(0,1)
 
   if decider == 1:
-    await ctx.respond(f"You just robbed the bank and got {earnings}!")
+    await ctx.respond(f"You just robbed the bank and got {earnings} credits!")
 
     users[str(user.id)]["Wallet"] += earnings
 
@@ -1135,8 +1135,11 @@ async def rob(ctx):
       with open("bank.json", 'w') as f:
         json.dump(users, f)
     else:
-      await ctx.respond(f"The police managed to catch you when you robbed the bank, and they also took {wallet_amt} credits from you! :pensive:")
-      users[str(user.id)]["Wallet"] -=wallet_amt
+      if wallet_amt > 0:
+        await ctx.respond(f"The police managed to catch you when you robbed the bank, and they also took {wallet_amt} credits from you! :pensive:")
+        users[str(user.id)]["Wallet"] -=wallet_amt
+      else:
+         await ctx.respond(f"The police managed to catch you when you robbed the bank")
 
       with open("bank.json", 'w') as f:
         json.dump(users, f)
@@ -1174,7 +1177,7 @@ async def pay(ctx,amount,member:discord.Member):
   await update_bank(ctx.author,-1*amount,"Wallet")
   await update_bank(member,amount,"Wallet")  
 
-  await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been transfered to {member.name}")
+  await ctx.respond(f":white_check_mark: Transaction completed! {amount} credits has been transfered to {member.name}")
     
 
 @economy.command(description="Rob another member!")
@@ -1257,7 +1260,7 @@ async def deposit(ctx,amount):
   await update_bank(ctx.author,-1*amount)
   await update_bank(ctx.author,amount,"Bank")  
 
-  await ctx.respond(f":moneybag: You just deposited {amount} dollars.")
+  await ctx.respond(f":moneybag: You just deposited {amount} credits.")
 
 @economy.command(description="Transfer money from your wallet to the bank")
 async def withdraw(ctx,amount):
@@ -1282,7 +1285,7 @@ async def withdraw(ctx,amount):
   await update_bank(ctx.author,amount)
   await update_bank(ctx.author,-1*amount,"Bank")  
 
-  await ctx.respond(f":moneybag: You withdrew {amount} dollars.")
+  await ctx.respond(f":moneybag: You withdrew {amount} credits.")
 
 @economy.command(description="Buy something")
 async def buy(ctx,item):
