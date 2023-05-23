@@ -18,14 +18,14 @@ class tags(commands.Cog):
         with open('tags.json', 'w') as file:
             json.dump(self.tags, file)
 
-    @bridge.command()
+    @bridge.bridge_command()
     @commands.has_permissions(administrator=True)
     async def create_tag(self, ctx, tag_name: str, *, tag_response: str):
         self.tags.setdefault(str(ctx.guild.id), {})[tag_name] = tag_response
         self.save_tags()
         await ctx.send(f'Tag "{tag_name}" has been created.')
 
-    @bridge.command()
+    @bridge.bridge_command()
     async def view_tag(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
