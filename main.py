@@ -39,7 +39,7 @@ TOKEN3 = os.getenv("DISCORD_TOKEN3")
 TOKEN4 = os.getenv("DISCORD_TOKEN4")
 intents = discord.Intents.all()
 
-def get_prefix(message):
+def get_prefix(client, message):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
 
