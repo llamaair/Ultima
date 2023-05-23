@@ -1144,6 +1144,36 @@ async def rob(ctx):
       with open("bank.json", 'w') as f:
         json.dump(users, f)
 
+global mainbal
+mainbal = 0
+
+@economy.command(description="Donate to the public balance")
+async def donate(ctx, amount:int):
+  await open_account(ctx.author)
+  bal = await update_bank(ctx.author)
+  if amount == "all":
+    amount = bal[0]
+  try :
+    amount = amount
+  except :
+    await ctx.respond("Please enter a valid number")
+    return
+  if amount>bal[0]:
+    await ctx.respond("Please make sure you have enough money in your wallet!")
+    return
+  if amount<0:
+    await ctx.respond("Please enter a number bigger than 1")
+                
+    return 
+
+  await update_bank(ctx.author,-1*amount,"Wallet")
+
+  await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been donated to Ultima's public balance")
+
+  global mainbal
+  mainbal+=amount
+
+
 @economy.command(description="Give some of your money to another member!")
 async def pay(ctx,amount,member:discord.Member):
   if amount == None : 
