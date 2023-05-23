@@ -26,7 +26,7 @@ class tags(commands.Cog):
         await ctx.respond(f'Tag "{tag_name}" has been created.')
 
     @bridge.bridge_command()
-    async def view_tag(self, ctx, tag_name: str):
+    async def tag(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
             await ctx.respond(f'{guild_tags[tag_name]}')
