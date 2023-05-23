@@ -24,7 +24,7 @@ class EDDNCog(commands.Cog):
                     else:
                         await ctx.respond(f"No station name found for the nearest station in {system_name}.")
                 else:
-                    nearest_system = min(data["coords"], key=lambda coord: coord.get("distance", math.inf))
+                    nearest_system = find_nearest_system(data["coords"])
                     nearest_system_name = nearest_system.get("name")
                     nearest_system_distance = nearest_system.get("distance")
                     if nearest_system_name and nearest_system_distance is not None:
@@ -35,6 +35,10 @@ class EDDNCog(commands.Cog):
                 await ctx.respond(f"System information not found for {system}.")
         else:
             await ctx.respond(f"Error getting system information for {system}.")
+
+def find_nearest_system(coords):
+    nearest_system = min(coords, key=lambda coord: coord.get("distance", math.inf))
+    return nearest_system
 
 def setup(bot):
     bot.add_cog(EDDNCog(bot))
