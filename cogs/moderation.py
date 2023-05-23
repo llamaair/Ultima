@@ -20,6 +20,9 @@ class Vieww(discord.ui.View):
                     await member.edit(nick="Moderated nickname")
                     count+=1
                     lis.append(member.name)
+
+        if count==0:
+            await interaction.response.send_message(":warning: There are no nicks containing any banned words", ephemeral=True)
                     
         await interaction.response.send_message("Successfully changed all members with bad nicks nicknames :white_check_mark:")
 
