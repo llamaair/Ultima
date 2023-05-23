@@ -106,7 +106,7 @@ class moderation(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason):
         await ctx.respond("Warning sent",ephemeral=True)
-        embed = discord.Embed(title="Warned", description=f"You have been warned by {ctx.author} for {reason} in {ctx.guild.name}", color=discord.Colour.red())
+        embed = discord.Embed(title="Warned", description=f"You have been warned by {ctx.author} for: *{reason}* in **{ctx.guild.name}**", color=discord.Colour.red())
         await member.send(embed=embed)
         
     @bridge.bridge_command()
