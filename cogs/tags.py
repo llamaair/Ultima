@@ -44,5 +44,16 @@ class tags(commands.Cog):
         else:
             await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
+    @bridge.bridge_command()
+    @commands.has_permissions(administrator=True)
+    async def modify_tag(self, ctx, tag_name: str, *, new_response: str):
+        guild_tags = self.tags.get(str(ctx.guild.id), {})
+        if tag_name in guild_tags:
+            guild_tags[tag_name] = new_response
+            self.save_tags()
+            await ctx.respond(f'Tag "{tag_name}" has been modified.')
+        else:
+            await ctx.respond(f'Tag "{tag_name}" does not exist.')
+
 def setup(bot):
     bot.add_cog(tags(bot))
