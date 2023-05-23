@@ -23,15 +23,15 @@ class tags(commands.Cog):
     async def create_tag(self, ctx, tag_name: str, *, tag_response: str):
         self.tags.setdefault(str(ctx.guild.id), {})[tag_name] = tag_response
         self.save_tags()
-        await ctx.send(f'Tag "{tag_name}" has been created.')
+        await ctx.respond(f'Tag "{tag_name}" has been created.')
 
     @bridge.bridge_command()
     async def view_tag(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
-            await ctx.send(f'Tag: {tag_name}\nResponse: {guild_tags[tag_name]}')
+            await ctx.respond(f'{guild_tags[tag_name]}')
         else:
-            await ctx.send(f'Tag "{tag_name}" does not exist.')
+            await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
 def setup(bot):
     bot.add_cog(tags(bot))
