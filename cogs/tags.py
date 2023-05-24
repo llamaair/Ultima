@@ -22,7 +22,7 @@ class tags(commands.Cog):
     async def tags(self, ctx):
         pass
 
-    @tags.bridge_command()
+    @tags.command()
     @commands.has_permissions(administrator=True)
     async def create(self, ctx, tag_name: str, *, tag_response: str):
         self.tags.setdefault(str(ctx.guild.id), {})[tag_name] = tag_response
@@ -37,7 +37,7 @@ class tags(commands.Cog):
         else:
             await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
-    @tags.bridge_command()
+    @tags.command()
     @commands.has_permissions(administrator=True)
     async def delete(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
@@ -48,7 +48,7 @@ class tags(commands.Cog):
         else:
             await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
-    @tags.bridge_command()
+    @tags.command()
     async def list(self, ctx):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if guild_tags:
@@ -57,7 +57,7 @@ class tags(commands.Cog):
         else:
             await ctx.respond('There are no tags in this server.')
 
-    @tags.bridge_command()
+    @tags.command()
     @commands.has_permissions(administrator=True)
     async def modify(self, ctx, tag_name: str, *, new_response: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
