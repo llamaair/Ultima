@@ -22,14 +22,14 @@ class tags(commands.Cog):
     async def tags(self, ctx):
         pass
 
-    @tags.command()
+    @bridge.bridge_command(description="Create a new tag")
     @commands.has_permissions(administrator=True)
-    async def create(self, ctx, tag_name: str, *, tag_response: str):
+    async def tags_create(self, ctx, tag_name: str, *, tag_response: str):
         self.tags.setdefault(str(ctx.guild.id), {})[tag_name] = tag_response
         self.save_tags()
         await ctx.respond(f'Tag "{tag_name}" has been created.')
 
-    @bridge.bridge_command()
+    @bridge.bridge_command(description="View a tag")
     async def tag(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
@@ -37,9 +37,9 @@ class tags(commands.Cog):
         else:
             await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
-    @tags.command()
+    @bridge.bridge_command(description="Delete a tag")
     @commands.has_permissions(administrator=True)
-    async def delete(self, ctx, tag_name: str):
+    async def tags_delete(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
             del guild_tags[tag_name]
@@ -48,8 +48,8 @@ class tags(commands.Cog):
         else:
             await ctx.respond(f'Tag "{tag_name}" does not exist.')
 
-    @tags.command()
-    async def list(self, ctx):
+    @bridge.bridge_command(description="List all tags")
+    async def tags_list(self, ctx):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if guild_tags:
             tags_list = '\n'.join(guild_tags.keys())
@@ -57,9 +57,9 @@ class tags(commands.Cog):
         else:
             await ctx.respond('There are no tags in this server.')
 
-    @tags.command()
+    @bridge.bridge_command(description="Modify a tag's content")
     @commands.has_permissions(administrator=True)
-    async def modify(self, ctx, tag_name: str, *, new_response: str):
+    async def tags_modify(self, ctx, tag_name: str, *, new_response: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
             guild_tags[tag_name] = new_response
