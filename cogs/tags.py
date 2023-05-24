@@ -53,7 +53,7 @@ class tags(commands.Cog):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if guild_tags:
             tags_list = '\n'.join(guild_tags.keys())
-            await ctx.respond(f'Tags:\n{tags_list}')
+            await ctx.respond(f'**Tags:**\n\n{tags_list}')
         else:
             await ctx.respond('There are no tags in this server.')
 
