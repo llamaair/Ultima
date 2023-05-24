@@ -609,7 +609,7 @@ async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'sc
         return
     choices1 = ['rock', 'paper', 'scissors']
     bot_choice = random.choice(choices1)
-    if player_choice.lower() not in choices:
+    if player_choice.lower() not in choices1:
         await ctx.respond('Please enter rock, paper or scissors.')
     else:
         if player_choice.lower() == bot_choice.lower():
