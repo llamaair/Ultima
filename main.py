@@ -250,7 +250,8 @@ async def translate(ctx, message, language: discord.Option(choices=["English","S
         translator = Translator(provider="mymemory",to_lang="pl")
     translation = translator.translate(f"{message}")
     await ctx.respond(f"{message}\n\n{translation}")
-        
+
+
 @client.bridge_command(description="See the location of the ISS")
 async def iss(ctx):
     
@@ -601,13 +602,13 @@ async def reroll(ctx, channel: discord.TextChannel, id_):
 
 
 @client.bridge_command(description="Play rock, paper, scissors!")
-async def rps(ctx, *, player_choice):
+async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'scissors'])):
     username = str(ctx.author).split('#')[0]
     if player_choice == None:
         await ctx.respond("Please enter rock, paper or scissors.")
         return
-    choices = ['rock', 'paper', 'scissors']
-    bot_choice = random.choice(choices)
+    choices1 = ['rock', 'paper', 'scissors']
+    bot_choice = random.choice(choices1)
     if player_choice.lower() not in choices:
         await ctx.respond('Please enter rock, paper or scissors.')
     else:
