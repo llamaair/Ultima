@@ -250,16 +250,7 @@ async def translate(ctx, message, language: discord.Option(choices=["English","S
         translator = Translator(provider="mymemory",to_lang="pl")
     translation = translator.translate(f"{message}")
     await ctx.respond(f"{message}\n\n{translation}")
-    
-@client.bridge_command(description="Give a role to all members")
-async def roleall(ctx, roleid):
-    guild = ctx.guild
-    role = guild.get_role(roleid)
-    for m in ctx.guild.members:
-        await m.add_roles(role)
-    await ctx.respond(f"Gave the role with id {roleid} to all server members!")
         
-    
 @client.bridge_command(description="See the location of the ISS")
 async def iss(ctx):
     
