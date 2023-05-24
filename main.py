@@ -898,7 +898,7 @@ async def poll(ctx, reaction1, reaction2, poll, reaction3=None, reaction4=None, 
     await lol.add_reaction(reaction5)
 
 
-@client.bridge_command(description="Get a random picture!")
+@client.bridge_command(description="Search for a picture!")
 @check(check_if_user_has_premium)
 async def imagesearch(ctx, image):
   embed = discord.Embed(
