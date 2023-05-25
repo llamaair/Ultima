@@ -37,6 +37,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 TOKEN2 = os.getenv("DISCORD_TOKEN2")
 TOKEN3 = os.getenv("DISCORD_TOKEN3")
 TOKEN4 = os.getenv("DISCORD_TOKEN4")
+TOKEN5 = os.getenv("DISCORD_TOKEN5")
 intents = discord.Intents.all()
 
 def get_prefix(client, message):
@@ -54,6 +55,8 @@ client2 = bridge.Bot(command_prefix="?", intents=intents, help_command=None)
 client3 = bridge.Bot(command_prefix=">", intents=intents, help_command=None)
 
 client4 = bridge.Bot(command_prefix="<", intents=intents, help_command=None)
+
+client5 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
 client.persistent_views_added=False
 
@@ -187,6 +190,12 @@ async def on_ready():
 @client4.event
 async def on_ready():
    print(f"Successfully logged in as {client4.user.name}")
+   await client5.start(TOKEN5)
+
+@client5.event
+async def on_ready():
+   print(f"Successfully logged in as {client5.user.name}")
+   
 
 @client.event
 async def on_guild_join(guild):
@@ -1494,11 +1503,14 @@ client3.load_extension('ChatBot.mainchatbot')
 
 client4.load_extension('EDBot.mainED')
 
+client5.load_extension('DeltaBot.maindeltabot')
+
 async def main():
    await client.start(TOKEN)
    await client2.start(TOKEN2)
    await client3.start(TOKEN3)
    await client4.start(TOKEN4)
+   await client5.start(TOKEN5)
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
