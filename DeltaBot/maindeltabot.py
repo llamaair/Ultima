@@ -9,7 +9,7 @@ class DeltaBot(commands.Cog):
         self.bot = bot
 
     @bridge.bridge_command(description="Ping!")
-    async def ping(ctx):
+    async def ping(self, ctx):
         await ctx.respond("Pong!")
 
 
