@@ -259,16 +259,8 @@ async def translate(ctx, message, language: discord.Option(choices=["English","S
         translator = Translator(provider="mymemory",to_lang="pl")
     translation = translator.translate(f"{message}")
     await ctx.respond(f"{message}\n\n{translation}")
-    
-@client.bridge_command(description="Give a role to all members")
-async def roleall(ctx, roleid):
-    guild = ctx.guild
-    role = guild.get_role(roleid)
-    for m in ctx.guild.members:
-        await m.add_roles(role)
-    await ctx.respond(f"Gave the role with id {roleid} to all server members!")
-        
-    
+
+
 @client.bridge_command(description="See the location of the ISS")
 async def iss(ctx):
     
@@ -619,14 +611,14 @@ async def reroll(ctx, channel: discord.TextChannel, id_):
 
 
 @client.bridge_command(description="Play rock, paper, scissors!")
-async def rps(ctx, *, player_choice):
+async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'scissors'])):
     username = str(ctx.author).split('#')[0]
     if player_choice == None:
         await ctx.respond("Please enter rock, paper or scissors.")
         return
-    choices = ['rock', 'paper', 'scissors']
-    bot_choice = random.choice(choices)
-    if player_choice.lower() not in choices:
+    choices1 = ['rock', 'paper', 'scissors']
+    bot_choice = random.choice(choices1)
+    if player_choice.lower() not in choices1:
         await ctx.respond('Please enter rock, paper or scissors.')
     else:
         if player_choice.lower() == bot_choice.lower():
@@ -915,7 +907,7 @@ async def poll(ctx, reaction1, reaction2, poll, reaction3=None, reaction4=None, 
     await lol.add_reaction(reaction5)
 
 
-@client.bridge_command(description="Get a random picture!")
+@client.bridge_command(description="Search for a picture!")
 @check(check_if_user_has_premium)
 async def imagesearch(ctx, image):
   embed = discord.Embed(
