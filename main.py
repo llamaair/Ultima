@@ -190,7 +190,7 @@ async def on_ready():
     if not client.persistent_views_added:
         client.add_view(MyView())
         client.add_view(CloseTicket())
-        client5.add_view(deltafleetapp())
+        client5.add_view(DeltaApp())
         client.persistent_views_added = True
         print("Persistent views added")
         await client2.start(TOKEN2)
