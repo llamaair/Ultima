@@ -12,7 +12,7 @@ class DeltaBot(commands.Cog):
     async def ping(self, ctx):
         await ctx.respond("Pong!")
 
-
+    
 
 def setup(bot):
     bot.add_cog(DeltaBot(bot))
