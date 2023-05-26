@@ -88,8 +88,8 @@ class deltafleetapp(discord.ui.Modal):
         embed.add_field(name="Why?", value=self.children[2].value)
         embed.add_field(name="Role", value=self.children[3].value)
         embed.add_field(name="Submitted by", value=interaction.user)
-        member = self.bot.get_user(719527356368289802)
-        member2 = self.bot.get_user(686846149608734730)
+        member = client5.get_user(719527356368289802)
+        member2 = client5.get_user(686846149608734730)
         await member.send(embeds=[embed])
         await member2.send(embeds=[embed])
         await interaction.response.send_message("Successfully submitted application :white_check_mark: Expect response within 24 hours or less!", ephemeral=True)
@@ -190,6 +190,7 @@ async def on_ready():
     if not client.persistent_views_added:
         client.add_view(MyView())
         client.add_view(CloseTicket())
+        client5.add_view(deltafleetapp())
         client.persistent_views_added = True
         print("Persistent views added")
         await client2.start(TOKEN2)
