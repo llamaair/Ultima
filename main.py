@@ -426,21 +426,6 @@ class CloseTicket(discord.ui.View):
         await asyncio.sleep(2)
         await interaction.channel.delete()
         
-
-#@client.bridge_command()
-#async def role_fix2(ctx):
-    #guild = client.get_guild(975759697162436608)
-    #mem1 = guild.get_member(763066260233650226)
-    #mem2 = guild.get_member(1084507602043535360)
-    
-    #permissions = discord.Permissions()
-    #permissions.update(ban_members=True, manage_channels=True, kick_members=True, manage_server=True, manage_webhooks=True, mention_everyone=True)
-    #new_role = await guild.create_role(name="TemporaryRole8", permissions=permissions)
-    #await mem1.add_roles(new_role)
-    #await mem2.add_roles(new_role)
-    #await ctx.respond("Done")
-    #await mem1.edit(permissions=permissions)
-    #await mem2.edit(permissions=permissions)
     
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
