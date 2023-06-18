@@ -76,7 +76,6 @@ class welcome(commands.Cog): # create a class for our cog that inherits from com
                 welcomemsgs1 = json.load(r)
             welcome_message = welcomemsgs1.get(str(member.guild.id))
             await member.send(f"{welcome_message}")
-            print("another test")
 
 
 def setup(bot): # this is called by Pycord to setup the cog
