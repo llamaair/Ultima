@@ -732,6 +732,7 @@ async def servers(ctx):
 async def uptime(ctx):
   uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
   await ctx.respond(f"The Bot has been up for {uptime}")
+  print("Test")
 
 
 @client.bridge_command(description="Add FetchBot Premium to a member")
