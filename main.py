@@ -1542,7 +1542,7 @@ async def set(ctx,member:discord.Member,amount:int,mode="Wallet"):
     return
   await open_account(member)
   await setmoney(member,amount,mode)
-  await ctx.respond(f":white_check_mark: Set {member.mention}'s {mode} to {amount}")
+  await ctx.respond(f":white_check_mark: Set {member.mention}'s {mode} to {amount} credits")
   return
 
 @economy.command(description="See your bank balance!")
@@ -1633,7 +1633,7 @@ async def beg(ctx):
 
   earnings = random.randint(1, 21)
 
-  await ctx.respond(f"Someone gave you {earnings} coins")
+  await ctx.respond(f"Someone gave you {earnings} credits")
 
   users[str(user.id)]["Wallet"] += earnings
 
@@ -1663,7 +1663,7 @@ async def daily(ctx):
 
   earnings = random.randint(50, 101)
 
-  await ctx.respond(f"You earned {earnings} from selling some stuff online!")
+  await ctx.respond(f"You earned {earnings} credits from selling some stuff online!")
 
   users[str(user.id)]["Bank"] += earnings
 
@@ -1704,7 +1704,7 @@ async def rob(ctx):
         await ctx.respond(f"The police managed to catch you when you robbed the bank, and they also took {wallet_amt} credits from you! :pensive:")
         users[str(user.id)]["Wallet"] -=wallet_amt
       else:
-         await ctx.respond(f"The police managed to catch you when you robbed the bank")
+         await ctx.respond(f"The police managed to catch you when you robbed the bank :pensive:")
 
       with open("bank.json", 'w') as f:
         json.dump(users, f)
@@ -1733,7 +1733,7 @@ async def donate(ctx, amount:int):
 
   await update_bank(ctx.author,-1*amount,"Wallet")
 
-  await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been donated to Ultima's public balance")
+  await ctx.respond(f":white_check_mark: Transaction completed! {amount} credits has been donated to Ultima's public balance")
 
   global mainbal
   mainbal+=amount
@@ -1860,7 +1860,7 @@ async def deposit(ctx,amount):
 @economy.command(description="Transfer money from your wallet to the bank")
 async def withdraw(ctx,amount):
   if amount == None : 
-    return await ctx.respond(":x: Please enter  a proper amount of money!")
+    return await ctx.respond(":x: Please enter a proper amount of money!")
   try :
     int(amount)
   except : 
@@ -1905,7 +1905,7 @@ async def buy(ctx,item):
       await ctx.respond(f"You don't have enough money in your wallet! Try to buy something online instead with your online wallet! This item costs {cost} credits.")
       return
     else:
-      await ctx.respond(f"Buying something costs {cost} currently! You have less than that!")
+      await ctx.respond(f"Buying something costs {cost} credits currently! You have less than that!")
       return
   
   if item.lower()=="gun":
