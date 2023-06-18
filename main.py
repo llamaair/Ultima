@@ -509,7 +509,7 @@ async def on_guild_join(guild):
 
 @tasks.loop(seconds=15)
 async def presence():
-   list1 = ['/help', '/iss', '/joke', '/ttt', '/reddit', '/economy beg', '/economy rob', '/economy robmember', '/level', '/ask', '/afk set', '/autorole', '/avatar']
+   list1 = ['/help', '/iss', '/joke', '/ttt', '/reddit', '/economy beg', '/economy rob', '/economy robmember', '/level', '/ask', '/afk set', '/autorole', '/avatar', '/cat', '/fatcat', '/dog', '/embed', '/github', '/imagesearch', '/premium']
    choice = random.choice(list1)
    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{choice}"))
 
