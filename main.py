@@ -507,6 +507,12 @@ async def on_guild_join(guild):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
+@tasks.loop(seconds=15)
+async def presence():
+   list1 = ['/help', '/iss', '/joke', '/ttt', '/reddit', '/economy beg', '/economy rob', '/economy robmember', '/level', '/ask', '/afk set', '/autorole', '/avatar']
+   choice = random.choice(list1)
+   await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{choice}"))
+
 #Defining startup
 @client.event
 async def on_ready():
@@ -521,6 +527,7 @@ async def on_ready():
         client5.add_view(DeltaApp())
         client.persistent_views_added = True
         print("Persistent views added")
+        presence.start()
         #await connect_nodes()
         await client2.start(TOKEN2)
        
