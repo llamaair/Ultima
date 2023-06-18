@@ -94,18 +94,6 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         challengelist=["Eat a hamburger in 20 seconds", "Say yeet in your most southern accent", "Don't speak today", "Stop watching TV", "Eat slower today", "Do 15 sit-ups", "Learn to draw a face", "Don't drink soda today", "Do something you are scared of", "Abuse FetchBot"]
         challenge = random.choice(challengelist)
         await ctx.respond(challenge)
-
-    @bridge.bridge_command(description="How stupid are you?")
-    async def stupid(self, ctx):
-        stupidlist=['100%', '39%', '0%', '50%', '70%', '20%', '95%', '13%']
-        stupidity= random.choice(stupidlist)
-        await ctx.respond(f"You are {stupidity} stupid")
-
-    @bridge.bridge_command(description="How smart are you?")
-    async def smart(self, ctx):
-        smartlist=["0%", "100%", "50%", "20%", "67%"]
-        smart = random.choice(smartlist)
-        await ctx.respond(f"You are {smart} smart!")
     
     @bridge.bridge_command(description="Ask me a question!")
     async def ask(self, ctx, *, question):

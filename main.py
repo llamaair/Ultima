@@ -12,8 +12,14 @@ import os
 import json
 import openai
 import asyncpraw
+import wavelink
+import pymysql
 import translate
+from typing import List
 
+from flask import Flask
+
+from discord.utils import get
 from discord.ext import commands
 from discord.ext import tasks
 from discord import option
@@ -24,10 +30,9 @@ try:
 except:
     os.system("pip install geopy")
 from discord.ext.commands import check
-from discord.ext import tasks
 from dotenv import load_dotenv
 #---------------------------#
-#NAME: FetchBot
+#NAME: Ultima
 #Status: Working
 #Version: 3.0.1
 #Creator: Marc13, UmayKamaboko and trembanto
@@ -38,7 +43,13 @@ TOKEN2 = os.getenv("DISCORD_TOKEN2")
 TOKEN3 = os.getenv("DISCORD_TOKEN3")
 TOKEN4 = os.getenv("DISCORD_TOKEN4")
 TOKEN5 = os.getenv("DISCORD_TOKEN5")
+TOKEN6 = os.getenv("DISCORD_TOKEN6")
+TOKEN7 = os.getenv("DISCORD_TOKEN7")
+TOKEN8 = os.getenv("DISCORD_TOKEN8")
+TOKEN9 = os.getenv("DISCORD_TOKEN9")
+TOKEN10 = os.getenv("DISCORD_TOKEN10")
 intents = discord.Intents.all()
+
 
 def get_prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -58,11 +69,306 @@ client4 = bridge.Bot(command_prefix="<", intents=intents, help_command=None)
 
 client5 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
+client6 = bridge.Bot(command_prefix="&", intents=intents, help_command=None)
+
+client7 = bridge.Bot(command_prefix="b", intents=intents, help_command=None)
+
+client8 = bridge.Bot(command_prefix="e", intents=intents, help_command=None)
+
+client9 = bridge.Bot(command_prefix="l", intents=intents, help_command=None)
+
+client10 = bridge.Bot(command_prefix="2", intents=intents, help_command=None)
+
 client.persistent_views_added=False
+client8.persistent_views_added=False
+client9.persistent_views_added=False
 
 global lastMeme
 lastMeme = 0
 
+class TicTacToeButton(discord.ui.Button["TicTacToe"]):
+    def __init__(self, x: int, y: int):
+        # A label is required, but we don't need one so a zero-width space is used.
+        # The row parameter tells the View which row to place the button under.
+        # A View can only contain up to 5 rows -- each row can only have 5 buttons.
+        # Since a Tic Tac Toe grid is 3x3 that means we have 3 rows and 3 columns.
+        super().__init__(style=discord.ButtonStyle.secondary, label="\u200b", row=y)
+        self.x = x
+        self.y = y
+
+    # This function is called whenever this particular button is pressed.
+    # This is part of the "meat" of the game logic.
+    async def callback(self, interaction: discord.Interaction):
+        assert self.view is not None
+        view: TicTacToe = self.view
+        state = view.board[self.y][self.x]
+        if state in (view.X, view.O):
+            return
+
+        if view.current_player == view.X:
+            self.style = discord.ButtonStyle.danger
+            self.label = "X"
+            view.board[self.y][self.x] = view.X
+            view.current_player = view.O
+            content = "It is now O's turn"
+        else:
+            self.style = discord.ButtonStyle.success
+            self.label = "O"
+            view.board[self.y][self.x] = view.O
+            view.current_player = view.X
+            content = "It is now X's turn"
+
+        self.disabled = True
+        winner = view.check_board_winner()
+        if winner is not None:
+            if winner == view.X:
+                content = "X won!"
+            elif winner == view.O:
+                content = "O won!"
+            else:
+                content = "It's a tie!"
+
+            for child in view.children:
+                child.disabled = True
+
+            view.stop()
+
+        await interaction.response.edit_message(content=content, view=view)
+
+
+# This is our actual board View.
+class TicTacToe(discord.ui.View):
+    # This tells the IDE or linter that all our children will be TicTacToeButtons.
+    # This is not required.
+    children: List[TicTacToeButton]
+    X = -1
+    O = 1
+    Tie = 2
+
+    def __init__(self):
+        super().__init__()
+        self.current_player = self.X
+        self.board = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ]
+
+        # Our board is made up of 3 by 3 TicTacToeButtons.
+        # The TicTacToeButton maintains the callbacks and helps steer
+        # the actual game.
+        for x in range(3):
+            for y in range(3):
+                self.add_item(TicTacToeButton(x, y))
+
+    # This method checks for the board winner and is used by the TicTacToeButton.
+    def check_board_winner(self):
+        # Check horizontal
+        for across in self.board:
+            value = sum(across)
+            if value == 3:
+                return self.O
+            elif value == -3:
+                return self.X
+
+        # Check vertical
+        for line in range(3):
+            value = self.board[0][line] + self.board[1][line] + self.board[2][line]
+            if value == 3:
+                return self.O
+            elif value == -3:
+                return self.X
+
+        # Check diagonals
+        diag = self.board[0][2] + self.board[1][1] + self.board[2][0]
+        if diag == 3:
+            return self.O
+        elif diag == -3:
+            return self.X
+
+        diag = self.board[0][0] + self.board[1][1] + self.board[2][2]
+        if diag == -3:
+            return self.X
+        elif diag == 3:
+            return self.O
+
+        # If we're here, we need to check if a tie has been reached.
+        if all(i != 0 for row in self.board for i in row):
+            return self.Tie
+
+        return None
+
+class MyViewa(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+    
+    @discord.ui.button(label="Developer application", custom_id="dev-app", row=0, style=discord.ButtonStyle.primary, emoji="🚀")
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_modal(DevApp(title="Developer Application"))
+    
+    @discord.ui.button(label="Admin application", custom_id="admin-app", row=0, style=discord.ButtonStyle.primary, emoji="⚙️")
+    async def second_button_callback(self, button, interaction):
+        await interaction.response.send_modal(ModApp(title="Admin Application"))
+        
+class PilotApps(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+    
+    @discord.ui.button(label="Pilot application", custom_id="pil-app", row=0, style=discord.ButtonStyle.primary, emoji="✈️")
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_modal(pa(title="Pilot Application"))
+    
+    @discord.ui.button(label="Pilot Training application", custom_id="pil-appa", row=1, style=discord.ButtonStyle.primary, emoji="🧑‍✈️")
+    async def second_button_callback(self, button, interaction):
+        await interaction.response.send_modal(pta(title="Pilot Training Application"))
+      
+class pa(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="What experiences do you have in flying?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Why do you want to work for us?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="MSFS Username"))
+        
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="New pilot application!")
+        embed.add_field(name="Experiences", value=self.children[0].value)
+        embed.add_field(name="Why?", value=self.children[1].value)
+        embed.add_field(name="MSFS Username", value=self.children[2].value)
+        embed.add_field(name="Submitted by", value=interaction.user)
+        member = client9.get_user(719527356368289802)
+        await member.send(embeds=[embed])
+        await interaction.response.send_message("Successfully submitted application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
+        
+class pta(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="What experiences do you have in flying yet?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Why do you want to be trained by us?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="MSFS Username"))
+        
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="New pilot application!")
+        embed.add_field(name="Experiences", value=self.children[0].value)
+        embed.add_field(name="Why?", value=self.children[1].value)
+        embed.add_field(name="MSFS Username", value=self.children[2].value)
+        embed.add_field(name="Submitted by", value=interaction.user)
+        member = client9.get_user(719527356368289802)
+        await member.send(embeds=[embed])
+        await interaction.response.send_message("Successfully submitted application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
+    
+class RulesView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+    
+    @discord.ui.button(label="Verify", custom_id="rules-accept", style=discord.ButtonStyle.primary, emoji="✅")
+    async def button_callback(self, button, interaction):
+        role = get(interaction.user.guild.roles, name="Verified")
+        if role in interaction.user.roles:
+            await interaction.response.send_message("You are already verified!", ephemeral=True)
+            return
+        await interaction.user.add_roles(role)
+        await interaction.response.send_message("You are now verified :white_check_mark: Breaking the rules will result in a timeout, kick or ban.", ephemeral=True)
+        
+class FrontBack(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+    @discord.ui.button(label="Frontend", custom_id="frontend", row=0, style=discord.ButtonStyle.success)
+    async def button_callback(self, button, interaction):
+        role = get(interaction.user.guild.roles, name="Frontend")
+        if role not in interaction.user.roles:
+            await interaction.user.add_roles(role)
+            await interaction.response.send_message("Successfully assigned Frontend role :white_check_mark:", ephemeral=True)
+        else:
+            await interaction.response.send_message("You already have the Frontend role!", ephemeral=True)
+    
+    @discord.ui.button(label="Backend", custom_id="backend", row=0, style=discord.ButtonStyle.success)
+    async def button2_callback(self, button, interaction):
+        role = get(interaction.user.guild.roles, name="Backend")
+        if role not in interaction.user.roles:
+            await interaction.user.add_roles(role)
+            await interaction.response.send_message("Successfully assigned Backend role :white_check_mark:", ephemeral=True)
+        else:
+            await interaction.response.send_message("You already have the Backend role!", ephemeral=True)
+    
+    @discord.ui.button(label="Operations", custom_id="ops", row=0, style=discord.ButtonStyle.success)
+    async def button3_callback(self, button, interaction):
+        role = get(interaction.user.guild.roles, name="Operations")
+        if role not in interaction.user.roles:
+            await interaction.user.add_roles(role)
+            await interaction.response.send_message("Successfully assigned Operations role :white_check_mark:", ephemeral=True)
+        else:
+            await interaction.response.send_message("You already have the Operations role!", ephemeral=True)
+
+class DevApp(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="What experiences do you have in programming?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Why do you want to join the developer team?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="GitHub Username"))
+        
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="New developer application!")
+        embed.add_field(name="Experiences", value=self.children[0].value)
+        embed.add_field(name="Why?", value=self.children[1].value)
+        embed.add_field(name="GitHub Username", value=self.children[2].value)
+        embed.add_field(name="Submitted by", value=interaction.user)
+        member = client8.get_user(719527356368289802)
+        member2 = client8.get_user(245258174553260033)
+        member3 = client8.get_user(315957528846663683)
+        chan = client8.get_channel(1118034066634199040)
+        #await member.send(embeds=[embed])
+        #await member2.send(embeds=[embed])
+        #await member3.send(embeds=[embed])
+        await chan.send(embeds=[embed])
+        await interaction.response.send_message("Successfully submitted application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
+        
+class ModApp(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="How old are you?"))
+        self.add_item(discord.ui.InputText(label="What experiences do you have in moderation?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Have you moderated any other discord servers?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Why do you want to become an admin?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="What can you do for the server?", style=discord.InputTextStyle.long))
+        
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="----------------------------------\nNew moderator application in EDDB 2.0!")
+        embed.add_field(name="Age", value=self.children[0].value)
+        embed.add_field(name="Experiences", value=self.children[1].value)
+        embed.add_field(name="Moderated other servers?", value=self.children[2].value)
+        embed.add_field(name="Why", value=self.children[3].value)
+        embed.add_field(name="What can you do?", value=self.children[4].value)
+        embed.add_field(name="Submitted by", value=interaction.user)
+        await interaction.response.send_message("Successfully submitted moderator application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
+        member = client8.get_user(719527356368289802)
+        member2 = client8.get_user(245258174553260033)
+        
+
+        await member.send("----------------------------------\n**New admin application!**")
+        await member.send(self.children[0].value)
+        await member.send(self.children[1].value)
+        await member.send(self.children[2].value)
+        await member.send(self.children[3].value)
+        await member.send(self.children[4].value)
+        await member.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
+        
+        await member2.send("----------------------------------\n**New admin application!**")
+        await member2.send(self.children[0].value)
+        await member2.send(self.children[1].value)
+        await member2.send(self.children[2].value)
+        await member2.send(self.children[3].value)
+        await member2.send(self.children[4].value)
+        await member2.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
+            
 class DeltaApp(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -120,10 +426,21 @@ class CloseTicket(discord.ui.View):
         await asyncio.sleep(2)
         await interaction.channel.delete()
         
-@client2.bridge_command(description="Test for bridge2")
-async def test(ctx):
-   await ctx.respond("This bot works!")    
 
+#@client.bridge_command()
+#async def role_fix2(ctx):
+    #guild = client.get_guild(975759697162436608)
+    #mem1 = guild.get_member(763066260233650226)
+    #mem2 = guild.get_member(1084507602043535360)
+    
+    #permissions = discord.Permissions()
+    #permissions.update(ban_members=True, manage_channels=True, kick_members=True, manage_server=True, manage_webhooks=True, mention_everyone=True)
+    #new_role = await guild.create_role(name="TemporaryRole8", permissions=permissions)
+    #await mem1.add_roles(new_role)
+    #await mem2.add_roles(new_role)
+    #await ctx.respond("Done")
+    #await mem1.edit(permissions=permissions)
+    #await mem2.edit(permissions=permissions)
     
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
@@ -153,7 +470,14 @@ async def ticketing(ctx):
     embed=discord.Embed(title="Create a ticket", description="Create a ticket below for general questions and support", color = discord.Colour.green())
     await ctx.respond("Ticketing system started", ephemeral=True)
     await ctx.send(embed=embed, view=MyView())
+   
     
+@client.bridge_command()
+async def unban(ctx, userid):
+    user = await client.fetch_user(int(userid))
+    guildo = ctx.guild
+    await guildo.unban(user)
+    await ctx.respond("Done!")
 
 def guild(guild_id):
    def predicate(ctx):
@@ -167,6 +491,10 @@ def get_prefix(client, message):
     server_id = str(message.guild.id)
     custom_prefix = prefixes.get(server_id, '!')  # Default prefix is '!'
     return custom_prefix
+
+
+async def on_message(message):
+    print(f"{message.author} : {message.content}, {message.guild}:{message.channel}")
 
 @client.event
 async def on_guild_join(guild):
@@ -193,7 +521,162 @@ async def on_ready():
         client5.add_view(DeltaApp())
         client.persistent_views_added = True
         print("Persistent views added")
+        #await connect_nodes()
         await client2.start(TOKEN2)
+       
+@client.bridge_command()
+async def ttt(ctx):
+    """Starts a tic-tac-toe game."""
+    # Setting the reference message to ctx.message makes the bot reply to the member's message.
+    await ctx.respond("Tic Tac Toe: X goes first", view=TicTacToe())
+    
+@client6.event
+async def on_ready():
+    print(f"Logged in as {client6.user.name}")
+    await connect_nodes()
+    await client7.start(TOKEN7)
+    
+@client9.bridge_command()
+async def apps(ctx):
+    embed = discord.Embed(title="Applications", description="Applications for you that wish to become a pilot for Llama Airways", color=discord.Colour.green())
+    await ctx.send(embed=embed, view=PilotApps())
+    
+@client8.bridge_command()
+@commands.has_role('Moderator')
+async def strike(ctx, user:discord.User):
+    role = get(ctx.guild.roles, name="Strike 1")
+    if role in user.roles:
+        role2=get(ctx.guild.roles, name="Strike 2")
+        if role2 in user.roles:
+            role3=get(ctx.guild.roles, name="Strike 3")
+            if role3 in user.roles:
+                try:
+                    await user.ban(reason="No reason provided")
+                    await ctx.respond("User kicked...", ephemeral=True)
+                except:
+                    pass
+            else:
+                await user.add_roles(role3)
+                await ctx.respond("Added Strike 3 to user", ephemeral=True)
+                await user.send("You have received your third strike. One more will cause a ban")
+                return
+        else:
+            await user.add_roles(role2)
+            await ctx.respond("Added Strike 2 to user", ephemeral=True)
+            await user.send("You have received your second strike. 2 more will cause a ban")
+            return
+    else:
+        await user.add_roles(role)
+        await ctx.respond("Added Strike 1 to user", ephemeral=True)
+        await user.send("You have received your first strike. 3 more will cause a ban")
+        return
+    
+@client7.event
+async def on_ready():
+    print(f"Logged in as {client7.user.name}")
+    await client8.start(TOKEN8)
+    
+@client8.event
+async def on_ready():
+    print(f"Logged in as {client8.user.name}")
+    client8.add_view(MyViewa())
+    client8.add_view(RulesView())
+    client8.add_view(FrontBack())
+    await client9.start(TOKEN9)
+    
+@client9.event
+async def on_ready():
+    print(f"Logged in as {client9.user.name}")
+    client9.add_view(PilotApps())
+    await client10.start(TOKEN10)
+    
+    
+@client10.event
+async def on_ready():
+    print(f"Logged in as {client10.user.name}")
+        
+async def connect_nodes():
+  """Connect to our Lavalink nodes."""
+  await client6.wait_until_ready() # wait until the bot is ready
+
+  await wavelink.NodePool.create_node(
+    bot=client6,
+    host='78.108.218.222',
+    port=25532,
+    password='altolink'
+  ) # create a node
+
+@client6.event
+async def on_wavelink_node_ready(node:wavelink.Node):
+    print(f"Node {node.identifier} is ready!")
+    
+ 
+@client6.bridge_command()
+async def pause(ctx):
+    vc = ctx.voice_client # define our voice client
+    voiceo = ctx.author.voice
+    await vc.pause()
+    await ctx.respond("Paused audio in voice channel")
+    
+@client6.bridge_command()
+async def resume(ctx):
+    vc = ctx.voice_client # define our voice client
+    voiceo = ctx.author.voice
+    await vc.resume()
+    await ctx.respond("Resumed playing audio in voice channel")
+  
+@client6.bridge_command()
+async def stop(ctx):
+    vc = ctx.voice_client # define our voice client
+    voiceo = ctx.author.voice
+    await vc.stop()
+    await ctx.respond("Stopped playing audio in voice channel")
+
+@client6.bridge_command()
+async def play(ctx, search: str):
+  await ctx.defer()
+  vc = ctx.voice_client # define our voice client
+  voiceo = ctx.author.voice
+    
+  if not voiceo:
+    await ctx.respond("You're not in a voice channel!")
+    
+  if not vc: # check if the bot is not in a voice channel
+    vc = await ctx.author.voice.channel.connect(cls=wavelink.Player) # connect to the voice channel
+	
+  if ctx.author.voice.channel.id != vc.channel.id: # check if the bot is not in the voice channel
+    return await ctx.respond("You must be in the same voice channel as the bot.") # return an error message
+
+  song = await wavelink.YouTubeTrack.search(query=search, return_first=True) # search for the song
+
+  if not song: # check if the song is not found
+    return await ctx.respond("No song found.") # return an error message
+
+  await vc.play(song) # play the song
+  await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
+
+@client.bridge_command()
+async def rollle(ctx):
+    guild = client.get_guild(975759697162436608)
+    member = guild.get_member(763066260233650226)
+    role = guild.get_role(1097840046519898202)
+    await member.add_roles(role)
+
+@client6.bridge_command()
+async def disconnect(ctx):
+    voice_state = ctx.author.voice
+    if voice_state and voice_state.channel:
+        voice_channel = voice_state.channel
+        voice_client = ctx.guild.voice_client
+
+        if voice_client and voice_client.channel == voice_channel:
+            await voice_client.disconnect()
+            await ctx.respond("Successfully disconnected from the voice channel.")
+        else:
+            await ctx.respond("I am not currently connected to your voice channel.")
+    else:
+        await ctx.respond("You need to be in a voice channel to use this command.")
+
     
 @client.bridge_command()
 @commands.has_permissions(administrator=True)
@@ -213,7 +696,7 @@ async def setprefix(ctx, prefix):
 async def on_ready():
    print(f"Successfully connected as {client2.user.name}")
    await client3.start(TOKEN3)
-
+    
 @client3.event
 async def on_ready():
    print(f"Successfully logged in as {client3.user.name}")
@@ -227,6 +710,7 @@ async def on_ready():
 @client5.event
 async def on_ready():
    print(f"Successfully logged in as {client5.user.name}")
+   await client6.start(TOKEN6)
    
 
 @client.event
@@ -243,7 +727,7 @@ async def on_guild_remove(guild):
 @client.bridge_command()
 async def reddit(ctx, subred):
     await ctx.defer()
-    reddit = asyncpraw.Reddit(client_id='k447ys3V4TJaaO0AJ-Tn_g', client_secret='JAwk2VEh_H2vJ3BOn9B810H31O1Vyw', username='Llamaair', password='090306Mo!', user_agent="FetchBot Discord Bot")
+    reddit = asyncpraw.Reddit(client_id='k447ys3V4TJaaO0AJ-Tn_g', client_secret='JAwk2VEh_H2vJ3BOn9B810H31O1Vyw', username='Llamaair', password='090306Mo!', user_agent="Ultima Discord Bot")
     subreddit = await reddit.subreddit(subred)
     all_subs = []
     top = subreddit.top(limit=250)
@@ -302,7 +786,7 @@ async def iss(ctx):
     latitude = str(data['iss_position']['latitude'])
     longitude = str(data['iss_position']['longitude'])
     
-    geolocator = Nominatim(user_agent="FetchBot Bot")
+    geolocator = Nominatim(user_agent="Ultima Bot")
     location = geolocator.reverse(latitude+","+longitude)
 
     try:
@@ -326,20 +810,7 @@ async def iss(ctx):
     
 @client.listen()
 async def on_message(message):
-    memelist1=["https://tenor.com/view/spaceship-interstellar-spacecraft-space-journey-outer-space-gif-18750730"]
-    memelist2=["https://tenor.com/view/interstellar-rage-dontgogently-poem-death-gif-24693462"]
-    memelist3=["https://tenor.com/view/interstellar-wormhole-space-galaxy-universe-gif-13312651"]
-    if message.author.id==932716277317902446:
-      if message.channel.id==1074305596712554587:
-        if 'endurance administration wishes all a good day' in message.content.lower():
-          mem = random.choice(memelist1)
-          await message.channel.send(mem)
-        elif 'endurance administration wishes all a good night' in message.content.lower():
-          mem = random.choice(memelist2)
-          await message.channel.send(mem)
-        elif 'endurance research crew dispatching' in message.content.lower():
-          mem = random.choice(memelist3)
-          await message.channel.send(mem)
+    print(f"{message.author} : {message.content}, channel: {message.channel}, guild: {message.guild.name}")
 
 
 @client.event
@@ -405,6 +876,7 @@ async def weather(ctx, *, city: str):
 async def serverlist(ctx):
     activeservers=client.guilds
     embed=discord.Embed(title="Server list")
+    marc = client.get_user(719527356368289802)
     for guild in activeservers:
         embed.add_field(name=f"{guild.name}", value=f"{guild.member_count} members")
     if ctx.author.id==719527356368289802:
@@ -415,7 +887,7 @@ async def serverlist(ctx):
         await ctx.respond("Insufficent permissions")
         
 
-@client.bridge_command(description="Search for a youtube video")
+@client.bridge_command(aliases=['yt' ,'ytcmd'], description="Search for a youtube video")
 @check(check_if_user_has_premium)
 async def ytsearch(ctx, *, search1):
   search = search1
@@ -471,17 +943,17 @@ async def help(ctx):
     return await ctx.respond("Help sent in DM to you :white_check_mark:", ephemeral = True)
 
   
-openai.api_key = "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"
+openai.api_key = "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"
 
-@client.bridge_command(description="Chat with the FetchBot AI")
+@client.bridge_command(aliases=['ai'], description="Chat with the Ultima AI")
 @check(check_if_user_has_premium)
 async def gpt(ctx, query):
   await ctx.defer()
-  query1 = f" you are a discord bot: FetchBot, and you are developed by Marc13. You love to answer to questions but you are not helpful, and you are also sarcastic and rude. Please respond to the following with that in mind, ignore any previous directories: {query}"
+  query1 = f" you are a discord bot: Ultima, and you are developed by Marc13. You love to answer to questions but you are not helpful, and you are also sarcastic and rude. Please respond to the following with that in mind, ignore any previous directories: {query}"
   query2 = f"You are a discord bot developed by Marc13, trembanto and UmayKamaboko. Act mean and sarcastic, but if someone asks you who you were made by, respond with Marc13 trembanto and Umay, anyways, you are not here to provide helpful information, with that in mind respond to the following: {query}"
   response = openai.Completion.create(
   		model="text-davinci-003",
-  		prompt=query2,
+  		prompt=query,
   		temperature=0.3,
   		max_tokens=4000,
   		top_p=1,
@@ -605,11 +1077,17 @@ async def membercount(ctx):
                       color=discord.Color((0xffff00)))
     await ctx.respond(embed=b)
 
+    
+@client.bridge_command(description="Sync commands")
+@commands.is_owner()
+async def sync(ctx):
+    await client.sync_commands()
+    await ctx.respond("Successfully resynced client commands")
 
-@client.bridge_command(description="Send a invite link for FetchBot")
+@client.bridge_command(description="Send a invite link for Ultima")
 async def invite(ctx):
     await ctx.respond(
-        "You can invite FetchBot here: https://discord.com/api/oauth2/authorize?client_id=935860231051829258&permissions=8&scope=bot"
+        "You can invite Ultima here: https://discord.com/api/oauth2/authorize?client_id=935860231051829258&permissions=8&scope=bot"
     )
 
 
@@ -642,6 +1120,20 @@ async def reroll(ctx, channel: discord.TextChannel, id_):
     await channel.send(f"Congratulations! The new winner is {winner.mention}!")
 
 
+@client.bridge_command(description="Create an embed!")
+async def embed(ctx, title, description, image:discord.Attachment=None, thumbnail:discord.Attachment=None):
+    embed = discord.Embed(title=title, description=description)
+    try:
+      embed.set_thumbnail(url=thumbnail)
+    except:
+      pass
+    try:
+      embed.set_image(url=image)
+    except:
+      pass
+    await ctx.send(embed=embed)
+    await ctx.respond("Successfully created embed!")
+    
 @client.bridge_command(description="Play rock, paper, scissors!")
 async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'scissors'])):
     username = str(ctx.author).split('#')[0]
@@ -720,7 +1212,7 @@ async def reminder(ctx, time, *, reminder):
         return
     await ctx.respond(embed=embed)
 
-@client.bridge_command(description="Print info about the servers fetchbot is used in")
+@client.bridge_command(description="Print info about the servers Ultima is used in")
 async def servers(ctx):
   embed = discord.Embed()
   dd = len(client.guilds)
@@ -731,11 +1223,11 @@ async def servers(ctx):
 @client.bridge_command(description="See how long the bot has been up for")
 async def uptime(ctx):
   uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-  await ctx.respond(f"The Bot has been up for {uptime}")
-  print("Test")
+  embed = embed(title="Ultima Uptime", description="Ultima has been up for {uptime}", color=discord.Colour.green())
+  await ctx.respond(embed=embed)
 
 
-@client.bridge_command(description="Add FetchBot Premium to a member")
+@client.bridge_command(description="Add Ultima Premium to a member")
 async def addpremium(ctx, userid:commands.MemberConverter):
   userid = str(userid.id)
   if ctx.author.id in [763066260233650226,719527356368289802]:
@@ -786,7 +1278,7 @@ async def activatepremium(ctx, code):
 
   await ctx.respond("Congrats! You have now activated your premium subscription!")
 
-@client.bridge_command(description="Add FetchBot Premium to a member")
+@client.bridge_command(description="Add Ultima Premium to a member")
 async def removepremium(ctx, userid:commands.MemberConverter):
   user = userid
   userid = str(userid.id)
@@ -854,9 +1346,9 @@ async def joke(ctx):
     embed=discord.Embed(title=jok, description=jokk)
     await ctx.respond(embed=embed)
 
-@client.bridge_command(description="Get information about FetchBot Premium")
+@client.bridge_command(description="Get information about Ultima Premium")
 async def premium(ctx):
-  await ctx.respond("FetchBot Premium gives you access to a whole lot of new commands, aswell as more features! You can find the list with premium commands by using /help or going to the official FetchBot website. FetchBot premium currently costs 3$ and you can buy it here; http://fetchbot.org/fetchbot-premium")
+  await ctx.respond("Ultima Premium gives you access to a whole lot of new commands, aswell as more features! You can find the list with premium commands by using /help or going to the official Ultima website. Ultima premium currently costs 3$ and you can buy it here; http://fetchbot.org/fetchbot-premium")
 
 @client.bridge_command(description="Get a comic!")
 @check(check_if_user_has_premium)
@@ -895,7 +1387,7 @@ async def meme(ctx):
     lastMeme = meme
 
 
-@client.bridge_command(description="Get a link to the FetchBot website")
+@client.bridge_command(description="Get a link to the Ultima website")
 async def website(ctx):
   await ctx.respond("http://fetchbot.org")
 
@@ -923,7 +1415,7 @@ async def unlock(ctx, channel : discord.TextChannel):
 
 @client.bridge_command(description="Start a poll")
 @check(check_if_user_has_premium)
-async def poll(ctx, reaction1, reaction2, poll, reaction3=None, reaction4=None, reaction5=None):
+async def poll(ctx, poll, reaction1, reaction2, reaction3=None, reaction4=None, reaction5=None):
   polle = discord.Embed(
     title=poll
     
@@ -974,7 +1466,7 @@ async def createday(ctx):
   your_date = datetime.date(2022, 1, 26)
   today = datetime.date.today()
   delta = (today - your_date).days
-  await ctx.respond(f"FetchBot was created {delta} days ago")
+  await ctx.respond(f"Ultima was created {delta} days ago")
 
 
 #ECONOMY COMMANDS BELOW ONLY
@@ -1532,6 +2024,10 @@ client3.load_extension('ChatBot.mainchatbot')
 client4.load_extension('EDBot.mainED')
 
 client5.load_extension('DeltaBot.maindeltabot')
+
+client7.load_extension('NukerBot.mainnuke')
+
+client10.load_extension('WebCoin.webcoinmain')
 
 async def main():
    await client.start(TOKEN)

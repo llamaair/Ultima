@@ -4,6 +4,8 @@ import asyncio
 import random
 import json
 from discord.ext import bridge
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 
 class levelling(commands.Cog): # create a class for our cog that inherits from commands.Cog
     # this class is used to create a cog, which is a module that can be added to the bot
@@ -44,46 +46,54 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
 
     @bridge.bridge_command()
     async def level(self, ctx, member: discord.Member = None):
+        def generate_level_up_image(username, level):
+            background = Image.open("background.png")
+
+            image = Image.new("RGBA", background.size, (0, 0, 0, 0))
+            image.paste(background, (0, 0))
+
+            font = ImageFont.truetype("arial.ttf", 80)
+            draw = ImageDraw.Draw(image)
+
+            # Print username in top left corner
+            username_font = ImageFont.truetype("arial.ttf", 60)
+            draw.text((10, 10), username, font=username_font, fill=(255, 255, 255))
+
+            # Print level in the middle
+            text_width, text_height = draw.textsize(f"Level {level}", font=font)
+            x = (background.width - text_width) // 2
+            y = (background.height - text_height) // 2
+
+            draw.text((x, y), f"Level {level}", font=font, fill=(255, 255, 255))
+
+            return image
+
+        await ctx.defer()
         if not member:
-            id = ctx.author.id
-            with open('levels.json', 'r') as f:
-                users = json.load(f)
-            lvl = users[str(id)]['level']
-            await ctx.respond(f'You are at level {lvl}!')
-        else:
-            id = member.id
-            with open('levels.json', 'r') as f:
-                users = json.load(f)
-            lvl = users[str(id)]['level']
-            await ctx.respond(f'{member} is at level {lvl}!')
-    
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        with open("levelguilds.json") as f:
-            automodguild = json.load(f)
-        if message.guild.id not in automodguild:
-            return
-        if message.author.bot == False:
-            with open('levels.json', 'r') as f:
-                users = json.load(f)
+            member = ctx.author
 
-            if not f'{message.author.id}' in users:
-                users[f'{message.author.id}'] = {}
-                users[f'{message.author.id}']['experience'] = 0
-                users[f'{message.author.id}']['level'] = 1
-            
-            users[f'{message.author.id}']['experience'] += 5
-            with open('levelling.json', 'r') as g:
-                levels = json.load(g)
-            experience = users[f'{message.author.id}']['experience']
-            lvl_start = users[f'{message.author.id}']['level']
-            lvl_end = int(experience ** (1 / 4))
-            if lvl_start < lvl_end:
-                await message.channel.send(f'{message.author.mention} has reached level {lvl_end}! **GG**')
-                users[f'{message.author.id}']['level'] = lvl_end
+        id = str(member.id)
+        with open('levels.json', 'r') as f:
+            users = json.load(f)
 
-            with open('levels.json', 'w') as f:
-                json.dump(users, f)
+        if id not in users:
+            users[id] = {}
+            users[id]['experience'] = 0
+            users[id]['level'] = 1
+
+        lvl = users[id]['level']
+        #await ctx.send(f'{member.mention} is at level {lvl}!')
+
+        # Generate and send the level-up image
+        image = generate_level_up_image(member.name, lvl)
+        with BytesIO() as image_buffer:
+            image.save(image_buffer, 'png')
+            image_buffer.seek(0)
+            await ctx.respond(file=discord.File(fp=image_buffer, filename='level_up.png'))
+
+        with open('levels.json', 'w') as f:
+            json.dump(users, f)
+
                 
 
 

@@ -11,6 +11,8 @@ class image(commands.Cog):
 
     @bridge.bridge_command(description="Generate an image from a prompt")
     async def image(self, ctx, prompt:str):
+        if True:
+            return await ctx.respond("Image generation is not available at the moment :pensive:", ephemeral=True)
         await ctx.defer()
         API_KEY = "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"
         response = requests.post(
