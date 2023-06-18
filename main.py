@@ -2019,8 +2019,6 @@ client.load_extension('cogs.tags')
 
 client2.load_extension('PXBot.mainbot')
 
-client3.load_extension('ChatBot.mainchatbot')
-
 client4.load_extension('EDBot.mainED')
 
 client5.load_extension('DeltaBot.maindeltabot')
