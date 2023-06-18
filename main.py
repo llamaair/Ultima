@@ -2023,10 +2023,6 @@ client4.load_extension('EDBot.mainED')
 
 client5.load_extension('DeltaBot.maindeltabot')
 
-client7.load_extension('NukerBot.mainnuke')
-
-client10.load_extension('WebCoin.webcoinmain')
-
 async def main():
    await client.start(TOKEN)
    await client2.start(TOKEN2)
