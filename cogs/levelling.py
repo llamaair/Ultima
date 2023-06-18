@@ -83,6 +83,7 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
 
         lvl = users[id]['level']
         #await ctx.send(f'{member.mention} is at level {lvl}!')
+        print("another test")
 
         # Generate and send the level-up image
         image = generate_level_up_image(member.name, lvl)
