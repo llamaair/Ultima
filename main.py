@@ -1176,7 +1176,7 @@ async def echo(ctx, *, message):
         await ctx.respond("Please enter a message to echo.")
     if ctx.author == client.user:
         return
-    await ctx.respond("Successfully performed echo",ephemeral=True)
+    await ctx.respond("Successfully performed echo", ephemeral=True)
     await ctx.send(message)
     return
 
@@ -1227,7 +1227,7 @@ async def servers(ctx):
 @client.bridge_command(description="See how long the bot has been up for")
 async def uptime(ctx):
   uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-  embed = embed(title="Ultima Uptime", description="Ultima has been up for {uptime}", color=discord.Colour.green())
+  embed = discord.Embed(title="Ultima Uptime", description=f"Ultima has been up for {uptime}", color=discord.Colour.green())
   await ctx.respond(embed=embed)
 
 
