@@ -1318,6 +1318,7 @@ async def chuck(ctx):
 
 @client.bridge_command(description="Get info about a song from iTunes")
 async def song(ctx, *, song_name):
+    await ctx.defer()
     async with aiohttp.ClientSession() as session:
         url = "https://itunes.apple.com/search"
         
@@ -1345,7 +1346,7 @@ async def song(ctx, *, song_name):
                         
                         embed = discord.Embed(title=f"Song Info - {track_name}", color=discord.Color.blue())
                         embed.add_field(name="Artist", value=artist_name, inline=False)
-                        embed.add_field(name="Preview URL", value=preview_url, inline=False)
+                        embed.add_field(name="Preview URL", value=f"[Click here]({preview_url})", inline=False)
                         
                         await ctx.respond(embed=embed)
                     else:
