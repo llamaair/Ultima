@@ -901,17 +901,19 @@ async def ytsearch(ctx, *, search1):
 my_pages = [
     Page(
         embeds=[
-            discord.Embed(title=":red_circle: Main commands :red_circle:", description="**/randnum\n/help\n/kick\n/ban\n/clear\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember"),
+            discord.Embed(title=":red_circle: Main commands :red_circle:", description="**/randnum\n/help\n/kick\n/ban\n/clear\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember**"),
         ],
     ),
     Page(
-        content="This is my second page. It only has message content.",
+        embeds=[
+           discord.Embed(title=":moneybag: Economy commands :moneybag:", description="**/balance\n/memberbalance\n/inventory\n/memberinventory\n/beg\n/daily\n/shop\n/buy\n/rob\n/pay\n/deposit\n/withdraw\n/set\n/robmember\n/donate**")
+        ],
     ),
     Page(
         embeds=[
             discord.Embed(
-                title="This is my third page.",
-                description="It has no message content, and one embed.",
+                title="Full command list.",
+                description="For a full list of commands, please visit http://fetchbot.org/commands",
             )
         ],
     ),
