@@ -922,7 +922,7 @@ my_pages = [
 @client.bridge_command()
 async def paginate(ctx):
    paginator = Paginator(pages=my_pages)
-   await Paginator.respond(paginator)
+   await paginator.respond(ctx.interaction)
 
 @client.bridge_command(aliases=['h'], description="Get a list of commands!")
 async def help(ctx):
