@@ -16,6 +16,7 @@ import wavelink
 import pymysql
 import translate
 from typing import List
+import aiohttp
 
 from flask import Flask
 
@@ -433,8 +434,10 @@ async def news(ctx, countrycode):
     news_api_url = 'https://newsapi.org/v2/top-headlines'
     country = countrycode  # Change this to the country of your choice
 
-    response = requests.get(f'{news_api_url}?country={country}&apiKey={api_key}')
-    news_json = response.json()
+    async with aiohttp.ClientSession() as session:
+        url = f"{news_api_url}?country={country}&apiKey={api_key}"
+        async with session.get(url) as response:
+            news_json = await response.json()
 
     if news_json['status'] == 'ok':
         articles = news_json['articles']
@@ -771,13 +774,15 @@ async def translate(ctx, message, language: discord.Option(choices=["English","S
 
 @client.bridge_command(description="See the location of the ISS")
 async def iss(ctx):
-    
-    response = requests.get('http://api.open-notify.org/iss-now.json')
-    data = response.json()
-    
+    url = 'http://api.open-notify.org/iss-now.json'
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+
     latitude = str(data['iss_position']['latitude'])
     longitude = str(data['iss_position']['longitude'])
-    
+
     geolocator = Nominatim(user_agent="Ultima Bot")
     location = geolocator.reverse(latitude+","+longitude)
 
@@ -833,36 +838,38 @@ base_url = "http://api.openweathermap.org/data/2.5/weather?"
 @client.bridge_command(description="Get the weather of a city")
 @check(check_if_user_has_premium)
 async def weather(ctx, *, city: str):
-  city_name = city
-  complete_url = base_url + "appid=" + api_key + "&q=" + city_name
-  response = requests.get(complete_url)
-  x = response.json()
-  channel = ctx.channel
-  if x["cod"] != "404":
-    async with channel.typing():
-      y = x["main"]
-      current_temperature = y["temp"]
-      current_temperature_celsiuis = str(round(current_temperature - 273.15))
-      current_pressure = y["pressure"]
-      current_humidity = y["humidity"]
-      z = x["weather"]
-      f = x["wind"]
-      current_windspeed = f["speed"]
-      current_winddir = f["deg"]
-      weather_description = z[0]["description"]
-      weather_description = z[0]["description"]
-      embed = discord.Embed(title=f"Weather in {city_name}",color=ctx.guild.me.top_role.color)
-      embed.add_field(name="Descripition", value=f"**{weather_description}**", inline=False)
-      embed.add_field(name="Temperature(C)", value=f"**{current_temperature_celsiuis}°C**", inline=False)
-      embed.add_field(name="Humidity(%)", value=f"**{current_humidity}%**", inline=False)
-      embed.add_field(name="Atmospheric Pressure(hPa)", value=f"**{current_pressure}hPa**", inline=False)
-      embed.add_field(name="Wind Direction", value=f"**{current_winddir}**", inline=False)
-      embed.add_field(name="Wind Speed", value=f"**{current_windspeed} m/s**", inline=False)
-      embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
-      embed.set_footer(text=f"Requested by {ctx.author.name}")
-      await ctx.respond(embed=embed)
-  else:
-    await ctx.respond("City not found.")
+    city_name = city
+    complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(complete_url) as response:
+            x = await response.json()
+
+    channel = ctx.channel
+    if x["cod"] != "404":
+        async with channel.typing():
+            y = x["main"]
+            current_temperature = y["temp"]
+            current_temperature_celsius = str(round(current_temperature - 273.15))
+            current_pressure = y["pressure"]
+            current_humidity = y["humidity"]
+            z = x["weather"]
+            f = x["wind"]
+            current_windspeed = f["speed"]
+            current_winddir = f["deg"]
+            weather_description = z[0]["description"]
+            embed = discord.Embed(title=f"Weather in {city_name}", color=ctx.guild.me.top_role.color)
+            embed.add_field(name="Description", value=f"**{weather_description}**", inline=False)
+            embed.add_field(name="Temperature(C)", value=f"**{current_temperature_celsius}°C**", inline=False)
+            embed.add_field(name="Humidity(%)", value=f"**{current_humidity}%**", inline=False)
+            embed.add_field(name="Atmospheric Pressure(hPa)", value=f"**{current_pressure}hPa**", inline=False)
+            embed.add_field(name="Wind Direction", value=f"**{current_winddir}**", inline=False)
+            embed.add_field(name="Wind Speed", value=f"**{current_windspeed} m/s**", inline=False)
+            embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
+            embed.set_footer(text=f"Requested by {ctx.author.name}")
+            await ctx.respond(embed=embed)
+    else:
+        await ctx.respond("City not found.")
 
 @client.bridge_command()
 async def serverlist(ctx):
@@ -1304,39 +1311,24 @@ async def restart(ctx):
 @client.bridge_command(description="Get a random joke")
 @check(check_if_user_has_premium)
 async def joke(ctx):
-  response = requests.get("https://v2.jokeapi.dev/joke/Any")
-  joke = response.json()
-  if joke['type'] == 'single':
-    if "sex" in joke['joke']:
-      await ctx.respond("Failed to display joke as it was NSFW")
-      return
-    if "pussy" in joke['joke']:
-      await ctx.respond("Failed to display joke as it was NSFW")
-      return
-    await ctx.respond(joke['joke'])
-  else:
-    jok = joke['setup']
-    jokk = joke['delivery']
-    if "little girl and a fridge?" in jok:
-        jok = "This joke can not be displayed as it is NSFW"
-        jokk = ":skull:"
-    if "orgasm" in jok:
-        jok = "This joke can not be displayed as it is NSFW"
-        jokk = ":skull:"
-    if "masturbating" in jok:
-        jok = "This joke can not be displayed as it is NSFW"
-        jokk = ":skull:"
-    if "sex" in jok:
-        jok = "This joke can not be displayed as it is NSFW"
-        jokk = ":skull:"
-    if "sex" in jokk:
-        jok = "This joke can not be displayed as it is NSFW"
-        jokk = ":skull:"
-    if "pussy" in jokk:
-        jok = "This joke can not be displayed as it is NSFW"
-        jokk = ":skull:"
-    embed=discord.Embed(title=jok, description=jokk)
-    await ctx.respond(embed=embed)
+    async with aiohttp.ClientSession() as session:
+        url = "https://v2.jokeapi.dev/joke/Any"
+        async with session.get(url) as response:
+            joke = await response.json()
+
+    if joke['type'] == 'single':
+        if "sex" in joke['joke'] or "pussy" in joke['joke']:
+            await ctx.respond("Failed to display joke as it was NSFW")
+            return
+        await ctx.respond(joke['joke'])
+    else:
+        jok = joke['setup']
+        jokk = joke['delivery']
+        if "little girl and a fridge?" in jok or "orgasm" in jok or "masturbating" in jok or "sex" in jok or "sex" in jokk or "pussy" in jokk:
+            jok = "This joke cannot be displayed as it is NSFW"
+            jokk = ":skull:"
+        embed = discord.Embed(title=jok, description=jokk)
+        await ctx.respond(embed=embed)
 
 @client.bridge_command(description="Get information about Ultima Premium")
 async def premium(ctx):
