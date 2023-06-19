@@ -967,8 +967,7 @@ async def gpt(ctx, query):
   		stop=[" Human:", " AI:"]
 		)
   text = response['choices'][0]['text']
-  embed = discord.Embed(title="Response:", description=text)
-  await ctx.respond(embed=embed)
+  await ctx.respond(text)
   
   #await ctx.respond(f"" + text)
 @client.bridge_command(description="Get bot's latency")
