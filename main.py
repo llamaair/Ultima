@@ -19,6 +19,7 @@ from typing import List
 import aiohttp
 import logging
 
+from discord.ext.pages import Paginator, Page
 from flask import Flask
 
 from discord.utils import get
@@ -506,7 +507,7 @@ async def on_guild_join(guild):
 
 @tasks.loop(seconds=15)
 async def presence():
-   list1 = ['/help', '/iss', '/joke', '/ttt', '/reddit', '/economy beg', '/economy rob', '/economy robmember', '/level', '/ask', '/afk set', '/autorole', '/avatar', '/cat', '/fatcat', '/dog', '/embed', '/github', '/imagesearch', '/premium']
+   list1 = ['/help', '/iss', '/joke', '/ttt', '/reddit', '/economy beg', '/economy rob', '/economy robmember', '/level', '/ask', '/afk set', '/autorole', '/avatar', '/cat', '/fatcat', '/dog', '/embed', '/github', '/imagesearch']
    choice = random.choice(list1)
    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{choice}"))
 
@@ -833,19 +834,10 @@ async def on_application_command_error(ctx: discord.ApplicationContext, error: d
         raise error
 
 
-def check_if_user_has_premium(ctx):
-  with open("premium_users.json") as f:
-    premium_users_list = json.load(f)
-    if str(ctx.author.id) not in premium_users_list:
-      return False
-
-  return True
-
 api_key = "c08a058955da2e4ba9286a2117aa8897"
 base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
 @client.bridge_command(description="Get the weather of a city")
-@check(check_if_user_has_premium)
 async def weather(ctx, *, city: str):
     city_name = city
     complete_url = base_url + "appid=" + api_key + "&q=" + city_name
@@ -896,7 +888,6 @@ async def serverlist(ctx):
         
 
 @client.bridge_command(aliases=['yt' ,'ytcmd'], description="Search for a youtube video")
-@check(check_if_user_has_premium)
 async def ytsearch(ctx, *, search1):
   search = search1
   search = search.replace(" ", "+")
@@ -907,6 +898,31 @@ async def ytsearch(ctx, *, search1):
         
   await ctx.respond("https://www.youtube.com/watch?v=" + video_ids[0])
 
+my_pages = [
+    Page(
+        content="This is my first page. It has a list of embeds and message content.",
+        embeds=[
+            discord.Embed(title="My First Embed Title"),
+            discord.Embed(title="My Second Embed Title"),
+        ],
+    ),
+    Page(
+        content="This is my second page. It only has message content.",
+    ),
+    Page(
+        embeds=[
+            discord.Embed(
+                title="This is my third page.",
+                description="It has no message content, and one embed.",
+            )
+        ],
+    ),
+]
+paginator = Paginator(pages=my_pages)
+
+@client.bridge_command()
+async def paginate(ctx):
+   await Paginator.respond(paginator)
 
 @client.bridge_command(aliases=['h'], description="Get a list of commands!")
 async def help(ctx):
@@ -918,16 +934,9 @@ async def help(ctx):
     helpem.add_field(
         name=":red_circle: Main commands :red_circle:",
         value=
-        "**/randnum\n/help\n/kick\n/ban\n/clear\n/premium\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/activatepremium\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember**"
+        "**/randnum\n/help\n/kick\n/ban\n/clear\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember**"
     )
 
-
-    helpem.add_field(
-      name=":coin: Premium commands :coin:",
-      value=
-
-      "**/ping\n/imagesearch\n/createday\n/poll\n/shortening\n/pron\n/unlock\n/lock\n/announce\n/github\n/spotify\n/meme\n/comic\n/slowmode**"
-    )
 
     helpem.add_field(
       name=":moneybag: Economy commands :moneybag:", value=
@@ -952,7 +961,6 @@ async def help(ctx):
 
 
 @client.bridge_command(aliases=['ai'], description="Chat with the Ultima AI")
-@check(check_if_user_has_premium)
 async def gpt(ctx, query):
   await ctx.defer()
   query2 = f"You are a discord bot developed by Marc13, trembanto and UmayKamaboko. Act mean and sarcastic, but if someone asks you who you were made by, respond with Marc13 trembanto and Umay, anyways, you are not here to provide helpful information, with that in mind respond to the following: {query}"
@@ -977,7 +985,6 @@ async def ping(ctx):
     
 @client.bridge_command(description="Host a giveaway")
 @commands.has_permissions(administrator=True)
-@check(check_if_user_has_premium)
 async def giveaway(ctx):
     await ctx.respond(
         "Hello . Please answer to these questions within 15 Seconds to Start the giveaway."
@@ -1181,7 +1188,6 @@ async def echo(ctx, *, message):
     return
 
 @client.bridge_command(description="Set a reminder")
-@check(check_if_user_has_premium)
 async def reminder(ctx, time, *, reminder):
     print(time)
     print(reminder)
@@ -1231,79 +1237,6 @@ async def uptime(ctx):
   await ctx.respond(embed=embed)
 
 
-@client.bridge_command(description="Add Ultima Premium to a member")
-async def addpremium(ctx, userid:commands.MemberConverter):
-  userid = str(userid.id)
-  if ctx.author.id in [763066260233650226,719527356368289802]:
-    with open("premium_users.json") as f:
-      premium_users_list = json.load(f)
-
-    if userid not in premium_users_list:
-      premium_users_list.append(userid)
-    else:
-        await ctx.respond("User already has premium")
-        return
-
-    with open("premium_users.json", "w+") as f:
-      json.dump(premium_users_list, f)
-
-    await ctx.respond(f"{userid} has been added to premium!")
-  
-  else:
-    await ctx.respond("Infufficent permissions")
-
-@client.bridge_command(description="Activate a premium subscription with a code")
-async def activatepremium(ctx, code):
-  authorr = ctx.author
-  coodes = ["a8fsadhfg539j", "b8rsavhfg5gh5"]
-  if code not in coodes:
-    await ctx.respond("Code invalid", ephemeral = True)
-    return
-  with open("codes.json") as f:
-    codes_list = json.load(f)
-
-  if code in codes_list:
-    await ctx.respond("This code has already been claimed :pensive:")
-    return
-
-  if code not in codes_list:
-    codes_list.append(code)
-
-  with open("codes.json", "w+") as f:
-    json.dump(codes_list, f)
-
-  with open("premium_users.json") as f:
-    premium_users_list = json.load(f)
-  
-  premium_users_list.append(authorr.id)
-
-  with open("premium_users.json", "w+") as f:
-    json.dump(premium_users_list, f)
-
-  await ctx.respond("Congrats! You have now activated your premium subscription!")
-
-@client.bridge_command(description="Add Ultima Premium to a member")
-async def removepremium(ctx, userid:commands.MemberConverter):
-  user = userid
-  userid = str(userid.id)
-
-  if ctx.author.id in [763066260233650226,719527356368289802]:
-    with open("premium_users.json") as f:
-      premium_users_list = json.load(f)
-
-    if userid in premium_users_list:
-      premium_users_list.remove(userid)
-    else:
-        await ctx.respond("User doesn't have premium")
-        return
-
-    with open("premium_users.json", "w+") as f:
-      json.dump(premium_users_list, f)
-
-    await ctx.respond(f"{user.name} has been removed from premium!")
-  
-  else:
-    await ctx.respond("Infufficent permissions")
 
 
 @client.bridge_command(description="Pull the latest version from github and restart the bot")
@@ -1314,7 +1247,6 @@ async def restart(ctx):
   quit()
 
 @client.bridge_command(description="Get a random joke")
-@check(check_if_user_has_premium)
 async def joke(ctx):
     async with aiohttp.ClientSession() as session:
         url = "https://v2.jokeapi.dev/joke/Any"
@@ -1335,12 +1267,7 @@ async def joke(ctx):
         embed = discord.Embed(title=jok, description=jokk)
         await ctx.respond(embed=embed)
 
-@client.bridge_command(description="Get information about Ultima Premium")
-async def premium(ctx):
-  await ctx.respond("Ultima Premium gives you access to a whole lot of new commands, aswell as more features! You can find the list with premium commands by using /help or going to the official Ultima website. Ultima premium currently costs 3$ and you can buy it here; http://fetchbot.org/fetchbot-premium")
-
 @client.bridge_command(description="Get a comic!")
-@check(check_if_user_has_premium)
 async def comic(ctx, comic:int=None):
   chosen = random.randint(1,1500)
   if comic !=None:
@@ -1349,7 +1276,6 @@ async def comic(ctx, comic:int=None):
   await ctx.respond(f"https://xkcd.com/{chosen}")
 
 @client.bridge_command(description="See how many users someone have invited to a server")
-@check(check_if_user_has_premium)
 async def invites(ctx, member: discord.Member=None):
   if member == None:
     user = ctx.author
@@ -1362,7 +1288,6 @@ async def invites(ctx, member: discord.Member=None):
   await ctx.respond(f"{user.name} has invited {total_invites} member{'' if total_invites == 1 else 's'}!")
 
 @client.bridge_command(description="Post a meme!")
-@check(check_if_user_has_premium)
 async def meme(ctx):
   global lastMeme
   memelist=["https://cdn.discordapp.com/attachments/1062778746303680574/1062788689727602898/05c73f974ebbc739fa720e677029f2a5.png","https://cdn.discordapp.com/attachments/1062778746303680574/1062788672887476234/5b1ec1ca8975f12ea2f24f307873f014.png","https://cdn.discordapp.com/attachments/1062778746303680574/1062788385938362388/bde967cac7de114f8d7a587a8862e8a9.png","https://cdn.discordapp.com/attachments/1062778746303680574/1062787897402605619/2c44aa4096423a7f8426dabec159cbf0.png","","https://cdn.discordapp.com/attachments/1062778746303680574/1062787146311794839/37ad1a2814db78e5c7b3fbac7429f371.png" ,"https://cdn.discordapp.com/attachments/1062778746303680574/1062787067068821564/IMG_2220.jpg", "https://cdn.discordapp.com/attachments/1054423887598854165/1062785610164744222/7bf8cbf4f37461087bd8e83f8671edb1.png", "https://cdn.discordapp.com/attachments/1062778746303680574/1062786023622443088/7d7c1a38f1b09d123535945eb22cc7ac.png", "https://cdn.discordapp.com/attachments/1062778746303680574/1062786191822422046/267140c36ae0b4698fb43c28ea35ecc4.png", "https://cdn.discordapp.com/attachments/1062778746303680574/1062786299276308600/5365ad123560b8f2b2100846042adb50.png"]
@@ -1382,7 +1307,6 @@ async def website(ctx):
 
 @client.bridge_command(description="Lock a channel!")
 @commands.has_permissions(manage_channels=True)
-@check(check_if_user_has_premium)
 async def lock(ctx, channel : discord.TextChannel):
   channel = channel or ctx.channel
   overwrite = channel.overwrites_for(ctx.guild.default_role)
@@ -1392,7 +1316,6 @@ async def lock(ctx, channel : discord.TextChannel):
 
 @client.bridge_command(description="Unlock a channel!")
 @commands.has_permissions(manage_channels=True)
-@check(check_if_user_has_premium)
 async def unlock(ctx, channel : discord.TextChannel):
   channel = channel or ctx.channel
   overwrite = channel.overwrites_for(ctx.guild.default_role)
@@ -1403,7 +1326,6 @@ async def unlock(ctx, channel : discord.TextChannel):
 
 
 @client.bridge_command(description="Start a poll")
-@check(check_if_user_has_premium)
 async def poll(ctx, poll, reaction1, reaction2, reaction3=None, reaction4=None, reaction5=None):
   polle = discord.Embed(
     title=poll
@@ -1422,7 +1344,6 @@ async def poll(ctx, poll, reaction1, reaction2, reaction3=None, reaction4=None, 
 
 
 @client.bridge_command(description="Search for a picture!")
-@check(check_if_user_has_premium)
 async def imagesearch(ctx, image):
   embed = discord.Embed(
     title = 'Image',
@@ -1434,7 +1355,6 @@ async def imagesearch(ctx, image):
   await ctx.respond(embed=embed)
 
 @client.bridge_command(description="Look up a github repo or user!")
-@check(check_if_user_has_premium)
 async def github(ctx,owner,repo=None):
   if repo==None:
     await ctx.respond(f"https://github.com/{owner}")
@@ -1444,13 +1364,11 @@ async def github(ctx,owner,repo=None):
 
 @client.bridge_command(description="Set a slowmode!")
 @commands.has_permissions(manage_channels=True)
-@check(check_if_user_has_premium)
 async def slowmode(ctx,seconds:int):
   await ctx.channel.edit(slowmode_delay=seconds)
   await ctx.respond(f"Successfully set the slowmode delay in this channel to {seconds} seconds!")
 
 @client.bridge_command(description="See how many days ago the bot was created!")
-@check(check_if_user_has_premium)
 async def createday(ctx):
   your_date = datetime.date(2022, 1, 26)
   today = datetime.date.today()
