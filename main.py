@@ -159,19 +159,17 @@ class TicTacToe(discord.ui.View):
         super().__init__()
         self.current_player = self.X
         self.board = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
 
         ]
 
         # Our board is made up of 3 by 3 TicTacToeButtons.
         # The TicTacToeButton maintains the callbacks and helps steer
         # the actual game.
-        for x in range(5):
-            for y in range(5):
+        for x in range(3):
+            for y in range(3):
                 self.add_item(TicTacToeButton(x, y))
 
     # This method checks for the board winner and is used by the TicTacToeButton.
