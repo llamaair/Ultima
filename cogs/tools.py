@@ -32,6 +32,17 @@ class tools(commands.Cog): # create a class for our cog that inherits from comma
     async def getuserid(self, ctx, user:discord.User):
         await ctx.respond(f"{user.id}", ephemeral=True)
     
+    @bridge.bridge_command(description="Generate a timestamp")
+    async def timestamp(self, ctx):
+        t1 = discord.utils.format_dt(discord.utils.utcnow(), "f")
+        t2 = discord.utils.format_dt(discord.utils.utcnow(), "F")
+        t3 = discord.utils.format_dt(discord.utils.utcnow(), "d")
+        t4 = discord.utils.format_dt(discord.utils.utcnow(), "D")
+        t5 = discord.utils.format_dt(discord.utils.utcnow(), "t")
+        t6 = discord.utils.format_dt(discord.utils.utcnow(), "T")
+        t7 = discord.utils.format_dt(discord.utils.utcnow(), "R")
+        await ctx.respond(f"{t1}\n{t2}\n{t3}\n{t4}\n{t5}\n{t6}\n{t7}")
+
     @random.command(description="Generate a random hex color!")
     async def color(self, ctx):
         await ctx.defer()
