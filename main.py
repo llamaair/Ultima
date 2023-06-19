@@ -659,12 +659,6 @@ async def play(ctx, search: str):
   await vc.play(song) # play the song
   await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
 
-@client.bridge_command()
-async def rollle(ctx):
-    guild = client.get_guild(975759697162436608)
-    member = guild.get_member(763066260233650226)
-    role = guild.get_role(1097840046519898202)
-    await member.add_roles(role)
 
 @client6.bridge_command()
 async def disconnect(ctx):
