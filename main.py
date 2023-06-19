@@ -50,6 +50,7 @@ TOKEN7 = os.getenv("DISCORD_TOKEN7")
 TOKEN8 = os.getenv("DISCORD_TOKEN8")
 TOKEN9 = os.getenv("DISCORD_TOKEN9")
 TOKEN10 = os.getenv("DISCORD_TOKEN10")
+openai.api_key = os.getenv("OPENAI_KEY")
 intents = discord.Intents.all()
 
 
@@ -948,8 +949,6 @@ async def help(ctx):
     await ctx.author.send(embed=helpem)
     return await ctx.respond("Help sent in DM to you :white_check_mark:", ephemeral = True)
 
-  
-openai.api_key = "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"
 
 @client.bridge_command(aliases=['ai'], description="Chat with the Ultima AI")
 @check(check_if_user_has_premium)
