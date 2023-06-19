@@ -208,6 +208,44 @@ class TicTacToe(discord.ui.View):
 
         return None
 
+class advancedticket(discord.ui.View):
+   def __init__(self):
+      super().__init__(timeout=None)
+   
+   @discord.ui.select(
+      placeholder = "Open a ticket!",
+      min_values = 1,
+      max_values = 1,
+      options = [
+         discord.SelectOption(
+            label="Report",
+            description="Report a user"
+         ),
+         discord.SelectOption(
+            label="Suggestion",
+            description="Suggest an improvement for the server"
+         ),
+         discord.SelectOption(
+            label="Other",
+            description="Open a ticket for an issue not listed above"
+         )
+      ]
+   )
+   async def select_callback(self, select, interaction):
+      overwrites = {
+        interaction.guild.default_role: discord.PermissionOverwrite(view_channel = False),
+        interaction.user: discord.PermissionOverwrite(view_channel = True, send_messages= True, embed_links=True),
+        interaction.guild.me: discord.PermissionOverwrite(view_channel = True, send_messages = True, read_message_history = True)
+        }
+      channel = await interaction.guild.create_text_channel(f'ticket-{interaction.user.name}', overwrites = overwrites, reason = f"Ticket for {interaction.user}")
+      await interaction.response.send_message(f"Ticket opened at {channel.mention}", ephemeral=True)
+      if select.values[0]=="Report":
+         await channel.send(f"Welcome to your ticket {interaction.user.mention}. The support team will be with you shortly. Please specify which user you wish to report, and why.", view=CloseTicket())
+      elif select.values[0]=="Suggestion":
+         await channel.send(f"Welcome to your ticket {interaction.user.mention}. The support team will be with you shortly. What would you like to suggest for the server?", view=CloseTicket())
+      else:
+         await channel.send(f"Welcome to your ticket {interaction.user.mention}. The support team will be with you shortly. What do you need help with?", view=CloseTicket())
+
 class MyViewa(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -463,7 +501,10 @@ async def news(ctx, countrycode):
         
 @client.bridge_command(description="Start the ticketing system")
 @commands.has_permissions(ban_members=True)
-async def ticketing(ctx):
+async def ticketing(ctx, system:discord.Option(choices=['Basic', 'Advanced'])):
+    if system=="Advanced":
+       embed = discord.Embed(title="Create a ticket", description="Choose a categpry below to for your ticket", color=discord.Colour.green())
+       
     embed=discord.Embed(title="Create a ticket", description="Create a ticket below for general questions and support", color = discord.Colour.green())
     await ctx.respond("Ticketing system started", ephemeral=True)
     await ctx.send(embed=embed, view=MyView())
@@ -520,6 +561,7 @@ async def on_ready():
     startTime = time.time()
     if not client.persistent_views_added:
         client.add_view(MyView())
+        client.add_view(advancedticket())
         client.add_view(CloseTicket())
         client5.add_view(DeltaApp())
         client.persistent_views_added = True
@@ -709,17 +751,6 @@ async def on_ready():
 async def on_ready():
    print(f"Successfully logged in as {client5.user.name}")
    await client6.start(TOKEN6)
-   
-
-@client.event
-async def on_guild_join(guild):
-    await client.change_presence(activity=discord.Activity(
-        type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
-    
-@client.event
-async def on_guild_remove(guild):
-    await client.change_presence(activity=discord.Activity(
-        type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
    
 
 @client.bridge_command()
