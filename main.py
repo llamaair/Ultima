@@ -901,12 +901,12 @@ async def ytsearch(ctx, *, search1):
 my_pages = [
     Page(
         embeds=[
-            discord.Embed(title=":red_circle: Main commands :red_circle:", description="**/randnum\n/help\n/kick\n/ban\n/clear\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember**"),
+            discord.Embed(title=":red_circle: Main commands :red_circle:", description="**/random color\n/random number\n/help\n/kick\n/ban\n/purge\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/alimit\n/nick\n/nickscan\n/reroll\n/rps\n/serverinfo\n/ask\n/threat\n/warn\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/record start\n/record stop\n/ticketing**"),
         ],
     ),
     Page(
         embeds=[
-           discord.Embed(title=":moneybag: Economy commands :moneybag:", description="**/balance\n/memberbalance\n/inventory\n/memberinventory\n/beg\n/daily\n/shop\n/buy\n/rob\n/pay\n/deposit\n/withdraw\n/set\n/robmember\n/donate**")
+           discord.Embed(title=":moneybag: Economy commands :moneybag:", description="**/balance\n/memberbalance\n/inventory\n/memberinventory\n/beg\n/daily\n/shop\n/buy\n/rob\n/pay\n/deposit\n/withdraw\n/set\n/robmember\n/donate\n/work\n/leaderboard**")
         ],
     ),
     Page(
@@ -920,44 +920,9 @@ my_pages = [
 ]
 
 @client.bridge_command()
-async def paginate(ctx):
+async def help(ctx):
    paginator = Paginator(pages=my_pages)
    await paginator.respond(ctx.interaction)
-
-@client.bridge_command(aliases=['h'], description="Get a list of commands!")
-async def help(ctx):
-    helpem = discord.Embed(
-        title="✦Help✦",
-        description="**Please DM Me If you Found Any Problems : llamaair**",
-        color=discord.Color.random())
-
-    helpem.add_field(
-        name=":red_circle: Main commands :red_circle:",
-        value=
-        "**/randnum\n/help\n/kick\n/ban\n/clear\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember**"
-    )
-
-
-    helpem.add_field(
-      name=":moneybag: Economy commands :moneybag:", value=
-
-"**/balance\n/memberbalance\n/inventory\n/memberinventory\n/beg\n/daily\n/shop\n/buy\n/rob\n/pay\n/deposit\n/withdraw\n/set**"
-    )
-
-    helpem.add_field(
-      name=":white_check_mark: Full command list :white_check_mark:", value=
-
-"For a full list of commands, please visit https://marcusolsson123.wixsite.com/fetchbot/commands"
-    )
-
-
-    helpem.set_footer(text=f"Requested By {ctx.author.name}",
-                      icon_url=ctx.author.avatar.url)
-
-    helpem.set_author(name=client.user.name, icon_url=client.user.avatar.url)
-
-    await ctx.author.send(embed=helpem)
-    return await ctx.respond("Help sent in DM to you :white_check_mark:", ephemeral = True)
 
 
 @client.bridge_command(aliases=['ai'], description="Chat with the Ultima AI")
