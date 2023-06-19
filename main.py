@@ -900,10 +900,8 @@ async def ytsearch(ctx, *, search1):
 
 my_pages = [
     Page(
-        content="This is my first page. It has a list of embeds and message content.",
         embeds=[
-            discord.Embed(title="My First Embed Title"),
-            discord.Embed(title="My Second Embed Title"),
+            discord.Embed(title=":red_circle: Main commands :red_circle:", description="**/randnum\n/help\n/kick\n/ban\n/clear\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/champion\n/alimit\n/flush\n/flushnick\n/future\n/reroll\n/rps\n/react\n/servers\n/info\n/me\n/ask\n/threat\n/warn\n/stupid\n/smart\n/delchannel\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/helpmember"),
         ],
     ),
     Page(
@@ -928,7 +926,7 @@ async def paginate(ctx):
 async def help(ctx):
     helpem = discord.Embed(
         title="✦Help✦",
-        description="**Please DM Me If you Found Any Problems : Marc13#1627**",
+        description="**Please DM Me If you Found Any Problems : llamaair**",
         color=discord.Color.random())
 
     helpem.add_field(
