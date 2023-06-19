@@ -1210,6 +1210,23 @@ async def restart(ctx):
   await ctx.send("**Performing a planned restart**")
   quit()
 
+@client.bridge_command(description="Get a dad joke")
+async def dadjoke(ctx):
+    async with aiohttp.ClientSession() as session:
+        url = "https://icanhazdadjoke.com/"
+        
+        headers = {
+            'Accept': 'application/json'
+        }
+        
+        async with session.get(url, headers=headers) as response:
+            if response.status == 200:
+                data = await response.json()
+                joke = data['joke']
+                await ctx.respond(joke)
+            else:
+                await ctx.respond("Failed to fetch dad joke.")
+
 @client.bridge_command(description="Get a random joke")
 async def joke(ctx):
     async with aiohttp.ClientSession() as session:
@@ -1287,7 +1304,48 @@ async def unlock(ctx, channel : discord.TextChannel):
   await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
   await ctx.respond(f'Successfully unlocked channel: {channel}.')
 
+@client.bridge_command(description="Get a random Chuck Norris fact")
+async def chuck_norris_fact(ctx):
+  async with aiohttp.ClientSession() as session:
+    async with session.get("https://api.chucknorris.io/jokes/random") as response:
+      if response.status == 200:
+        data = await response.json()
+        fact = data["value"]
+        embed = discord.Embed(title="Chuck Norris Fact", description=fact, color=discord.Color.blue())
+        await ctx.respond(embed=embed)
+      else:
+        await ctx.respond("Failed to fetch a Chuck Norris fact.")
 
+@client.bridge_command(description="Get information on a song")
+async def song(ctx, *, song):
+    async with aiohttp.ClientSession() as session:
+        base_url = 'https://itunes.apple.com/search'
+        
+        params = {
+            'term': song,
+            'entity': 'song',
+            'limit': 1
+        }
+        
+        async with session.get(base_url, params=params) as response:
+            if response.status == 200:
+                data = await response.json()
+                if data['resultCount'] > 0:
+                    track_info = data['results'][0]
+                    artist_name = track_info['artistName']
+                    track_name = track_info['trackName']
+                    track_url = track_info['trackViewUrl']
+                    preview_url = track_info['previewUrl']
+                    
+                    embed = discord.Embed(title=f"Song Info - {track_name} by {artist_name}", color=discord.Color.blue())
+                    embed.add_field(name="Preview", value=f"[Click Here]({preview_url})")
+                    embed.add_field(name="iTunes Link", value=f"[Click Here]({track_url})")
+                    
+                    await ctx.respond(embed=embed)
+                else:
+                    await ctx.respond("Song not found.")
+            else:
+                await ctx.respond("Failed to fetch song information.")
 
 @client.bridge_command(description="Start a poll")
 async def poll(ctx, poll, reaction1, reaction2, reaction3=None, reaction4=None, reaction5=None):
