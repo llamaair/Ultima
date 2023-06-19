@@ -17,6 +17,7 @@ import pymysql
 import translate
 from typing import List
 import aiohttp
+import logging
 
 from flask import Flask
 
@@ -86,6 +87,12 @@ client9.persistent_views_added=False
 
 global lastMeme
 lastMeme = 0
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 class TicTacToeButton(discord.ui.Button["TicTacToe"]):
     def __init__(self, x: int, y: int):
@@ -1242,7 +1249,7 @@ async def addpremium(ctx, userid:commands.MemberConverter):
     with open("premium_users.json", "w+") as f:
       json.dump(premium_users_list, f)
 
-    await ctx.respond(f"{user.name} has been added to premium!")
+    await ctx.respond(f"{userid} has been added to premium!")
   
   else:
     await ctx.respond("Infufficent permissions")
