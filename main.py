@@ -213,6 +213,7 @@ class advancedticket(discord.ui.View):
       super().__init__(timeout=None)
    
    @discord.ui.select(
+      custom_id="select-1",
       placeholder = "Open a ticket!",
       min_values = 1,
       max_values = 1,
