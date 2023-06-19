@@ -1305,7 +1305,7 @@ async def unlock(ctx, channel : discord.TextChannel):
   await ctx.respond(f'Successfully unlocked channel: {channel}.')
 
 @client.bridge_command(description="Get a random Chuck Norris fact")
-async def chuck_norris_fact(ctx):
+async def chuck(ctx):
   async with aiohttp.ClientSession() as session:
     async with session.get("https://api.chucknorris.io/jokes/random") as response:
       if response.status == 200:
@@ -1316,34 +1316,39 @@ async def chuck_norris_fact(ctx):
       else:
         await ctx.respond("Failed to fetch a Chuck Norris fact.")
 
-@client.bridge_command(description="Get information on a song")
-async def song(ctx, *, song):
+@client.bridge_command(description="Get info about a song from iTunes")
+async def song(ctx, *, song_name):
     async with aiohttp.ClientSession() as session:
-        base_url = 'https://itunes.apple.com/search'
+        url = "https://itunes.apple.com/search"
         
         params = {
-            'term': song,
+            'term': song_name,
             'entity': 'song',
             'limit': 1
         }
         
-        async with session.get(base_url, params=params) as response:
+        headers = {
+            'Accept': 'application/json'
+        }
+        
+        async with session.get(url, params=params, headers=headers) as response:
             if response.status == 200:
                 data = await response.json()
-                if data['resultCount'] > 0:
-                    track_info = data['results'][0]
-                    artist_name = track_info['artistName']
-                    track_name = track_info['trackName']
-                    track_url = track_info['trackViewUrl']
-                    preview_url = track_info['previewUrl']
+                results = data.get('results', [])
+                
+                if results:
+                    song_info = results[0]
+                    artist_name = song_info.get('artistName', 'Unknown Artist')
+                    track_name = song_info.get('trackName', 'Unknown Track')
+                    preview_url = song_info.get('previewUrl', '')
                     
-                    embed = discord.Embed(title=f"Song Info - {track_name} by {artist_name}", color=discord.Color.blue())
-                    embed.add_field(name="Preview", value=f"[Click Here]({preview_url})")
-                    embed.add_field(name="iTunes Link", value=f"[Click Here]({track_url})")
+                    embed = discord.Embed(title=f"Song Info - {track_name}", color=discord.Color.blue())
+                    embed.add_field(name="Artist", value=artist_name, inline=False)
+                    embed.add_field(name="Preview URL", value=preview_url, inline=False)
                     
                     await ctx.respond(embed=embed)
                 else:
-                    await ctx.respond("Song not found.")
+                    await ctx.respond("No results found for the specified song.")
             else:
                 await ctx.respond("Failed to fetch song information.")
 
