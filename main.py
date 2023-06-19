@@ -1333,22 +1333,25 @@ async def song(ctx, *, song_name):
         
         async with session.get(url, params=params, headers=headers) as response:
             if response.status == 200:
-                data = await response.json()
-                results = data.get('results', [])
-                
-                if results:
-                    song_info = results[0]
-                    artist_name = song_info.get('artistName', 'Unknown Artist')
-                    track_name = song_info.get('trackName', 'Unknown Track')
-                    preview_url = song_info.get('previewUrl', '')
+                try:
+                    data = await response.json(content_type=None)
+                    results = data.get('results', [])
                     
-                    embed = discord.Embed(title=f"Song Info - {track_name}", color=discord.Color.blue())
-                    embed.add_field(name="Artist", value=artist_name, inline=False)
-                    embed.add_field(name="Preview URL", value=preview_url, inline=False)
-                    
-                    await ctx.respond(embed=embed)
-                else:
-                    await ctx.respond("No results found for the specified song.")
+                    if results:
+                        song_info = results[0]
+                        artist_name = song_info.get('artistName', 'Unknown Artist')
+                        track_name = song_info.get('trackName', 'Unknown Track')
+                        preview_url = song_info.get('previewUrl', '')
+                        
+                        embed = discord.Embed(title=f"Song Info - {track_name}", color=discord.Color.blue())
+                        embed.add_field(name="Artist", value=artist_name, inline=False)
+                        embed.add_field(name="Preview URL", value=preview_url, inline=False)
+                        
+                        await ctx.respond(embed=embed)
+                    else:
+                        await ctx.respond("No results found for the specified song.")
+                except aiohttp.ContentTypeError:
+                    await ctx.respond("Failed to fetch song information.")
             else:
                 await ctx.respond("Failed to fetch song information.")
 
