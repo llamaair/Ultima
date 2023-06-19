@@ -3,6 +3,7 @@ from discord.ext import commands, bridge
 import requests
 import json
 from main import guild
+from main import oapi_key
 
 class image(commands.Cog):
     def __init__(self, bot):
@@ -11,10 +12,8 @@ class image(commands.Cog):
 
     @bridge.bridge_command(description="Generate an image from a prompt")
     async def image(self, ctx, prompt:str):
-        if True:
-            return await ctx.respond("Image generation is not available at the moment :pensive:", ephemeral=True)
         await ctx.defer()
-        API_KEY = "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"
+        API_KEY = oapi_key
         response = requests.post(
     "https://api.openai.com/v1/images/generations",
     headers={"Authorization": f"Bearer {API_KEY}"},

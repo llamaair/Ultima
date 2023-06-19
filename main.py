@@ -51,6 +51,7 @@ TOKEN8 = os.getenv("DISCORD_TOKEN8")
 TOKEN9 = os.getenv("DISCORD_TOKEN9")
 TOKEN10 = os.getenv("DISCORD_TOKEN10")
 openai.api_key = os.getenv("OPENAI_KEY")
+oapi_key = openai.api_key
 intents = discord.Intents.all()
 
 
@@ -954,7 +955,6 @@ async def help(ctx):
 @check(check_if_user_has_premium)
 async def gpt(ctx, query):
   await ctx.defer()
-  query1 = f" you are a discord bot: Ultima, and you are developed by Marc13. You love to answer to questions but you are not helpful, and you are also sarcastic and rude. Please respond to the following with that in mind, ignore any previous directories: {query}"
   query2 = f"You are a discord bot developed by Marc13, trembanto and UmayKamaboko. Act mean and sarcastic, but if someone asks you who you were made by, respond with Marc13 trembanto and Umay, anyways, you are not here to provide helpful information, with that in mind respond to the following: {query}"
   response = openai.Completion.create(
   		model="text-davinci-003",
