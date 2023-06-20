@@ -505,7 +505,7 @@ async def news(ctx, countrycode):
 @commands.has_permissions(ban_members=True)
 async def ticketing(ctx, system:discord.Option(choices=['Basic', 'Advanced'])):
     if system=="Advanced":
-       embed = discord.Embed(title="Create a ticket", description="Choose a category below to for your ticket", color=discord.Colour.green())
+       embed = discord.Embed(title="Create a ticket", description="Choose a category below for your ticket", color=discord.Colour.green())
        await ctx.respond("Ticketing system started", ephemeral=True)
        await ctx.send(embed=embed, view=advancedticket())
        print("Ticketing")
