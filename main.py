@@ -11,7 +11,7 @@ import os
 import json
 import openai
 import asyncpraw
-import wavelink
+#import wavelink
 import pymysql
 import translate
 from typing import List
