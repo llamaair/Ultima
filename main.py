@@ -2,7 +2,7 @@ import discord
 import asyncio
 import random
 import datetime
-import wavelink
+#import wavelink
 import time
 import urllib
 import string
@@ -648,20 +648,20 @@ async def on_ready():
 async def on_ready():
     print(f"Logged in as {client10.user.name}")
         
-async def connect_nodes():
-  """Connect to our Lavalink nodes."""
-  await client6.wait_until_ready() # wait until the bot is ready
+#async def connect_nodes():
+  #"""Connect to our Lavalink nodes."""
+  #await client6.wait_until_ready() # wait until the bot is ready
 
-  await wavelink.NodePool.create_node(
-    bot=client6,
-    host='78.108.218.222',
-    port=25532,
-    password='altolink'
-  ) # create a node
+  #await wavelink.NodePool.create_node(
+    #bot=client6,
+    #host='78.108.218.222',
+    #port=25532,
+    #password='altolink'
+  #) # create a node
 
-@client6.event
-async def on_wavelink_node_ready(node:wavelink.Node):
-    print(f"Node {node.identifier} is ready!")
+#@client6.event
+#async def on_wavelink_node_ready(node:wavelink.Node):
+    #print(f"Node {node.identifier} is ready!")
     
  
 @client6.bridge_command()
@@ -1986,12 +1986,6 @@ client.load_extension('cogs.afk')
 client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
-
-client2.load_extension('PXBot.mainbot')
-
-client4.load_extension('EDBot.mainED')
-
-client5.load_extension('DeltaBot.maindeltabot')
 
 async def main():
    await client.start(TOKEN)
