@@ -643,7 +643,6 @@ async def on_ready():
     client9.add_view(PilotApps())
     await client10.start(TOKEN10)
     
-    
 @client10.event
 async def on_ready():
     print(f"Logged in as {client10.user.name}")
@@ -662,9 +661,8 @@ async def connect_nodes():
 
 @client6.event
 async def on_wavelink_node_ready(node:wavelink.Node):
-    #print(f"Node {node.identifier} is ready!")
+    print(f"Node {node.identifier} is ready!")
     
- 
 @client6.bridge_command()
 async def pause(ctx):
     vc = ctx.voice_client # define our voice client
