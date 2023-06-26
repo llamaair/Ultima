@@ -18,6 +18,9 @@ from typing import List
 import aiohttp
 import logging
 
+import requests
+from bs4 import BeautifulSoup
+
 from discord.ext.pages import Paginator, Page
 from flask import Flask
 
@@ -636,6 +639,21 @@ async def on_ready():
     client8.add_view(RulesView())
     client8.add_view(FrontBack())
     await client9.start(TOKEN9)
+
+@client8.bridge_command()
+async def nasa_image(ctx):
+    url = 'https://apod.nasa.gov/apod/astropix.html'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    link = soup.find('a', href=lambda href: href.endswith('.jpg') or href.endswith('.png'))
+
+    if link:
+        image_url = f'https://apod.nasa.gov/apod/{link["href"]}'
+        embed = discord.Embed(title='NASA Astronomy Picture of the Day')
+        embed.set_image(url=image_url)
+        await ctx.send(embed=embed)
+    else:
+        await ctx.respond("Unable to fetch NASA image.")
     
 @client9.event
 async def on_ready():
