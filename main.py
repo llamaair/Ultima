@@ -988,6 +988,9 @@ async def gpt(ctx, query):
   		stop=[" Human:", " AI:"]
 		)
   text = response['choices'][0]['text']
+  for item in ["hi", "hello", "hey"]:
+     if item.lower() in query:
+        text = "Hey, what's up?"
   await ctx.respond(text)
   
   #await ctx.respond(f"" + text)
@@ -1147,16 +1150,12 @@ async def reroll(ctx, channel: discord.TextChannel, id_):
 @client.bridge_command(description="Create an embed!")
 async def embed(ctx, title, description, image:discord.Attachment=None, thumbnail:discord.Attachment=None):
     embed = discord.Embed(title=title, description=description)
-    try:
+    if thumbnail is not None:
       embed.set_thumbnail(url=thumbnail)
-    except:
-      pass
-    try:
+    if image is not None:
       embed.set_image(url=image)
-    except:
-      pass
     await ctx.send(embed=embed)
-    await ctx.respond("Successfully created embed!")
+    await ctx.respond("Successfully created embed!", ephemeral=True)
     
 @client.bridge_command(description="Play rock, paper, scissors!")
 async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'scissors'])):
