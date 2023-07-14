@@ -86,6 +86,7 @@ client9 = bridge.Bot(command_prefix="l", intents=intents, help_command=None)
 
 client10 = bridge.Bot(command_prefix="2", intents=intents, help_command=None)
 
+
 client.persistent_views_added=False
 client8.persistent_views_added=False
 client9.persistent_views_added=False
