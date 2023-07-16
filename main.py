@@ -2004,6 +2004,8 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
+client5.load_extension('DeltaBot.maindeltabot')
+
 async def main():
    await client.start(TOKEN)
    await client2.start(TOKEN2)
