@@ -53,6 +53,7 @@ TOKEN7 = os.getenv("DISCORD_TOKEN7")
 TOKEN8 = os.getenv("DISCORD_TOKEN8")
 TOKEN9 = os.getenv("DISCORD_TOKEN9")
 TOKEN10 = os.getenv("DISCORD_TOKEN10")
+TOKEN11 = os.getenv("DISCORD_TOKEN11")
 openai.api_key = os.getenv("OPENAI_KEY")
 oapi_key = openai.api_key
 intents = discord.Intents.all()
@@ -85,6 +86,8 @@ client8 = bridge.Bot(command_prefix="e", intents=intents, help_command=None)
 client9 = bridge.Bot(command_prefix="l", intents=intents, help_command=None)
 
 client10 = bridge.Bot(command_prefix="2", intents=intents, help_command=None)
+
+client11 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
 
 client.persistent_views_added=False
@@ -665,22 +668,11 @@ async def on_ready():
 @client10.event
 async def on_ready():
     print(f"Logged in as {client10.user.name}")
-    await connect_nodes()
-        
-async def connect_nodes():
-  """Connect to our Lavalink nodes."""
-  await client6.wait_until_ready() # wait until the bot is ready
+    await client11.start(TOKEN11)
 
-  await wavelink.NodePool.create_node(
-    bot=client6,
-    host='78.108.218.222',
-    port=25532,
-    password='altolink'
-  ) # create a node
-
-@client6.event
-async def on_wavelink_node_ready(node:wavelink.Node):
-    print(f"Node {node.identifier} is ready!")
+@client11.event
+async def on_ready():
+   print(f"Logged in as {client11.user.name}")
     
 @client6.bridge_command()
 async def pause(ctx):
