@@ -593,7 +593,6 @@ async def ttt(ctx):
 @client6.event
 async def on_ready():
     print(f"Logged in as {client6.user.name}")
-    await connect_nodes()
     await client7.start(TOKEN7)
     
 @client9.bridge_command()
