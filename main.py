@@ -450,7 +450,7 @@ class DeltaModApp(discord.ui.Modal):
         chan = guild.get_channel(1131160637205119006)
         
 
-        await chan.send("----------------------------------\n**New admin application!**")
+        await chan.send("----------------------------------\n**New mod application!**")
         await chan.send(self.children[0].value)
         await chan.send(self.children[1].value)
         await chan.send(self.children[2].value)
