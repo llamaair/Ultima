@@ -398,7 +398,7 @@ class ModApp(discord.ui.Modal):
         
 
     async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="----------------------------------\nNew moderator application in EDDB 2.0!")
+        embed = discord.Embed(title="----------------------------------\nNew moderator application in EDPN!")
         embed.add_field(name="Age", value=self.children[0].value)
         embed.add_field(name="Experiences", value=self.children[1].value)
         embed.add_field(name="Moderated other servers?", value=self.children[2].value)
@@ -426,6 +426,38 @@ class ModApp(discord.ui.Modal):
         await member2.send(self.children[4].value)
         await member2.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
             
+class DeltaModApp(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="How old are you?"))
+        self.add_item(discord.ui.InputText(label="What experiences do you have in moderation?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Have you moderated any other discord servers?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Why do you want to become a mod?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="What can you do for the server?", style=discord.InputTextStyle.long))
+        
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="----------------------------------\nNew moderator application in Cremorrah!")
+        embed.add_field(name="Age", value=self.children[0].value)
+        embed.add_field(name="Experiences", value=self.children[1].value)
+        embed.add_field(name="Moderated other servers?", value=self.children[2].value)
+        embed.add_field(name="Why", value=self.children[3].value)
+        embed.add_field(name="What can you do?", value=self.children[4].value)
+        embed.add_field(name="Submitted by", value=interaction.user)
+        await interaction.response.send_message("Successfully submitted moderator application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
+        guild = client5.get_guild(1110974953974665387)
+        chan = guild.get_channel(1131160637205119006)
+        
+
+        await chan.send("----------------------------------\n**New admin application!**")
+        await chan.send(self.children[0].value)
+        await chan.send(self.children[1].value)
+        await chan.send(self.children[2].value)
+        await chan.send(self.children[3].value)
+        await chan.send(self.children[4].value)
+        await chan.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
+
 class DeltaApp(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -433,6 +465,10 @@ class DeltaApp(discord.ui.View):
     @discord.ui.button(label="Fleet Application", custom_id="deltfleet", style=discord.ButtonStyle.primary, emoji="🚀")
     async def button_callback(self, button, interaction):
         await interaction.response.send_modal(deltafleetapp(title="Fleet Application"))
+    
+    @discord.ui.button(label="Moderator Application", custom_id="moddeltafleet", style=discord.ButtonStyle.primary, emoji="<:staff:1131161038717460551>")
+    async def button_two_callback(self, button, interaction):
+       await interaction.response.send_modal(DeltaModApp(title="Moderator Application"))
 
 class deltafleetapp(discord.ui.Modal):
     def __init__(self, *args, **kwargs) -> None:
@@ -1977,7 +2013,7 @@ async def leaderboard(ctx):
 
 @client5.bridge_command()
 async def fleetapp(ctx):
-  embed=discord.Embed(title="Fleet Application", description="Please press the button below if you wish to apply for the official Cremorrah fleet", color=discord.Colour.green())
+  embed=discord.Embed(title="Applications", description="Please press one of the buttons below if you wish to apply for either the official Cremorrah Fleet, or to become a moderator.", color=discord.Colour.green())
   await ctx.send(embed=embed, view=DeltaApp())
 
 client.load_extension('cogs.moderation')
