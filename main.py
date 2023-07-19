@@ -451,11 +451,11 @@ class DeltaModApp(discord.ui.Modal):
         
 
         await chan.send("----------------------------------\n**New mod application!**")
-        await chan.send(self.children[0].value)
-        await chan.send(self.children[1].value)
-        await chan.send(self.children[2].value)
-        await chan.send(self.children[3].value)
-        await chan.send(self.children[4].value)
+        await chan.send(f"Age: *{self.children[0].value}*")
+        await chan.send(f"Experiences: *{self.children[1].value}*")
+        await chan.send(f"Moderated other servers: *{self.children[2].value}*")
+        await chan.send(f"Why: *{self.children[3].value}*")
+        await chan.send(f"What can you do for the server: *{self.children[4].value}*")
         await chan.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
 
 class DeltaApp(discord.ui.View):
