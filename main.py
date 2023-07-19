@@ -445,7 +445,7 @@ class deltafleetapp(discord.ui.Modal):
         
 
     async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="New Delta Fleet application!")
+        embed = discord.Embed(title="New Cremorrah Fleet application!")
         embed.add_field(name="CMDR Name", value=self.children[0].value)
         embed.add_field(name="Carrier name?", value=self.children[1].value)
         embed.add_field(name="Why?", value=self.children[2].value)
@@ -1977,7 +1977,7 @@ async def leaderboard(ctx):
 
 @client5.bridge_command()
 async def fleetapp(ctx):
-  embed=discord.Embed(title="Fleet Application", description="Please press the button below if you wish to apply for the official Delta Interspace fleet", color=discord.Colour.green())
+  embed=discord.Embed(title="Fleet Application", description="Please press the button below if you wish to apply for the official Cremorrah fleet", color=discord.Colour.green())
   await ctx.send(embed=embed, view=DeltaApp())
 
 client.load_extension('cogs.moderation')
