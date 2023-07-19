@@ -466,7 +466,7 @@ class DeltaApp(discord.ui.View):
     async def button_callback(self, button, interaction):
         await interaction.response.send_modal(deltafleetapp(title="Fleet Application"))
     
-    @discord.ui.button(label="Moderator Application", custom_id="moddeltafleet", style=discord.ButtonStyle.primary, emoji="<:staff:1131161038717460551>")
+    @discord.ui.button(label="Moderator Application", custom_id="moddeltafleet", style=discord.ButtonStyle.primary, emoji="🔨")
     async def button_two_callback(self, button, interaction):
        await interaction.response.send_modal(DeltaModApp(title="Moderator Application"))
 
