@@ -5,15 +5,11 @@ import datetime
 import wavelink
 import time
 import urllib
-import string
 import re
 import os
 import json
 import openai
 import asyncpraw
-#import wavelink
-import pymysql
-import translate
 from typing import List
 import aiohttp
 import logging
@@ -39,7 +35,7 @@ from dotenv import load_dotenv
 #---------------------------#
 #NAME: Ultima
 #Status: Working
-#Version: 3.0.1
+#Version: 4.0.1
 #Creator: Marc13, UmayKamaboko and trembanto
 #---------------------------#
 load_dotenv()
