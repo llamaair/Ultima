@@ -18,7 +18,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
     async def automod():
         pass
 
-    @automod.bridge_command(description="Set up the automod system")
+    @automod.command(description="Set up the automod system")
     async def enable(self, ctx):
         await ctx.defer()
         try:
@@ -42,7 +42,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
             except:
                 await ctx.respond("Failed to enable automod due to unknown reason.")
 
-    @automod.bridge_command(description="Disable all automoderation rules")
+    @automod.command(description="Disable all automoderation rules")
     async def disable(self, ctx):
         await ctx.defer()
         try:
@@ -53,7 +53,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         except:
             await ctx.respond("Failed to disable automod rules")
 
-    @automod.bridge_command(description="Delete an automoderation rule")
+    @automod.command(description="Delete an automoderation rule")
     async def delete(self, ctx, name:str=None, ruleid=None):
         await ctx.defer()
         if not name and not ruleid:
