@@ -68,8 +68,9 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
                 ruleid = matching_rules[0]['id']
             await ruleid.delete()
             await ctx.respond("Successfully deleted rule!")
-        except:
+        except Exception as e:
             await ctx.respond("Fauled to delete rule", ephemeral=True)
+            print(e)
 
 
 
