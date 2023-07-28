@@ -259,9 +259,9 @@ class MyViewa(discord.ui.View):
     async def button_callback(self, button, interaction):
         await interaction.response.send_modal(DevApp(title="Developer Application"))
     
-    @discord.ui.button(label="Admin application", custom_id="admin-app", row=0, style=discord.ButtonStyle.primary, emoji="⚙️")
+    @discord.ui.button(label="Mod application", custom_id="admin-app", row=0, style=discord.ButtonStyle.primary, emoji="⚙️")
     async def second_button_callback(self, button, interaction):
-        await interaction.response.send_modal(ModApp(title="Admin Application"))
+        await interaction.response.send_modal(ModApp(title="Mod Application"))
         
 class PilotApps(discord.ui.View):
     def __init__(self):
@@ -389,7 +389,7 @@ class ModApp(discord.ui.Modal):
         self.add_item(discord.ui.InputText(label="How old are you?"))
         self.add_item(discord.ui.InputText(label="What experiences do you have in moderation?", style=discord.InputTextStyle.long))
         self.add_item(discord.ui.InputText(label="Have you moderated any other discord servers?", style=discord.InputTextStyle.long))
-        self.add_item(discord.ui.InputText(label="Why do you want to become an admin?", style=discord.InputTextStyle.long))
+        self.add_item(discord.ui.InputText(label="Why do you want to become a moderator?", style=discord.InputTextStyle.long))
         self.add_item(discord.ui.InputText(label="What can you do for the server?", style=discord.InputTextStyle.long))
         
 
@@ -690,6 +690,10 @@ async def nasa_image(ctx):
     else:
         await ctx.respond("Unable to fetch NASA image.")
     
+@client8.command()
+async def apps(ctx):
+   await ctx.send(embed=discord.Embed(title="Applications", description="Press one of the buttons below to start the form for developer or moderator applications."), view=MyViewa())
+
 @client9.event
 async def on_ready():
     print(f"Logged in as {client9.user.name}")
