@@ -690,7 +690,7 @@ async def nasa_image(ctx):
     else:
         await ctx.respond("Unable to fetch NASA image.")
     
-@client8.command()
+@client8.bridge_command()
 async def apps(ctx):
    await ctx.send(embed=discord.Embed(title="Applications", description="Press one of the buttons below to start the form for developer or moderator applications."), view=MyViewa())
 
