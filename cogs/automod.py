@@ -14,8 +14,12 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
     def __init__(self, bot): # this is a special method that is called when the cog is loaded
         self.bot = bot
 
-    @bridge.bridge_command(description="Automod rule creation")
-    async def automod(self, ctx):
+    @bridge.bridge_group()
+    async def automod():
+        pass
+
+    @automod.bridge_command(description="Set up the automod system")
+    async def enable(self, ctx):
         await ctx.defer()
         try:
             metadata = discord.AutoModActionMetadata("This message was blocked.")
@@ -37,6 +41,37 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
                 await ctx.respond("AutoMod Enabled! :white_check_mark:")
             except:
                 await ctx.respond("Failed to enable automod due to unknown reason.")
+
+    @automod.bridge_command(description="Disable all automoderation rules")
+    async def disable(self, ctx):
+        await ctx.defer()
+        try:
+            rulelist = await ctx.guild.fetch_auto_moderation_rules()
+            for rule in rulelist:
+                await rule.edit(enabled=False)
+            await ctx.respond("Successfully disabled all automod rules")
+        except:
+            await ctx.respond("Failed to disable automod rules")
+
+    @automod.bridge_command(description="Delete an automoderation rule")
+    async def delete(self, ctx, name:str=None, ruleid=None):
+        await ctx.defer()
+        if not name and not ruleid:
+            return await ctx.respond("Either a name or id must be passed!", ephemeral=True)
+        try:
+            if name:
+                rules_response = await ctx.guild.fetch_auto_moderation_rules()
+                rules = rules_response
+                matching_rules = [rule for rule in rules if rule['name'] == name]
+                if not matching_rules:
+                    return await ctx.respond(f"No auto moderation rule found with name '{name}'.", ephemeral=True)
+                ruleid = matching_rules[0]['id']
+            await ruleid.delete()
+            await ctx.respond("Successfully deleted rule!")
+        except:
+            await ctx.respond("Fauled to delete rule", ephemeral=True)
+
+
 
 
 def setup(bot): # this is called by Pycord to setup the cog
