@@ -63,7 +63,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
             matching_rules = [rule for rule in rules if rule.name == name]
             if not matching_rules:
                 return await ctx.respond(f"No auto moderation rule found with name '{name}'.", ephemeral=True)
-            ruleid = matching_rules[0]['id']
+            ruleid = matching_rules[0].id
         await ruleid.delete()
         await ctx.respond("Successfully deleted rule!")
 
