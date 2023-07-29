@@ -720,12 +720,6 @@ async def iss(ctx):
         await ctx.respond(f'The ISS is currently at :\nLatitude: {latitude}\nLongitude: {longitude}')
 
 
-    
-@client.listen()
-async def on_message(message):
-    print(f"{message.author} : {message.content}, channel: {message.channel}, guild: {message.guild.name}")
-
-
 @client.event
 async def on_application_command_error(ctx: discord.ApplicationContext, error: discord.DiscordException):
     if isinstance(error, commands.CommandOnCooldown):
