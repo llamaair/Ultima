@@ -8,7 +8,7 @@ app = MyAsyncApp(__name__)
 
 @app.route('/')
 async def main():
-    return render_template('dashboard.html')
+    return await render_template('dashboard.html')
 
 async def startapp():
     await app.run_task(host="0.0.0.0", port=25512)
