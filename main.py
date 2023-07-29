@@ -12,7 +12,9 @@ import openai
 from typing import List
 import aiohttp
 import logging
-import threading
+from threading import Thread
+
+from web import mainapp
 
 import requests
 from bs4 import BeautifulSoup
@@ -72,6 +74,8 @@ client8.persistent_views_added=False
 
 global lastMeme
 lastMeme = 0
+
+
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -1846,8 +1850,13 @@ client.load_extension('cogs.tags')
 
 #client11.load_extension('BumpBot.mainbumpbot')
 
-async def main():
-   await client.start(TOKEN)
+async def bot_main():
+    print("Bot starting...")
+    await client.start(TOKEN)
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+if __name__ == "__main__":
+    web_task = mainapp.startapp()
+    print("Web app starting...")
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.gather(web_task, bot_main()))
