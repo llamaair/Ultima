@@ -57,15 +57,6 @@
     </style>
 </head>
 <body>
-    {% if not servers %}
-        <a href="{{ credentials.authorization_url() }}">Login with Discord</a>
-    {% else %}
-        <h1>Bot Dashboard</h1>
-        <ul>
-            {% for server in servers %}
-                <li>{{ server }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <h1>Bot Dashboard</h1>
 </body>
 </html>
