@@ -114,6 +114,68 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
                 embed.add_field(name="User unbanned", value=f"{user} has been unbanned")
                 await channel.send(embed=embed)
 
+    @commands.Cog.listener()
+    async def on_auto_moderation_rule_create(self, rule):
+        with open("loguilds.json") as f:
+            automodguild = json.load(f)
+        if rule.guild.id not in automodguild:
+            return
+        for channel in rule.guild.channels:
+            if str(channel.name) == "server-logs":
+                embed = discord.Embed(color=discord.Colour.green())
+                embed.add_field(name="Automod rule created", value=f"The automod rule '{rule.name}' has been created")
+                await channel.send(embed=embed)
+    
+    @commands.Cog.listener()
+    async def on_guild_channel_create(self, channel):
+        with open("loguilds.json") as f:
+            automodguild = json.load(f)
+        if channel.guild.id not in automodguild:
+            return
+        for chan in channel.guild.channels:
+            if str(chan.name) == "server-logs":
+                embed = discord.Embed(color=discord.Colour.green())
+                embed.add_field(name="Channel created", value=f"The channel {channel.mention} has been created")
+                await chan.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel):
+        with open("loguilds.json") as f:
+            automodguild = json.load(f)
+        if channel.guild.id not in automodguild:
+            return
+        for chan in channel.guild.channels:
+            if str(chan.name) == "server-logs":
+                embed = discord.Embed(color=discord.Colour.red())
+                embed.add_field(name="Channel deleted", value=f"The channel {channel.mention} has been deleted")
+                await chan.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_intergration_create(intergration):
+        with open("loguilds.json") as f:
+            automodguild = json.load(f)
+        if intergration.guild.id not in automodguild:
+            return
+        for chan in intergration.guild.channels:
+            if str(chan.name) == "server-logs":
+                embed = discord.Embed(color=discord.Colour.green())
+                embed.add_field(name="Intergration created", value=f"The intergration '{intergration.name} has been created")
+                await chan.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_bulk_message_delete(messages):
+        with open("loguilds.json") as f:
+            automodguild = json.load(f)
+        if messages.guild.id not in automodguild:
+            return
+        for chan in messages.guild.channels:
+            if str(chan.name) == "server-logs":
+                embed = discord.Embed(color=discord.Colour.red())
+                embed.add_field(name="Bulk delete", value=f"A message bulk of {len(messages)} messages have been deleted")
+                await chan.send(embed=embed)
+
+
+
 
 def setup(bot): # this is called by Pycord to setup the cog
     bot.add_cog(serverlogs(bot)) # add the cog to the bot
