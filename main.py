@@ -9,7 +9,6 @@ import re
 import os
 import json
 import openai
-import asyncpraw
 from typing import List
 import aiohttp
 import logging
@@ -30,7 +29,6 @@ try:
 	from geopy.geocoders import Nominatim
 except:
     os.system("pip install geopy")
-from discord.ext.commands import check
 from dotenv import load_dotenv
 #---------------------------#
 #NAME: Ultima
@@ -803,24 +801,6 @@ async def on_ready():
 async def on_ready():
    print(f"Successfully logged in as {client5.user.name}")
    await client6.start(TOKEN6)
-   
-
-@client.bridge_command()
-async def reddit(ctx, subred):
-    await ctx.defer()
-    reddit = asyncpraw.Reddit(client_id='k447ys3V4TJaaO0AJ-Tn_g', client_secret='JAwk2VEh_H2vJ3BOn9B810H31O1Vyw', username='Llamaair', password='090306Mo!', user_agent="Ultima Discord Bot")
-    subreddit = await reddit.subreddit(subred)
-    all_subs = []
-    top = subreddit.top(limit=250)
-    async for submission in top:
-        all_subs.append(submission)
-    print(all_subs)
-    random_sub = random.choice(all_subs)
-    name = random_sub.title
-    url = random_sub.url
-    embed = discord.Embed(title=f"**{name}**", url=url)
-    embed.set_image(url=url)
-    await ctx.respond(embed=embed)
 
     
 @client.bridge_command(description="Translate your message!")
