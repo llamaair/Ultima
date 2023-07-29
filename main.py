@@ -154,16 +154,11 @@ class TicTacToe(discord.ui.View):
 
         ]
 
-        # Our board is made up of 3 by 3 TicTacToeButtons.
-        # The TicTacToeButton maintains the callbacks and helps steer
-        # the actual game.
         for x in range(3):
             for y in range(3):
                 self.add_item(TicTacToeButton(x, y))
 
-    # This method checks for the board winner and is used by the TicTacToeButton.
     def check_board_winner(self):
-        # Check horizontal
         for across in self.board:
             value = sum(across)
             if value == 3:
@@ -171,7 +166,6 @@ class TicTacToe(discord.ui.View):
             elif value == -3:
                 return self.X
 
-        # Check vertical
         for line in range(3):
             value = self.board[0][line] + self.board[1][line] + self.board[2][line]
             if value == 3:
@@ -179,7 +173,6 @@ class TicTacToe(discord.ui.View):
             elif value == -3:
                 return self.X
 
-        # Check diagonals
         diag = self.board[0][2] + self.board[1][1] + self.board[2][0]
         if diag == 3:
             return self.O
@@ -192,7 +185,6 @@ class TicTacToe(discord.ui.View):
         elif diag == 3:
             return self.O
 
-        # If we're here, we need to check if a tie has been reached.
         if all(i != 0 for row in self.board for i in row):
             return self.Tie
 
@@ -314,9 +306,6 @@ class DevApp(discord.ui.Modal):
         member2 = client8.get_user(245258174553260033)
         member3 = client8.get_user(315957528846663683)
         chan = client8.get_channel(1118034066634199040)
-        #await member.send(embeds=[embed])
-        #await member2.send(embeds=[embed])
-        #await member3.send(embeds=[embed])
         await chan.send(embeds=[embed])
         await interaction.response.send_message("Successfully submitted application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
         
@@ -458,7 +447,7 @@ class CloseTicket(discord.ui.View):
 async def news(ctx, countrycode):
     api_key = 'c4b2f2b7c2784a379c3967c6170220da'
     news_api_url = 'https://newsapi.org/v2/top-headlines'
-    country = countrycode  # Change this to the country of your choice
+    country = countrycode 
 
     async with aiohttp.ClientSession() as session:
         url = f"{news_api_url}?country={country}&apiKey={api_key}"
@@ -548,7 +537,6 @@ async def about(ctx):
     embed.add_field(name="CPU Usage", value=f"{cpu_usage:.2f}%")
     await ctx.respond(embed=embed)
 
-#Defining startup
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
@@ -564,7 +552,6 @@ async def on_ready():
         client.persistent_views_added = True
         print("Persistent views added")
         presence.start()
-        #await connect_nodes()
         try:
           await client5.start(TOKEN5)
         except:
@@ -573,7 +560,6 @@ async def on_ready():
 @client.bridge_command()
 async def ttt(ctx):
     """Starts a tic-tac-toe game."""
-    # Setting the reference message to ctx.message makes the bot reply to the member's message.
     await ctx.respond("Tic Tac Toe: X goes first", view=TicTacToe())
     
 @client8.bridge_command()
@@ -704,8 +690,6 @@ async def iss(ctx):
 
     try:
         address = location.raw['address']
-
-        # traverse the data
 
         country = address.get('country', '-')
         city = address.get('city', '-')
@@ -845,7 +829,6 @@ async def gpt(ctx, query):
         text = "Hey, what's up?"
   await ctx.respond(text)
   
-  #await ctx.respond(f"" + text)
 @client.bridge_command(description="Get bot's latency")
 async def ping(ctx):
     latency = (str(client.latency)).split('.')[1][1:3]

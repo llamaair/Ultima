@@ -177,5 +177,5 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
 
 
 
-def setup(bot): # this is called by Pycord to setup the cog
-    bot.add_cog(serverlogs(bot)) # add the cog to the bot
+def setup(bot):
+    bot.add_cog(serverlogs(bot))
