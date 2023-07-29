@@ -9,15 +9,16 @@ class autorole(commands.Cog):
     @bridge.bridge_command(description="Enable or disable auto role")
     @commands.has_permissions(administrator=True)
     async def autorole(self, ctx, role: discord.Role):
+        ena=None
         with open("autoroleg.json", "r") as f:
             automodguild = json.load(f)
 
         if str(ctx.guild.id) not in automodguild:
             automodguild.append(str(ctx.guild.id))
-            await ctx.respond("Enabled auto role, saving settings...")
+            ena ="enabled"
         else:
             automodguild.remove(str(ctx.guild.id))
-            await ctx.respond("Disabled auto role, saving settings...")
+            ena="disabled"
 
         with open("autoroleg.json", "w") as f:
             json.dump(automodguild, f)
@@ -27,7 +28,8 @@ class autorole(commands.Cog):
         smsgs[str(ctx.guild.id)] = str(role.id)
         with open("autorole.json", "w") as f:
             json.dump(smsgs, f)
-        await ctx.respond("Set!")
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} autorole!")
+        await ctx.respond(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

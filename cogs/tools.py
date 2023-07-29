@@ -20,9 +20,7 @@ class tools(commands.Cog): # create a class for our cog that inherits from comma
     @random.command(description="Generate a random number")
     async def number(self, ctx, lowernumber: int, uppernumber: int):
         number = random.randrange(lowernumber, uppernumber)
-        return await ctx.respond(
-            f"Your random number in range of {lowernumber} and {uppernumber} is {number}"
-    )
+        await ctx.respond(f"Your random number in range of {lowernumber} and {uppernumber} is {number}")
 
     @discord.message_command()
     async def getmessageid(self, ctx, message:discord.Message):

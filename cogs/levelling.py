@@ -29,20 +29,22 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
     @bridge.bridge_command(description="Enable and disable the leveling system")
     @commands.has_permissions(administrator = True)
     async def activelevel(self, ctx):
+        ena=None
         with open("levelguilds.json") as f:
             automodguild = json.load(f)
 
         if ctx.guild.id not in automodguild:
             automodguild.append(ctx.guild.id)
-            await ctx.respond("Enabled levels, saving settings...")
+            ena="enabled"
         elif ctx.guild.id in automodguild:
             automodguild.remove(ctx.guild.id)
-            await ctx.respond("Disabled levels, saving settings...")
+            ena="disabled"
 
         with open("levelguilds.json", "w+") as f:
             json.dump(automodguild, f)
 
-        await ctx.respond("Settings saved!")
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} server leveling!")
+        await ctx.respond(embed=embed)
 
     @bridge.bridge_command()
     async def level(self, ctx, member: discord.Member = None):

@@ -20,7 +20,7 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
             data = json.loads(response.text)
             await ctx.respond(data[0]['url'])
         else:
-            await ctx.respond('Unable to retrieve cat picture.')
+            await ctx.respond('Unable to retrieve cat picture.', ephemeral=True)
             
     @bridge.bridge_command(description="Get a cute dog picture")
     async def dog(self, ctx):
@@ -29,7 +29,7 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
             data = response.json()
             await ctx.respond(data['message'])
         else:
-            await ctx.respond('Unable to retrieve dog picture.')
+            await ctx.respond('Unable to retrieve dog picture.', ephemeral=True)
         
     @bridge.bridge_command(description="Get a random quote")
     async def quote(self, ctx):
@@ -39,7 +39,7 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
             quote = f'"{data["content"]}" - {data["author"]}'
             await ctx.respond(quote)
         else:
-            await ctx.respond('Unable to retrieve quote.')
+            await ctx.respond('Unable to retrieve quote.', ephemeral=True)
         
     @bridge.bridge_command(description="Get some cute pug pictures!")
     async def pug(self, ctx):
@@ -100,19 +100,6 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         responselist=['Yes', 'No', 'Maybe', 'Sure!', 'Of course!', 'Why not', 'I am tired! Ask me later instead.', 'I have no idea', 'Stupid humans...', 'Maybe?', 'Why are you asking me?']
         response = random.choice(responselist)
         await ctx.respond(response)
-
-    @bridge.bridge_command(description="Get a anime picture")
-    async def anime(self, ctx):
-        animelist = [
-        "https://cdn.vox-cdn.com/thumbor/I7I0t87KZ-vf_GSWrH118jwl6d0=/1400x0/filters:no_upscale()/cdn.vox-cdn.com/uploads/chorus_asset/file/23437452/The_Spy_x_Family_Anime_Succeeds_Because_of_Its_Characters_.jpg",
-        "https://androspel.com/wp-content/uploads/2022/03/anime-dimensions-tier-list.jpg",
-        "https://www.gamespot.com/a/uploads/screen_kubrick/1732/17320263/4019145-anime-dek-image.jpg"
-    ]
-        animechoise = random.choice(animelist)
-        await ctx.respond(animechoise)
-
-
-
 
 
 def setup(bot): # this is called by Pycord to setup the cog

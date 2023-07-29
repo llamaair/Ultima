@@ -18,6 +18,19 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
     async def automod():
         pass
 
+    @automod.command(description="Create an automoderation rule")
+    async def create(self, ctx, trigger:discord.Option(choises=["Spam", "Mass mentioning", "Keyword Preset"])):
+        metadata = discord.AutoModActionMetadata("Message blocked")
+        if trigger =="Spam":
+            await ctx.guild.create_auto_moderation_rule(name="Anti-spam", reason="Automod by Ultima", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.spam, trigger_metadata=discord.AutoModTriggerMetadata(), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
+        elif trigger=="Mass mentioning":
+            await ctx.guild.create_auto_moderation_rule(name="Anti-mention", reason="Automod by Ultima", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.mention_spam, trigger_metadata=discord.AutoModTriggerMetadata(mention_total_limit=5), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
+        else:
+            await ctx.guild.create_auto_moderation_rule(name="Words", reason="Automod by Ultima", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.keyword_preset, trigger_metadata=discord.AutoModTriggerMetadata(presets=[discord.AutoModKeywordPresetType.profanity, discord.AutoModKeywordPresetType.sexual_content, discord.AutoModKeywordPresetType.slurs]), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully created automod rule for preventing {trigger}!")
+        await ctx.respond(embed=embed)
+    
+
     @automod.command(description="Set up the automod system")
     async def enable(self, ctx):
         await ctx.defer()
@@ -38,9 +51,11 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
                 await ctx.guild.create_auto_moderation_rule(name="Anti-spam", reason="Automod by Ultima", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.spam, trigger_metadata=discord.AutoModTriggerMetadata(), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
                 await ctx.guild.create_auto_moderation_rule(name="Words", reason="Automod by Ultima", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.keyword_preset, trigger_metadata=discord.AutoModTriggerMetadata(presets=[discord.AutoModKeywordPresetType.profanity, discord.AutoModKeywordPresetType.sexual_content, discord.AutoModKeywordPresetType.slurs]), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
                 await ctx.guild.create_auto_moderation_rule(name="Block certain words", reason="Automod by Ultima", enabled=True, event_type=discord.AutoModEventType.message_send, trigger_type=discord.AutoModTriggerType.keyword, trigger_metadata=discord.AutoModTriggerMetadata(keyword_filter=["cunt", "asshole", "bitch", "beitch", "motherfucker", "brotherfucker", "kys"]), actions=[discord.AutoModAction(discord.AutoModActionType.block_message, metadata)])
-                await ctx.respond("AutoMod Enabled! :white_check_mark:")
+                embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully enabled automod!")
+                await ctx.respond(embed=embed)
             except:
-                await ctx.respond("Failed to enable automod due to unknown reason.")
+                embed = discord.Embed(title="Failure!", color=discord.Colour.red(), description=f"Failed to enable automod")
+                await ctx.respond(embed=embed)
 
     @automod.command(description="Disable all automoderation rules")
     async def disable(self, ctx):
@@ -49,9 +64,11 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
             rulelist = await ctx.guild.fetch_auto_moderation_rules()
             for rule in rulelist:
                 await rule.edit(enabled=False)
-            await ctx.respond("Successfully disabled all automod rules")
+            embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully disabled all automod rules!")
+            await ctx.respond(embed=embed)
         except:
-            await ctx.respond("Failed to disable automod rules")
+            embed = discord.Embed(title="Failure!", color=discord.Colour.red(), description=f"Failed to disable all automod rules")
+            await ctx.respond(embed=embed)
 
     @automod.command(description="Delete an automoderation rule")
     async def delete(self, ctx, name:str=None, ruleid=None):
@@ -67,7 +84,8 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         else:
             ruleid = await ctx.guild.fetch_auto_moderation_rule(ruleid)
         await ruleid.delete()
-        await ctx.respond("Successfully deleted rule!")
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully deleted automod rule")
+        await ctx.respond(embed=embed)
 
 
 

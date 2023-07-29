@@ -21,7 +21,8 @@ class afk(commands.Cog):
         with open("afkstatus.json", "w") as f:
             json.dump(afkstat, f)
         
-        await ctx.respond(f"Set the AFK message to {status} :white_check_mark:", ephemeral=True)
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully set AFK status to {status}!")
+        await ctx.respond(embed=embed, ephemeral=True)
 
     @afk.command(description="Set your AFK status")
     async def status(self, ctx):
@@ -42,9 +43,11 @@ class afk(commands.Cog):
             json.dump(afkk, f)
         
         if status == "Removed":
-            await ctx.respond("Successfully removed AFK status", ephemeral=True)
+            embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully removed AFK status!")
+            await ctx.respond(embed=embed, ephemeral=True)
         else:
-            await ctx.respond("Successfully set status to AFK", ephemeral=True)
+            embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully set status to afk!")
+            await ctx.respond(embed=embed, ephemeral=True)
 
     @commands.Cog.listener()
     async def on_message(self, message):

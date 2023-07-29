@@ -35,7 +35,7 @@ class tags(commands.Cog):
         if tag_name in guild_tags:
             await ctx.respond(f'{guild_tags[tag_name]}')
         else:
-            await ctx.respond(f'Tag "{tag_name}" does not exist.')
+            await ctx.respond(f'Tag "{tag_name}" does not exist.', ephemeral=True)
 
     @bridge.bridge_command(description="Delete a tag")
     @commands.has_permissions(administrator=True)
@@ -46,7 +46,7 @@ class tags(commands.Cog):
             self.save_tags()
             await ctx.respond(f'Tag "{tag_name}" has been deleted.')
         else:
-            await ctx.respond(f'Tag "{tag_name}" does not exist.')
+            await ctx.respond(f'Tag "{tag_name}" does not exist.', ephemeral=True)
 
     @bridge.bridge_command(description="List all tags")
     async def tags_list(self, ctx):
@@ -55,7 +55,7 @@ class tags(commands.Cog):
             tags_list = '\n'.join(guild_tags.keys())
             await ctx.respond(f'**Tags:**\n\n{tags_list}')
         else:
-            await ctx.respond('There are no tags in this server.')
+            await ctx.respond('There are no tags in this server.', ephemeral=True)
 
     @bridge.bridge_command(description="Modify a tag's content")
     @commands.has_permissions(administrator=True)
@@ -66,7 +66,7 @@ class tags(commands.Cog):
             self.save_tags()
             await ctx.respond(f'Tag "{tag_name}" has been modified.')
         else:
-            await ctx.respond(f'Tag "{tag_name}" does not exist.')
+            await ctx.respond(f'Tag "{tag_name}" does not exist.', ephemeral=True)
 
 def setup(bot):
     bot.add_cog(tags(bot))

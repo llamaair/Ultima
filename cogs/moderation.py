@@ -78,7 +78,7 @@ class moderation(commands.Cog):
                 if m.author.id == member.id:
                     msg.append(m)
                 await ctx.channel.delete_messages(msg)
-                await ctx.respond(f"Messages from {member} has been purged")
+                await ctx.respond(f"Messages from {member.mention} has been purged", ephemeral=True)
                 return
         await ctx.respond("Purging messages...", ephemeral=True)
         await ctx.channel.purge(limit=amount)
@@ -88,10 +88,11 @@ class moderation(commands.Cog):
     async def timeout(self, ctx, member:discord.Member, minutes:int):
         duration = timedelta(minutes=minutes)
         await member.timeout_for(duration)
-        await ctx.respond(f"Successfully timeout out {member} for {minutes} minutes", ephemeral=True)
-        embed = discord.Embed(title="Timed out", description=f"You have been timed out for {minutes} minutes in {ctx.guild}", color=discord.Colour.red())
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully timed out {member.mention} for {minutes} minutes!")
+        await ctx.respond(embed=embed, ephemeral=True)
+        embed2 = discord.Embed(title="Timed out", description=f"You have been timed out for {minutes} minutes in {ctx.guild}", color=discord.Colour.red())
         try:
-            await member.send(embed=embed)
+            await member.send(embed=embed2)
         except:
             pass
     
@@ -100,19 +101,23 @@ class moderation(commands.Cog):
     async def unmute(self, ctx, member:discord.Member):
         try:
             await member.remove_timeout()
-            await ctx.respond(f"Successfully removed timeout from {member}", ephemeral=True)
+            embed = discord.Embed(title="Success", color=discord.Colour.green(), description=f"Successfully removed timeout from {member.mention}!")
+            await ctx.respond(embed=embed, ephemeral=True)
             embed = discord.Embed(title="Timeout removed", description=f"You have been unmuted in {ctx.guild}", color=discord.Colour.green())
         except:
-            await ctx.respond("Failed to remove timeout from {member}. Possible reasons for this could be that the member isn't timed out.", ephemeral=True)
+            embed = discord.Embed(title="Failure", color=discord.Colour.red(), description=f"Successfully removed timeout from {member.mention}!")
+            await ctx.respond(embed=embed, ephemeral=True)
 
     @bridge.bridge_command(description="Warn a member")
     @commands.has_permissions(moderate_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason):
-        await ctx.respond("Warning sent",ephemeral=True)
-        embed = discord.Embed(title="Warned", description=f"You have been warned by {ctx.author} for: *{reason}* in **{ctx.guild.name}**", color=discord.Colour.red())
-        await member.send(embed=embed)
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully warned {member.mention}!")
+        await ctx.respond(embed=embed, ephemeral=True)
+        embed2 = discord.Embed(title="Warned", description=f"You have been warned by {ctx.author} for: *{reason}* in **{ctx.guild.name}**", color=discord.Colour.red())
+        await member.send(embed=embed2)
         
     @bridge.bridge_command()
+    @commands.is_owner()
     async def testo(self, ctx):
         loop = asyncio.get_event_loop()
         loop.create_task(self.nickscan(ctx))

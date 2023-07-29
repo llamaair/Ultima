@@ -13,20 +13,22 @@ class welcome(commands.Cog): # create a class for our cog that inherits from com
     @bridge.bridge_command(description="Enable or disable auto welcome")
     @commands.has_permissions(administrator = True)
     async def welcoming(self, ctx, message):
+        ena=None
         with open("welcoming.json") as f:
             automodguild = json.load(f)
 
         if ctx.guild.id not in automodguild:
             automodguild.append(ctx.guild.id)
-            await ctx.respond("Enabled auto welcoming, saving settings...")
+            ena="enabled"
         elif ctx.guild.id in automodguild:
             automodguild.remove(ctx.guild.id)
-            await ctx.respond("Disabled auto welcoming, saving settings...")
+            ena="disabled"
 
         with open("welcoming.json", "w+") as f:
             json.dump(automodguild, f)
 
-        await ctx.respond("Settings saved!")
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} auto welcoming!")
+        await ctx.respond(embed=embed)
         
         with open("server_welcome_messages.json") as f:
             smsgs = json.load(f)
@@ -37,20 +39,22 @@ class welcome(commands.Cog): # create a class for our cog that inherits from com
     @bridge.bridge_command(description="Enable or disable DM welcoming")
     @commands.has_permissions(administrator = True)
     async def dmwelcoming(self, ctx, message):
+        ena=None
         with open("dmwelcoming.json") as f:
             automodguild = json.load(f)
 
         if ctx.guild.id not in automodguild:
             automodguild.append(ctx.guild.id)
-            await ctx.respond("Enabled dm welcoming, saving settings...")
+            ena="enabled"
         elif ctx.guild.id in automodguild:
             automodguild.remove(ctx.guild.id)
-            await ctx.respond("Disabled dm welcoming, saving settings...")
+            ena="disabled"
 
         with open("dmwelcoming.json", "w+") as f:
             json.dump(automodguild, f)
 
-        await ctx.respond("Settings saved!")
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} DM welcoming!")
+        await ctx.respond(embed=embed)
         
         with open("server_welcome_messages.json") as f:
             smsgs = json.load(f)
