@@ -515,9 +515,6 @@ def get_prefix(client, message):
     return custom_prefix
 
 
-async def on_message(message):
-    print(f"{message.author} : {message.content}, {message.guild}:{message.channel}")
-
 @client.event
 async def on_guild_join(guild):
     with open('prefixes.json', 'r') as f:
