@@ -970,7 +970,7 @@ async def membercount(ctx):
 @client.bridge_command(description="Sync commands")
 @commands.is_owner()
 async def sync(ctx):
-    await client.sync_commands()
+    await client.sync_commands(force=True)
     await ctx.respond("Successfully resynced client commands")
 
 @client.bridge_command(description="Send a invite link for Ultima")
