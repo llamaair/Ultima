@@ -1,4 +1,4 @@
-from quart import Quart
+from quart import Quart, render_template
 
 class MyAsyncApp(Quart):
     def __init__(self, *args, **kwargs):
@@ -8,7 +8,7 @@ app = MyAsyncApp(__name__)
 
 @app.route('/')
 async def main():
-    return "Hello world!"
+    return render_template('dashboard.html')
 
 async def startapp():
     await app.run_task(host="0.0.0.0", port=25512)
