@@ -14,6 +14,8 @@ import aiohttp
 import logging
 from threading import Thread
 
+import psutil
+
 from web import mainapp
 
 import requests
@@ -532,6 +534,22 @@ async def presence():
    list1 = ['/help', '/iss', '/joke', '/ttt', '/reddit', '/economy beg', '/economy rob', '/economy robmember', '/level', '/ask', '/afk set', '/autorole', '/avatar', '/cat', '/fatcat', '/dog', '/embed', '/github', '/imagesearch']
    choice = random.choice(list1)
    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{choice}"))
+
+@client.bridge_command()
+async def stats(ctx):
+    total_guilds = len(client.guilds)
+    total_members = sum(guild.member_count for guild in client.guilds)
+    total_shards = client.shard_count
+    ram_usage = psutil.virtual_memory().used / (1024 ** 3)
+    cpu_usage = psutil.cpu_percent()
+
+    embed = discord.Embed(title="About Ultima", color=discord.Color.blue())
+    embed.add_field(name="Total Guilds", value=str(total_guilds))
+    embed.add_field(name="Total Members", value=str(total_members))
+    embed.add_field(name="Total Shards", value=str(total_shards))
+    embed.add_field(name="RAM Usage", value=f"{ram_usage:.2f} MB")
+    embed.add_field(name="CPU Usage", value=f"{cpu_usage:.2f}%")
+    await ctx.respond(embed=embed)
 
 #Defining startup
 @client.event
