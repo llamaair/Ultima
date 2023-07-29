@@ -532,7 +532,7 @@ async def presence():
    choice = random.choice(list1)
    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{choice}"))
 
-@client.bridge_command()
+@client.bridge_command(description="Get information about the bot")
 async def about(ctx):
     total_guilds = len(client.guilds)
     total_members = sum(guild.member_count for guild in client.guilds)
