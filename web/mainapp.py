@@ -11,4 +11,4 @@ async def main():
     return "Hello world!"
 
 async def startapp():
-    await app.run_task(host="0.0.0.0", port=3000)
+    await app.run_task(host="0.0.0.0", port=25214)
