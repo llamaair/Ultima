@@ -12,6 +12,7 @@ import openai
 from typing import List
 import aiohttp
 import logging
+import threading
 
 import requests
 from bs4 import BeautifulSoup
@@ -38,14 +39,8 @@ from dotenv import load_dotenv
 #---------------------------#
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-TOKEN2 = os.getenv("DISCORD_TOKEN2")
-TOKEN3 = os.getenv("DISCORD_TOKEN3")
-TOKEN4 = os.getenv("DISCORD_TOKEN4")
 TOKEN5 = os.getenv("DISCORD_TOKEN5")
-TOKEN6 = os.getenv("DISCORD_TOKEN6")
-TOKEN7 = os.getenv("DISCORD_TOKEN7")
 TOKEN8 = os.getenv("DISCORD_TOKEN8")
-TOKEN9 = os.getenv("DISCORD_TOKEN9")
 TOKEN10 = os.getenv("DISCORD_TOKEN10")
 TOKEN11 = os.getenv("DISCORD_TOKEN11")
 openai.api_key = os.getenv("OPENAI_KEY")
@@ -67,30 +62,13 @@ def get_prefix(client, message):
 
 client = Ultima(intents=Ultima().intents, help_command=Ultima().help_command)
 
-client2 = bridge.Bot(command_prefix="?", intents=intents, help_command=None)
-
-client3 = bridge.Bot(command_prefix=">", intents=intents, help_command=None)
-
-client4 = bridge.Bot(command_prefix="<", intents=intents, help_command=None)
-
 client5 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
-client6 = bridge.Bot(command_prefix="&", intents=intents, help_command=None)
-
-client7 = bridge.Bot(command_prefix="b", intents=intents, help_command=None)
-
 client8 = bridge.Bot(command_prefix="e", intents=intents, help_command=None)
-
-client9 = bridge.Bot(command_prefix="l", intents=intents, help_command=None)
-
-client10 = bridge.Bot(command_prefix="2", intents=intents, help_command=None)
-
-client11 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
 
 client.persistent_views_added=False
 client8.persistent_views_added=False
-client9.persistent_views_added=False
 
 global lastMeme
 lastMeme = 0
@@ -569,7 +547,7 @@ async def on_ready():
         presence.start()
         #await connect_nodes()
         try:
-          await client2.start(TOKEN2)
+          await client5.start(TOKEN5)
         except:
            pass
        
@@ -578,16 +556,6 @@ async def ttt(ctx):
     """Starts a tic-tac-toe game."""
     # Setting the reference message to ctx.message makes the bot reply to the member's message.
     await ctx.respond("Tic Tac Toe: X goes first", view=TicTacToe())
-    
-@client6.event
-async def on_ready():
-    print(f"Logged in as {client6.user.name}")
-    await client7.start(TOKEN7)
-    
-@client9.bridge_command()
-async def apps(ctx):
-    embed = discord.Embed(title="Applications", description="Applications for you that wish to become a pilot for Llama Airways", color=discord.Colour.green())
-    await ctx.send(embed=embed, view=PilotApps())
     
 @client8.bridge_command()
 @commands.has_role('Moderator')
@@ -619,18 +587,12 @@ async def strike(ctx, user:discord.User):
         await user.send("You have received your first strike. 3 more will cause a ban")
         return
     
-@client7.event
-async def on_ready():
-    print(f"Logged in as {client7.user.name}")
-    await client8.start(TOKEN8)
-    
 @client8.event
 async def on_ready():
     print(f"Logged in as {client8.user.name}")
     client8.add_view(MyViewa())
     client8.add_view(RulesView())
     client8.add_view(FrontBack())
-    await client9.start(TOKEN9)
 
 @client8.bridge_command()
 async def nasa_image(ctx):
@@ -650,82 +612,7 @@ async def nasa_image(ctx):
 @client8.bridge_command()
 async def apps(ctx):
    await ctx.send(embed=discord.Embed(title="Applications", description="Press one of the buttons below to start the form for developer or moderator applications."), view=MyViewa())
-
-@client9.event
-async def on_ready():
-    print(f"Logged in as {client9.user.name}")
-    client9.add_view(PilotApps())
-    await client10.start(TOKEN10)
     
-@client10.event
-async def on_ready():
-    print(f"Logged in as {client10.user.name}")
-    await client11.start(TOKEN11)
-
-@client11.event
-async def on_ready():
-   print(f"Logged in as {client11.user.name}")
-    
-@client6.bridge_command()
-async def pause(ctx):
-    vc = ctx.voice_client # define our voice client
-    voiceo = ctx.author.voice
-    await vc.pause()
-    await ctx.respond("Paused audio in voice channel")
-    
-@client6.bridge_command()
-async def resume(ctx):
-    vc = ctx.voice_client # define our voice client
-    voiceo = ctx.author.voice
-    await vc.resume()
-    await ctx.respond("Resumed playing audio in voice channel")
-  
-@client6.bridge_command()
-async def stop(ctx):
-    vc = ctx.voice_client # define our voice client
-    voiceo = ctx.author.voice
-    await vc.stop()
-    await ctx.respond("Stopped playing audio in voice channel")
-
-@client6.bridge_command()
-async def play(ctx, search: str):
-  await ctx.defer()
-  vc = ctx.voice_client # define our voice client
-  voiceo = ctx.author.voice
-    
-  if not voiceo:
-    await ctx.respond("You're not in a voice channel!")
-    
-  if not vc: # check if the bot is not in a voice channel
-    vc = await ctx.author.voice.channel.connect(cls=wavelink.Player) # connect to the voice channel
-	
-  if ctx.author.voice.channel.id != vc.channel.id: # check if the bot is not in the voice channel
-    return await ctx.respond("You must be in the same voice channel as the bot.") # return an error message
-
-  song = await wavelink.YouTubeTrack.search(query=search, return_first=True) # search for the song
-
-  if not song: # check if the song is not found
-    return await ctx.respond("No song found.") # return an error message
-
-  await vc.play(song) # play the song
-  await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
-
-
-@client6.bridge_command()
-async def disconnect(ctx):
-    voice_state = ctx.author.voice
-    if voice_state and voice_state.channel:
-        voice_channel = voice_state.channel
-        voice_client = ctx.guild.voice_client
-
-        if voice_client and voice_client.channel == voice_channel:
-            await voice_client.disconnect()
-            await ctx.respond("Successfully disconnected from the voice channel.")
-        else:
-            await ctx.respond("I am not currently connected to your voice channel.")
-    else:
-        await ctx.respond("You need to be in a voice channel to use this command.")
-
     
 @client.bridge_command()
 @commands.has_permissions(administrator=True)
@@ -741,25 +628,10 @@ async def setprefix(ctx, prefix):
 
     await ctx.respond(f"The prefix for this server has been set to: {prefix}")
 
-@client2.event
-async def on_ready():
-   print(f"Successfully connected as {client2.user.name}")
-   await client3.start(TOKEN3)
-    
-@client3.event
-async def on_ready():
-   print(f"Successfully logged in as {client3.user.name}")
-   await client4.start(TOKEN4)
-  
-@client4.event
-async def on_ready():
-   print(f"Successfully logged in as {client4.user.name}")
-   await client5.start(TOKEN5)
-
 @client5.event
 async def on_ready():
    print(f"Successfully logged in as {client5.user.name}")
-   await client6.start(TOKEN6)
+   await client8.start(TOKEN8)
 
     
 @client.bridge_command(description="Translate your message!")
