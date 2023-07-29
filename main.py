@@ -727,7 +727,7 @@ async def iss(ctx):
 @client.listen()
 async def on_message(message):
     print(f"{message.author} : {message.content}, channel: {message.channel}, guild: {message.guild.name}")
-    await client.process_commands()
+    await client.process_commands(message)
 
 
 @client.event
