@@ -263,55 +263,7 @@ class MyViewa(discord.ui.View):
     async def second_button_callback(self, button, interaction):
         await interaction.response.send_modal(ModApp(title="Mod Application"))
         
-class PilotApps(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-    
-    @discord.ui.button(label="Pilot application", custom_id="pil-app", row=0, style=discord.ButtonStyle.primary, emoji="✈️")
-    async def button_callback(self, button, interaction):
-        await interaction.response.send_modal(pa(title="Pilot Application"))
-    
-    @discord.ui.button(label="Pilot Training application", custom_id="pil-appa", row=1, style=discord.ButtonStyle.primary, emoji="🧑‍✈️")
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_modal(pta(title="Pilot Training Application"))
-      
-class pa(discord.ui.Modal):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
 
-        self.add_item(discord.ui.InputText(label="What experiences do you have in flying?", style=discord.InputTextStyle.long))
-        self.add_item(discord.ui.InputText(label="Why do you want to work for us?", style=discord.InputTextStyle.long))
-        self.add_item(discord.ui.InputText(label="MSFS Username"))
-        
-
-    async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="New pilot application!")
-        embed.add_field(name="Experiences", value=self.children[0].value)
-        embed.add_field(name="Why?", value=self.children[1].value)
-        embed.add_field(name="MSFS Username", value=self.children[2].value)
-        embed.add_field(name="Submitted by", value=interaction.user)
-        member = client9.get_user(719527356368289802)
-        await member.send(embeds=[embed])
-        await interaction.response.send_message("Successfully submitted application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
-        
-class pta(discord.ui.Modal):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
-        self.add_item(discord.ui.InputText(label="What experiences do you have in flying yet?", style=discord.InputTextStyle.long))
-        self.add_item(discord.ui.InputText(label="Why do you want to be trained by us?", style=discord.InputTextStyle.long))
-        self.add_item(discord.ui.InputText(label="MSFS Username"))
-        
-
-    async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="New pilot application!")
-        embed.add_field(name="Experiences", value=self.children[0].value)
-        embed.add_field(name="Why?", value=self.children[1].value)
-        embed.add_field(name="MSFS Username", value=self.children[2].value)
-        embed.add_field(name="Submitted by", value=interaction.user)
-        member = client9.get_user(719527356368289802)
-        await member.send(embeds=[embed])
-        await interaction.response.send_message("Successfully submitted application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
     
 class RulesView(discord.ui.View):
     def __init__(self):
