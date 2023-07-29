@@ -52,6 +52,10 @@ openai.api_key = os.getenv("OPENAI_KEY")
 oapi_key = openai.api_key
 intents = discord.Intents.all()
 
+class Ultima(bridge.Bot):
+   TOKEN = os.getenv("DISCORD_TOKEN")
+   intents = discord.Intents.all()
+   help_command=None
 
 def get_prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -61,7 +65,7 @@ def get_prefix(client, message):
     custom_prefix = prefixes.get(server_id, '!')  # Default prefix is '!'
     return custom_prefix
 
-client = bridge.Bot(command_prefix=get_prefix, intents=intents, help_command=None)
+client = Ultima(intents=Ultima().intents, help_command=Ultima().help_command)
 
 client2 = bridge.Bot(command_prefix="?", intents=intents, help_command=None)
 
@@ -612,7 +616,10 @@ async def on_ready():
         print("Persistent views added")
         presence.start()
         #await connect_nodes()
-        await client2.start(TOKEN2)
+        try:
+          await client2.start(TOKEN2)
+        except:
+           pass
        
 @client.bridge_command()
 async def ttt(ctx):
@@ -2011,16 +2018,12 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
-client5.load_extension('DeltaBot.maindeltabot')
+#client5.load_extension('DeltaBot.maindeltabot')
 
-client11.load_extension('BumpBot.mainbumpbot')
+#client11.load_extension('BumpBot.mainbumpbot')
 
 async def main():
    await client.start(TOKEN)
-   await client2.start(TOKEN2)
-   await client3.start(TOKEN3)
-   await client4.start(TOKEN4)
-   await client5.start(TOKEN5)
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
