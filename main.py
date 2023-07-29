@@ -64,7 +64,7 @@ def get_prefix(client, message):
     custom_prefix = prefixes.get(server_id, '!')  # Default prefix is '!'
     return custom_prefix
 
-client = Ultima(intents=Ultima().intents, help_command=Ultima().help_command)
+client = Ultima(intents=Ultima().intents, help_command=Ultima().help_command, command_prefix=get_prefix)
 
 client5 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
