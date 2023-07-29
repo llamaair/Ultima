@@ -536,7 +536,7 @@ async def presence():
    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{choice}"))
 
 @client.bridge_command()
-async def stats(ctx):
+async def about(ctx):
     total_guilds = len(client.guilds)
     total_members = sum(guild.member_count for guild in client.guilds)
     total_shards = client.shard_count
