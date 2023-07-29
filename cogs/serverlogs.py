@@ -166,9 +166,9 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
     async def on_bulk_message_delete(self, messages):
         with open("loguilds.json") as f:
             automodguild = json.load(f)
-        if messages.guild.id not in automodguild:
+        if messages[0].guild.id not in automodguild:
             return
-        for chan in messages.guild.channels:
+        for chan in messages[0].guild.channels:
             if str(chan.name) == "server-logs":
                 embed = discord.Embed(color=discord.Colour.red())
                 embed.add_field(name="Bulk delete", value=f"A message bulk of {len(messages)} messages have been deleted")
