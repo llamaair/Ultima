@@ -151,7 +151,7 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
                 await chan.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_intergration_create(intergration):
+    async def on_intergration_create(self, intergration):
         with open("loguilds.json") as f:
             automodguild = json.load(f)
         if intergration.guild.id not in automodguild:
@@ -163,7 +163,7 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
                 await chan.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_bulk_message_delete(messages):
+    async def on_bulk_message_delete(self, messages):
         with open("loguilds.json") as f:
             automodguild = json.load(f)
         if messages.guild.id not in automodguild:
