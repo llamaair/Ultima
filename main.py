@@ -569,6 +569,7 @@ async def on_disconnect():
    await db.close()
    print("Database connection closed!")
    await db.connect()
+   print("Reconnected to DB")
 
        
 @client.bridge_command()
