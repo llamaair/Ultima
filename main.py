@@ -14,9 +14,9 @@ import aiohttp
 import logging
 from threading import Thread
 
-import psutil
+from db import Database
 
-from web import mainapp
+import psutil
 
 import requests
 from bs4 import BeautifulSoup
@@ -50,6 +50,13 @@ TOKEN11 = os.getenv("DISCORD_TOKEN11")
 openai.api_key = os.getenv("OPENAI_KEY")
 oapi_key = openai.api_key
 intents = discord.Intents.all()
+
+DB_HOST = "54.37.204.19"
+DB_USER = "u77345_B1HfvsHZDE"
+DB_PASSWORD = "F16tUi@Zjzrr3dyC.3cPaN.^"
+DB_DATABASE = "s77345_economy_database"
+
+db = Database(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)
 
 class Ultima(bridge.Bot):
    TOKEN = os.getenv("DISCORD_TOKEN")
@@ -87,16 +94,10 @@ lastMeme = 0
 
 class TicTacToeButton(discord.ui.Button["TicTacToe"]):
     def __init__(self, x: int, y: int):
-        # A label is required, but we don't need one so a zero-width space is used.
-        # The row parameter tells the View which row to place the button under.
-        # A View can only contain up to 5 rows -- each row can only have 5 buttons.
-        # Since a Tic Tac Toe grid is 3x3 that means we have 3 rows and 3 columns.
         super().__init__(style=discord.ButtonStyle.secondary, label="\u200b", row=y)
         self.x = x
         self.y = y
 
-    # This function is called whenever this particular button is pressed.
-    # This is part of the "meat" of the game logic.
     async def callback(self, interaction: discord.Interaction):
         assert self.view is not None
         view: TicTacToe = self.view
@@ -135,10 +136,7 @@ class TicTacToeButton(discord.ui.Button["TicTacToe"]):
         await interaction.response.edit_message(content=content, view=view)
 
 
-# This is our actual board View.
 class TicTacToe(discord.ui.View):
-    # This tells the IDE or linter that all our children will be TicTacToeButtons.
-    # This is not required.
     children: List[TicTacToeButton]
     X = -1
     O = 1
@@ -472,23 +470,27 @@ async def news(ctx, countrycode):
 async def ticketing(ctx, system:discord.Option(choices=['Basic', 'Advanced'])):
     if system=="Advanced":
        embed = discord.Embed(title="Create a ticket", description="Choose a category below for your ticket", color=discord.Colour.green())
-       await ctx.respond("Ticketing system started", ephemeral=True)
+       embed2 = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully started ticketing system!")
+       await ctx.respond(embed=embed2, ephemeral=True)
        await ctx.send(embed=embed, view=advancedticket())
-       print("Ticketing")
-       return
-       
-       
+       return  
     embed=discord.Embed(title="Create a ticket", description="Create a ticket below for general questions and support", color = discord.Colour.green())
-    await ctx.respond("Ticketing system started", ephemeral=True)
+    embed2 = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully started ticketing system!")
+    await ctx.respond(embed=embed2, ephemeral=True)
     await ctx.send(embed=embed, view=MyView())
    
     
 @client.bridge_command()
 async def unban(ctx, userid):
-    user = await client.fetch_user(int(userid))
-    guildo = ctx.guild
-    await guildo.unban(user)
-    await ctx.respond("Done!")
+    try:
+      user = await client.fetch_user(int(userid))
+      guildo = ctx.guild
+      await guildo.unban(user)
+      embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully unbanned user {user.name}")
+      await ctx.respond(embed=embed, ephemeral=True)
+    except:
+       embed = discord.Embed(title="Failure", color=discord.Colour.green(), description=f"Failed to unban user!")
+       await ctx.respond(embed=embed, ephemeral=True)
 
 def guild(guild_id):
    def predicate(ctx):
@@ -540,6 +542,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
+    await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
     global startTime
@@ -556,6 +559,11 @@ async def on_ready():
           await client5.start(TOKEN5)
         except:
            pass
+        
+@client.event
+async def on_disconnect():
+   await db.close()
+   print("Database connection closed!")
        
 @client.bridge_command()
 async def ttt(ctx):
@@ -1293,530 +1301,190 @@ async def createday(ctx):
 #ECONOMY COMMANDS BELOW ONLY
 
 @client.bridge_group()
-async def economy(ctx):
+async def economy():
     pass
 
-async def open_account(user):
-  users = await get_bank_data()
+@economy.command()
+async def set(ctx, member:discord.Member, wallet: int, bank: int):
+    # Get the user ID from the message author
+    user_id = member.id
 
-  if str(user.id) in users:
-    return False
-  else:
-    users[str(user.id)] = {}
-    users[str(user.id)]["Wallet"] = 0
-    users[str(user.id)]["Bank"] = 0
+    # Insert the user's balance into the database
+    await db.insert_user_balance(user_id, wallet, bank)
 
-  with open("bank.json", 'w') as f:
-    json.dump(users, f)
-
-  return True
-
-async def open_inventory(userinv):
-  usersinv = await get_inventory_data()
-
-  if str(userinv.id) in usersinv:
-    return False
-  else:
-    usersinv[str(userinv.id)] = {}
-    usersinv[str(userinv.id)]["Inventory"] = 0
-
-  with open("inventory.json", "w") as f:
-    json.dump(usersinv, f)
-  
-
-async def get_bank_data():
-  with open("bank.json", 'r') as f:
-    users = json.load(f)
-  
-  return users
-
-async def get_inventory_data():
-  with open("inventory.json", 'r') as f:
-    userinv = json.load(f)
-
-  return userinv
-
-
-
-async def update_bank(user,change = 0,mode = "Wallet"):
-  users = await get_bank_data()
-  users[str(user.id)][mode] += change
-  with open("bank.json","w") as f :
-    json.dump(users,f)
-  bal = [users[str(user.id)]    ["Wallet"],users[str(user.id)]["Bank"]]
-  return bal
-
-async def setmoney(user,change = 0,mode = "wallet"):
-  users = await get_bank_data()
-  users[str(user.id)][mode] = change
-  with open("bank.json","w") as f :
-    json.dump(users,f)
-  bal = [users[str(user.id)]  ["Wallet"],users[str(user.id)]["Bank"]]
-  return bal
-
-@economy.command(description="Set someones balance")
-@commands.has_permissions(administrator=True)
-async def set(ctx,member:discord.Member,amount:int,mode="Wallet"):
-  possible = ["Wallet","Bank"]
-  if mode not in possible : 
-    await ctx.respond(f":x: Where is {mode} ? Please enter bank or wallet.")
-    return
-  await open_account(member)
-  await setmoney(member,amount,mode)
-  await ctx.respond(f":white_check_mark: Set {member.mention}'s {mode} to {amount} credits")
-  return
+    await ctx.send(f"User balance for {member.mention} has been set: Wallet: {wallet}, Bank: {bank}")
 
 @economy.command(description="See your bank balance!")
 async def balance(ctx):
-  await open_account(ctx.author)
-
-  user = ctx.author
-
-  users = await get_bank_data()
-
-  wallet_amt = users[str(user.id)]["Wallet"]
-  bank_amt = users[str(user.id)]["Bank"]
+  wallet, bank = await db.get_user_balance(ctx.author.id)
 
   em = discord.Embed(title=f"{ctx.author.name}'s balance.", color=discord.Color.teal())
-  em.add_field(name="Wallet Balance", value=wallet_amt)
-  em.add_field(name="Bank Balance", value=bank_amt)
+  em.add_field(name="Wallet Balance", value=wallet)
+  em.add_field(name="Bank Balance", value=bank)
   await ctx.respond(embed=em)
 
 @economy.command(description="See another members' balance")
 async def memberbalance(ctx,member:discord.Member):
-  await open_account(member)
-
-  user = member
-
-  users = await get_bank_data()
-
-  wallet_amt = users[str(user.id)]["Wallet"]
-  bank_amt = users[str(user.id)]["Bank"]
+  wallet, bank = await db.get_user_balance(member.id)
 
   em = discord.Embed(title=f"{member.name}'s balance.", color=discord.Color.teal())
-  em.add_field(name="Wallet Balance", value=wallet_amt)
-  em.add_field(name="Bank Balance", value=bank_amt)
-  await ctx.respond(embed=em)
-
-@economy.command(description="View your inventory")
-async def inventory(ctx):
-  await open_inventory(ctx.author)
-
-  userinv = ctx.author
-
-  usersinv = await get_inventory_data()
-
-  items = usersinv[str(userinv.id)]["Inventory"]
-
-  if items==1:
-    items="Gun"
-  elif items==2:
-    items="Armour"
-  elif items==3:
-    items="Mouse"
-    
-
-  em = discord.Embed(title=f"{ctx.author.name}s inventory", color=discord.Color.teal())
-  em.add_field(name="Inventory", value=items)
-  await ctx.respond(embed=em)
-
-@economy.command(description="View another members' inventory")
-async def memberinventory(ctx,member:discord.Member):
-  await open_inventory(member)
-
-  userinv = member
-
-  usersinv = await get_inventory_data()
-
-  items = usersinv[str(userinv.id)]["Inventory"]
-
-  if items==1:
-    items="Gun"
-  elif items==2:
-    items="Armour"
-  elif items==3:
-    items="Mouse"
-    
-
-  em = discord.Embed(title=f"{member.name}s inventory", color=discord.Color.teal())
-  em.add_field(name="Inventory", value=items)
+  em.add_field(name="Wallet Balance", value=wallet)
+  em.add_field(name="Bank Balance", value=bank)
   await ctx.respond(embed=em)
   
 
 @economy.command(description="Beg for coins!")
 @commands.cooldown(1, 300, commands.BucketType.user)
 async def beg(ctx):
-  await open_account(ctx.author)
+  user_id = ctx.author.id
 
-  user = ctx.author
+  earnings = random.randint(10, 50)
 
-  users = await get_bank_data()
+  await db.add_to_wallet(user_id, earnings)
 
-  earnings = random.randint(1, 21)
-
-  await ctx.respond(f"Someone gave you {earnings} credits")
-
-  users[str(user.id)]["Wallet"] += earnings
-
-  with open("bank.json", 'w') as f:
-    json.dump(users, f)
+  await ctx.respond(f"Someone gave you {earnings} credits!")
 
 @economy.command(description="Go to work")
 @commands.cooldown(1, 300, commands.BucketType.user)
 async def work(ctx):
-  await open_account(ctx.author)
-  user = ctx.author
-  users = await get_bank_data()
-  earnings = random.randint(1, 3)
-  await ctx.respond(f"You earned {earnings} credits for going to work")
-  users[str(user.id)]["Wallet"] += earnings
-  with open("bank.json", 'w') as f:
-    json.dump(users, f)
+  user_id = ctx.author.id
+  earnings = random.randint(1, 10)
+  await db.add_to_wallet(user_id, earnings)
+  await ctx.respond(f"You earned {earnings} credits for going to work!")
     
 @economy.command(description="Get your daily reward!")
 @commands.cooldown(1, 86400, commands.BucketType.user)
 async def daily(ctx):
-  await open_account(ctx.author)
-
-  user = ctx.author
-
-  users = await get_bank_data()
+  user_id = ctx.author.id
 
   earnings = random.randint(50, 101)
 
-  await ctx.respond(f"You earned {earnings} credits from selling some stuff online!")
+  await db.add_to_wallet(user_id, earnings)
 
-  users[str(user.id)]["Bank"] += earnings
-
-  with open("bank.json", 'w') as f:
-    json.dump(users, f)
+  await ctx.respond(f"You got {earnings} credits as your daily reward!")
 
 @economy.command(description="Do a bank robbery!")
 @commands.cooldown(1, 2000, commands.BucketType.user)
 async def rob(ctx):
-  await open_account(ctx.author)
-
-  user = ctx.author
-
-  users = await get_bank_data()
+  user_id = ctx.author.id
 
   earnings = random.randint(300, 800)
 
-  wallet_amt = users[str(user.id)]["Wallet"]
-
   decider = random.randint(0,1)
+
+  wallet_amt = await db.get_wallet_balance(user_id)
 
   if decider == 1:
     await ctx.respond(f"You just robbed the bank and got {earnings} credits!")
-
-    users[str(user.id)]["Wallet"] += earnings
-
-    with open("bank.json", 'w') as f:
-      json.dump(users, f)
+    await db.add_to_wallet(user_id, earnings)
   else:
     if wallet_amt > 500:
       await ctx.respond("The police managed to catch you when you robbed the bank :pensive: They also took 500 credits from you")
-      users[str(user.id)]["Wallet"] -=500
-
-      with open("bank.json", 'w') as f:
-        json.dump(users, f)
+      await db.add_to_wallet(user_id, -500)
     else:
       if wallet_amt > 0:
         await ctx.respond(f"The police managed to catch you when you robbed the bank, and they also took {wallet_amt} credits from you! :pensive:")
-        users[str(user.id)]["Wallet"] -=wallet_amt
+        await db.add_to_wallet(user_id, -wallet_amt)
       else:
          await ctx.respond(f"The police managed to catch you when you robbed the bank :pensive:")
 
-      with open("bank.json", 'w') as f:
-        json.dump(users, f)
-
-global mainbal
-mainbal = 0
-
-@economy.command(description="Donate to the public balance")
-async def donate(ctx, amount:int):
-  await open_account(ctx.author)
-  bal = await update_bank(ctx.author)
-  if amount == "all":
-    amount = bal[0]
-  try :
-    amount = amount
-  except :
-    await ctx.respond("Please enter a valid number")
-    return
-  if amount>bal[0]:
-    await ctx.respond("Please make sure you have enough money in your wallet!")
-    return
-  if amount<0:
-    await ctx.respond("Please enter a number bigger than 1")
-                
-    return 
-
-  await update_bank(ctx.author,-1*amount,"Wallet")
-
-  await ctx.respond(f":white_check_mark: Transaction completed! {amount} credits has been donated to Ultima's public balance")
-
-  global mainbal
-  mainbal+=amount
-
-
 @economy.command(description="Give some of your money to another member!")
-async def pay(ctx,amount,member:discord.Member):
-  if amount == None : 
-    return await ctx.respond(":x: Please enter  a proper amount of money!")
-  try :
-    int(amount)
-  except : 
-    return await ctx.respond(":x: Amount can only be a number!")
-  await open_account(ctx.author)
-  await open_account(member)
-  if member == ctx.author :
-    await ctx.respond("It's not a good idea to pay yourself")
-                
-    return
-  bal = await update_bank(ctx.author)
-  if amount == "all":
-    amount = bal[0]
-  try :
-    amount = int(amount)
-  except :
-    await ctx.respond("Please enter a valid number")
-    return
-  if amount>bal[0]:
-    await ctx.respond("Please make sure you have enough money in your wallet!")
-    return
-  if amount<0:
-    await ctx.respond("Please enter a number bigger than 1")
-                
-    return 
+async def pay(ctx, amount: int, member: discord.Member):
+    if amount <= 0:
+        return await ctx.respond(":x: Amount must be a positive number!")
 
-  await update_bank(ctx.author,-1*amount,"Wallet")
-  await update_bank(member,amount,"Wallet")  
+    if member == ctx.author:
+        return await ctx.respond("It's not a good idea to pay yourself")
 
-  await ctx.respond(f":white_check_mark: Transaction completed! {amount} credits has been transfered to {member.name}")
+    sender_balance = await db.get_wallet_balance(ctx.author.id)
+
+    if amount > sender_balance:
+        return await ctx.respond("Please make sure you have enough money in your wallet!")
+
+    # Assuming 'db' is the instance of your database class
+    await db.add_to_wallet(ctx.author.id, -amount)
+    await db.add_to_wallet(member.id, amount)
+
+    await ctx.respond(f":white_check_mark: Transaction completed! {amount} credits have been transferred to {member.name}")
     
 
 @economy.command(description="Rob another member!")
 @commands.cooldown(1, 1000, commands.BucketType.user)
 async def robmember(ctx,member:discord.Member):
-  await open_account(ctx.author)
-  await open_account(member)
-  user = ctx.author
-
-  mem = member
-
-  users = await get_bank_data()
 
   earnings = random.randint(100, 500)
 
-  wallet_aamt = users[str(user.id)]["Wallet"]
+  robber_bal = await db.get_wallet_balance(ctx.author.id)
+  victim_bal = await db.get_wallet_balance(member.id)
 
   decider = random.randint(0,1)
 
-  wallet_amt = users[str(mem.id)]["Wallet"]
-
-  if wallet_amt < earnings:
-    if wallet_amt < 0:
+  if victim_bal < earnings:
+    if victim_bal < 0:
       await ctx.respond("It's not worth it :pensive:")
       return
-    elif wallet_amt == 0:
+    elif victim_bal == 0:
       await ctx.respond("It's not worth it :pensive:")
       return
     else:
-      earnings = wallet_amt
+      earnings = victim_bal
 
   
   if decider == 1:
     await ctx.respond(f"You just robbed {member} and got {earnings} credits!")
-
-    users[str(user.id)]["Wallet"] +=earnings
-    users[str(mem.id)]["Wallet"] -=earnings
-
-    with open("bank.json", 'w') as f:
-      json.dump(users, f)
+    await db.add_to_wallet(ctx.author.id, earnings)
+    await db.add_to_wallet(member.id, -earnings)
   else:
-    responselist=[f"{mem} knew how to defend themselves and took 100 credits from you instead!", f"{mem} killed you and took 100 credits from you!", "A dog killed you and ate 100 credits!"]
+    responselist=[f"{member} knew how to defend themselves and took 100 credits from you instead!", f"{member} killed you and took 100 credits from you!"]
     choice = random.choice(responselist)
     await ctx.respond(choice)
-    if wallet_aamt > 100:
-      users[str(user.id)]["Wallet"] -= 100
-
-      with open("bank.json", "w") as f:
-        json.dump(users, f)
+    if robber_bal > 100:
+      await db.add_to_wallet(ctx.author.id, -100)
+      await db.add_to_wallet(member.id, 100)
     else:
-      ammountt = wallet_aamt
-      users[str(user.id)]["Wallet"] -=ammountt
-
-      with open("bank.json", 'w') as f:
-        json.dump(users, f)
+       return
       
     
 
 @economy.command(description="Transfer money from your wallet to the bank")
-async def deposit(ctx,amount):
-  if amount == None : 
-    return await ctx.respond(":x: Please enter a proper amount of money!")
-  try :
-    int(amount)
-  except : 
-    return await ctx.respond(":x: Amount can only be a number!")
-  await open_account(ctx.author)
-          
-  bal = await update_bank(ctx.author)
-  amount = int(amount)
-  if amount>bal[0]:
-    await ctx.respond(":x: You don't have the enough amount !")
-                  
-    return
-  if amount<0:
-    await ctx.respond(":x: Please enter a number bigger than 1.")
-                  
-    return 
-
-  await update_bank(ctx.author,-1*amount)
-  await update_bank(ctx.author,amount,"Bank")  
+async def deposit(ctx,amount:int):
+  dep_bal = await db.get_wallet_balance(ctx.author.id)
+  if dep_bal < amount:
+     return await ctx.respond("Make sure you have enough credits in your wallet!")
+  await db.add_to_bank(ctx.author.id, amount)
+  await db.add_to_wallet(ctx.author.id, -amount)
 
   await ctx.respond(f":moneybag: You just deposited {amount} credits.")
 
-@economy.command(description="Transfer money from your wallet to the bank")
-async def withdraw(ctx,amount):
-  if amount == None : 
-    return await ctx.respond(":x: Please enter a proper amount of money!")
-  try :
-    int(amount)
-  except : 
-    return await ctx.respond(":x: Amount can only be a number!")
-  await open_account(ctx.author)
-  bal = await update_bank(ctx.author)
-  amount = int(amount)
-  if amount>bal[1]:
-    await ctx.respond(":x: You don't have the enough amount !")
-                
-    return
-  if amount<0:
-    await ctx.respond(":x: Please enter a number bigger than 1.")
-                    
-    return 
-        
-  await update_bank(ctx.author,amount)
-  await update_bank(ctx.author,-1*amount,"Bank")  
+@economy.command(description="Transfer money from your bank to the wallet")
+async def withdraw(ctx,amount:int):
+  dep_wallet, dep_bank = await db.get_user_balance(ctx.author.id)
+  if dep_bank < amount:
+     return await ctx.respond("Make sure you have enough credits in your bank!")
+  await db.add_to_bank(ctx.author.id, -amount)
+  await db.add_to_wallet(ctx.author.id, amount)
 
-  await ctx.respond(f":moneybag: You withdrew {amount} credits.")
+  await ctx.respond(f":moneybag: You just deposited {amount} credits.")
 
-@economy.command(description="Buy something")
-async def buy(ctx,item):
-  await open_account(ctx.author)
-  await open_inventory(ctx.author)
-
-  user=ctx.author
-
-  userinv=ctx.author
-
-  cost=2500
-  
-  users=await get_bank_data()
-
-  usersinv=await get_inventory_data()
-
-  wallet_amt = users[str(user.id)]["Wallet"]
-  bank_amt = users[str(user.id)]["Bank"]
-
-  if wallet_amt < cost:
-    if bank_amt > cost:
-      await ctx.respond(f"You don't have enough money in your wallet! Try to buy something online instead with your online wallet! This item costs {cost} credits.")
-      return
-    else:
-      await ctx.respond(f"Buying something costs {cost} credits currently! You have less than that!")
-      return
-  
-  if item.lower()=="gun":
-    itemcode=1
-    
-    await ctx.respond(f"You just bought {item}! It has been stored in your inventory.")
-
-    users[str(user.id)]["Wallet"] -= cost
-
-    with open("bank.json", "w") as f:
-      json.dump(users, f)
-
-    usersinv[str(userinv.id)]["Inventory"] = itemcode
-
-    with open("inventory.json", "w") as f:
-      json.dump(usersinv, f)
-  elif item.lower()=="armour":
-    itemcode=2
-
-    await ctx.respond(f"You just bought {item}! It has been stored in your inventory.")
-
-    users[str(user.id)]["Wallet"] -= cost
-
-    with open("bank.json", "w") as f:
-      json.dump(users, f)
-
-    usersinv[str(userinv.id)]["Inventory"] = itemcode
-
-    with open("inventory.json", "w") as f:
-      json.dump(usersinv, f)
-
-  elif item.lower()=="mouse":
-    itemcode=3
-
-    await ctx.respond(f"You just bought {item}! It has been stored in your inventory.")
-
-    users[str(user.id)]["Wallet"] -= cost
-
-    with open("bank.json", "w") as f:
-      json.dump(users, f)
-
-    usersinv[str(userinv.id)]["Inventory"] = itemcode
-
-    with open("inventory.json", "w") as f:
-      json.dump(usersinv, f)
-  
-  else:
-    await ctx.respond("This is not a valid item! Use /shop to get a list of purchasable items!")
-
-
-@economy.command(description="View the shop")
-async def shop(ctx):
-  embed=discord.Embed(
-    title="Shop"
-  )
-  embed.add_field(name="Buy things with money!", value="Gun\nArmour\nMouse")
-  await ctx.respond(embed=embed)
-
-@economy.command(description="View the leaderboard")
+@economy.command(description="Show the leaderboard of users with the most credits")
 async def leaderboard(ctx):
-  limit = 3
-  try :
-            
-    users = await get_bank_data()
-    leader_board = {}
-    total = []
-    for user in users:
-      name = int(user)
-      total_amount = users[user]["Wallet"] + users[user]["Bank"]
-      leader_board[total_amount] = name
-      total.append(total_amount)
+    query = "SELECT user_id, (wallet + bank) AS total_amount FROM economy_balance ORDER BY total_amount DESC LIMIT 10"
 
-    total = sorted(total,reverse=True)    
+    async with db.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute(query)
+            results = await cursor.fetchall()
 
-    em = discord.Embed(title = f"Top {limit} Richest People" , description = "This is decided on the ammount of money in the bank and wallet",color = random.randrange(0, 0xffffff))
-    index = 1
-    for amt in total:
-      id_ = leader_board[amt]
-      member = client.get_user(id_)
-      name = member.name
-      em.add_field(name = f"{index}. {name}" , value = f"{amt}",  inline = False)
-      if index == limit:
-        break
-      else:
-        index += 1
-        em.set_footer(text =f"Requested by {ctx.author}")
-        
-    await ctx.respond(embed = em)
-  except AttributeError:
-    await ctx.respond(":x: Insufficent accounts stored in database!")
+    leaderboard_embed = discord.Embed(title="Leaderboard", color=discord.Color.gold())
+
+    for index, (user_id, total_amount) in enumerate(results, start=1):
+        user = client.get_user(user_id)
+        if user:
+            leaderboard_embed.add_field(name=f"{index}. {user.name}", value=f"Total Amount: {total_amount}", inline=False)
+        else:
+            leaderboard_embed.add_field(name=f"{index}. Unknown User", value=f"Total Amount: {total_amount}", inline=False)
+
+    await ctx.respond(embed=leaderboard_embed)
 
 @client5.bridge_command()
 async def fleetapp(ctx):
@@ -1840,15 +1508,10 @@ client.load_extension('cogs.tags')
 
 #client5.load_extension('DeltaBot.maindeltabot')
 
-#client11.load_extension('BumpBot.mainbumpbot')
-
 async def bot_main():
     print("Bot starting...")
     await client.start(TOKEN)
 
 if __name__ == "__main__":
-    web_task = mainapp.startapp()
-    print("Web app starting...")
-
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.gather(web_task, bot_main()))
+    loop.run_until_complete(asyncio.gather(bot_main()))
