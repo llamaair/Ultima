@@ -816,7 +816,7 @@ my_pages = [
     ),
 ]
 
-@client.bridge_command()
+@client.bridge_command(description="Ultima help")
 async def help(ctx):
    paginator = Paginator(pages=my_pages)
    await paginator.respond(ctx.interaction)
