@@ -32,10 +32,6 @@ try:
 except:
     os.system("pip install geopy")
 
-try:
-    os.system('pip uninstall discord.py')
-except:
-    pass
 from dotenv import load_dotenv
 #---------------------------#
 #NAME: Ultima
