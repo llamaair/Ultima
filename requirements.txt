@@ -1,6 +1,5 @@
 py-cord
 asyncio
-random
 datetime
 time
 urllib3

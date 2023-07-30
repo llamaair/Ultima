@@ -2,7 +2,6 @@ import discord
 import asyncio
 import random
 import datetime
-import wavelink
 import time
 import urllib
 import re
