@@ -1121,6 +1121,7 @@ async def dadjoke(ctx):
                 await ctx.respond("Failed to fetch dad joke.")
 
 @client.bridge_command(description="Get a random joke")
+@commands.is_nsfw()
 async def joke(ctx):
     async with aiohttp.ClientSession() as session:
         url = "https://v2.jokeapi.dev/joke/Any"
