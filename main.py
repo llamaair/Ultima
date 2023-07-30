@@ -43,8 +43,6 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 TOKEN5 = os.getenv("DISCORD_TOKEN5")
 TOKEN8 = os.getenv("DISCORD_TOKEN8")
-TOKEN10 = os.getenv("DISCORD_TOKEN10")
-TOKEN11 = os.getenv("DISCORD_TOKEN11")
 openai.api_key = os.getenv("OPENAI_KEY")
 oapi_key = openai.api_key
 intents = discord.Intents.all()
