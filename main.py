@@ -793,6 +793,11 @@ async def ytsearch(ctx, *, search1):
 my_pages = [
     Page(
         embeds=[
+            discord.Embed(title="Ultima", description="Ultima is a multipurpose bot offering economy, automod, moderation, fun & utility commands, ticketing, polls and much more!\n\nMake sure to vote for our bot on top.gg: https://top.gg/bot/1113874631489753148\n\nIf you need support, join our support server: https://discord.gg/HHxRfnYEZb"),
+        ],
+    ),
+    Page(
+        embeds=[
             discord.Embed(title=":red_circle: Main commands :red_circle:", description="**/random color\n/random number\n/help\n/kick\n/ban\n/purge\n/dog\n/cat\n/fatcat\n/fatdog\n/giveaway\n/fact\n/manga\n/anime\n/membercount\n/invite\n/creroll\n/alimit\n/nick\n/nickscan\n/reroll\n/rps\n/serverinfo\n/ask\n/threat\n/warn\n/uptime\n/abuse\n/challenge\n/whois\n/avatar\n/record start\n/record stop\n/ticketing**"),
         ],
     ),
@@ -1506,7 +1511,7 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
-#client5.load_extension('DeltaBot.maindeltabot')
+client5.load_extension('DeltaBot.maindeltabot')
 
 async def bot_main():
     print("Bot starting...")
