@@ -462,7 +462,7 @@ async def news(ctx, countrycode):
         await ctx.respond('Error retrieving news')
         
 @client.bridge_command(description="Start the ticketing system")
-@commands.has_permissions(ban_members=True)
+@bridge.has_permissions(ban_members=True)
 async def ticketing(ctx, system:discord.Option(choices=['Basic', 'Advanced'])):
     if system=="Advanced":
        embed = discord.Embed(title="Create a ticket", description="Choose a category below for your ticket", color=discord.Colour.green())
@@ -624,7 +624,7 @@ async def apps(ctx):
     
     
 @client.bridge_command(description="Set the prefix for this server")
-@commands.has_permissions(administrator=True)
+@bridge.has_permissions(administrator=True)
 async def setprefix(ctx, prefix):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
@@ -845,7 +845,7 @@ async def ping(ctx):
     await ctx.respond(f"Pong! Replied in {latency} ms")
     
 @client.bridge_command(description="Host a giveaway")
-@commands.has_permissions(administrator=True)
+@bridge.has_permissions(administrator=True)
 async def giveaway(ctx):
     await ctx.respond(
         "Hello . Please answer to these questions within 15 Seconds to Start the giveaway."
@@ -964,13 +964,13 @@ async def invite(ctx):
 
 
 @client.bridge_command(pass_context=True, description="Change a member's nick")
-@commands.has_permissions(moderate_members=True)
+@bridge.has_permissions(moderate_members=True)
 async def nick(ctx, member: discord.Member, nick):
     await member.edit(nick=nick)
     await ctx.respond(f'Successfully changed {member.mention}s nick')
 
 @client.bridge_command(description="Reroll a giveaway")
-@commands.has_permissions(administrator=True)
+@bridge.has_permissions(administrator=True)
 async def reroll(ctx, channel: discord.TextChannel, id_):
     if channel == None:
         await ctx.respond("Please mention a channel.")
@@ -1034,7 +1034,7 @@ async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'sc
 
 
 @client.bridge_command(description="Echo a message")
-@commands.has_permissions(administrator=True)
+@bridge.has_permissions(administrator=True)
 async def echo(ctx, *, message):
     if message == None:
         await ctx.respond("Please enter a message to echo.")
@@ -1181,7 +1181,7 @@ async def website(ctx):
   await ctx.respond("http://fetchbot.org")
 
 @client.bridge_command(description="Lock a channel!")
-@commands.has_permissions(manage_channels=True)
+@bridge.has_permissions(manage_channels=True)
 async def lock(ctx, channel : discord.TextChannel):
   channel = channel or ctx.channel
   overwrite = channel.overwrites_for(ctx.guild.default_role)
@@ -1190,7 +1190,7 @@ async def lock(ctx, channel : discord.TextChannel):
   await ctx.respond(f'Successfully locked channel: {channel}.')
 
 @client.bridge_command(description="Unlock a channel!")
-@commands.has_permissions(manage_channels=True)
+@bridge.has_permissions(manage_channels=True)
 async def unlock(ctx, channel : discord.TextChannel):
   channel = channel or ctx.channel
   overwrite = channel.overwrites_for(ctx.guild.default_role)
@@ -1288,7 +1288,7 @@ async def github(ctx,owner,repo=None):
 
 
 @client.bridge_command(description="Set a slowmode!")
-@commands.has_permissions(manage_channels=True)
+@bridge.has_permissions(manage_channels=True)
 async def slowmode(ctx,seconds:int):
   await ctx.channel.edit(slowmode_delay=seconds)
   await ctx.respond(f"Successfully set the slowmode delay in this channel to {seconds} seconds!")

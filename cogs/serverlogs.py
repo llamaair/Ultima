@@ -11,7 +11,7 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
         self.bot = bot
 
     @bridge.bridge_command(description="Enable or disable serverlogs")
-    @commands.has_permissions(administrator = True)
+    @bridge.has_permissions(administrator = True)
     async def serverlogs(self, ctx):
         ena=None
         with open("loguilds.json") as f:

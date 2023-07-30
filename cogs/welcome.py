@@ -11,7 +11,7 @@ class welcome(commands.Cog): # create a class for our cog that inherits from com
         self.bot = bot
 
     @bridge.bridge_command(description="Enable or disable auto welcome")
-    @commands.has_permissions(administrator = True)
+    @bridge.has_permissions(administrator = True)
     async def welcoming(self, ctx, message):
         ena=None
         with open("welcoming.json") as f:
@@ -37,7 +37,7 @@ class welcome(commands.Cog): # create a class for our cog that inherits from com
             json.dump(smsgs, f)
             
     @bridge.bridge_command(description="Enable or disable DM welcoming")
-    @commands.has_permissions(administrator = True)
+    @bridge.has_permissions(administrator = True)
     async def dmwelcoming(self, ctx, message):
         ena=None
         with open("dmwelcoming.json") as f:

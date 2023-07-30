@@ -7,7 +7,7 @@ class autorole(commands.Cog):
         self.bot = bot
 
     @bridge.bridge_command(description="Enable or disable auto role")
-    @commands.has_permissions(administrator=True)
+    @bridge.has_permissions(administrator=True)
     async def autorole(self, ctx, role: discord.Role):
         ena=None
         with open("autoroleg.json", "r") as f:

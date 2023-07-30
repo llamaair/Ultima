@@ -27,7 +27,7 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
             json.dump(users, f)
 
     @bridge.bridge_command(description="Enable and disable the leveling system")
-    @commands.has_permissions(administrator = True)
+    @bridge.has_permissions(administrator = True)
     async def activelevel(self, ctx):
         ena=None
         with open("levelguilds.json") as f:

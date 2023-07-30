@@ -31,7 +31,7 @@ class moderation(commands.Cog):
         self.bot = bot
 
     @bridge.bridge_command(description="Kick people")
-    @commands.has_permissions(kick_members=True)
+    @bridge.has_permissions(kick_members=True)
     async def kick(self, ctx, user:discord.User, reason="No reason provided"):
         if user.guild_permissions.administrator:
             return await ctx.respond("You can't kick another admin!")
@@ -47,7 +47,7 @@ class moderation(commands.Cog):
             await ctx.respond(f"Unable to kick this member")
     
     @bridge.bridge_command(description="Ban people")
-    @commands.has_permissions(ban_members=True)
+    @bridge.has_permissions(ban_members=True)
     async def ban(self, ctx, user:discord.User, reason="No reason provided"):
         if user.guild_permissions.administrator:
             return await ctx.respond("You can't ban another admin!")
@@ -63,7 +63,7 @@ class moderation(commands.Cog):
             await ctx.respond(f"Unable to ban this member")
     
     @bridge.bridge_command(description="Delete messages")
-    @commands.has_permissions(manage_messages=True)
+    @bridge.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount:int, member:discord.Member=None):
         if member!=None:
             msg = []
@@ -79,7 +79,7 @@ class moderation(commands.Cog):
         await ctx.channel.purge(limit=amount)
     
     @bridge.bridge_command(description="Time out another member")
-    @commands.has_permissions(moderate_members=True)
+    @bridge.has_permissions(moderate_members=True)
     async def timeout(self, ctx, member:discord.Member, minutes:int):
         duration = timedelta(minutes=minutes)
         await member.timeout_for(duration)
@@ -92,7 +92,7 @@ class moderation(commands.Cog):
             pass
     
     @bridge.bridge_command(description="Unmute a member")
-    @commands.has_permissions(moderate_members=True)
+    @bridge.has_permissions(moderate_members=True)
     async def unmute(self, ctx, member:discord.Member):
         try:
             await member.remove_timeout()
@@ -104,7 +104,7 @@ class moderation(commands.Cog):
             await ctx.respond(embed=embed, ephemeral=True)
 
     @bridge.bridge_command(description="Warn a member")
-    @commands.has_permissions(moderate_members=True)
+    @bridge.has_permissions(moderate_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason):
         embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully warned {member.mention}!")
         await ctx.respond(embed=embed, ephemeral=True)
@@ -118,7 +118,7 @@ class moderation(commands.Cog):
         loop.create_task(self.nickscan(ctx))
         
     @bridge.bridge_command(description="Scan through all members nicks")
-    @commands.has_permissions(moderate_members=True)
+    @bridge.has_permissions(moderate_members=True)
     async def nickscan(self, ctx):
         msg = await ctx.respond("Scanning nicks...")
         count = 0

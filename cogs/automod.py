@@ -19,6 +19,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
         pass
 
     @automod.command(description="Create an automoderation rule")
+    @bridge.has_permissions(administrator=True)
     async def create(self, ctx, trigger:discord.Option(choises=["Spam", "Mass mentioning", "Keyword Preset"])):
         metadata = discord.AutoModActionMetadata("Message blocked")
         if trigger =="Spam":
@@ -32,6 +33,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
     
 
     @automod.command(description="Set up the automod system")
+    @bridge.has_permissions(administrator=True)
     async def enable(self, ctx):
         await ctx.defer()
         try:
@@ -58,6 +60,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
                 await ctx.respond(embed=embed)
 
     @automod.command(description="Disable all automoderation rules")
+    @bridge.has_permissions(administrator=True)
     async def disable(self, ctx):
         await ctx.defer()
         try:
@@ -71,6 +74,7 @@ class automod(commands.Cog): # create a class for our cog that inherits from com
             await ctx.respond(embed=embed)
 
     @automod.command(description="Delete an automoderation rule")
+    @bridge.has_permissions(administrator=True)
     async def delete(self, ctx, name:str=None, ruleid=None):
         await ctx.defer()
         if not name and not ruleid:

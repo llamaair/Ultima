@@ -23,7 +23,7 @@ class tags(commands.Cog):
         pass
 
     @bridge.bridge_command(description="Create a new tag")
-    @commands.has_permissions(administrator=True)
+    @bridge.has_permissions(administrator=True)
     async def tags_create(self, ctx, tag_name: str, *, tag_response: str):
         self.tags.setdefault(str(ctx.guild.id), {})[tag_name] = tag_response
         self.save_tags()
@@ -38,7 +38,7 @@ class tags(commands.Cog):
             await ctx.respond(f'Tag "{tag_name}" does not exist.', ephemeral=True)
 
     @bridge.bridge_command(description="Delete a tag")
-    @commands.has_permissions(administrator=True)
+    @bridge.has_permissions(administrator=True)
     async def tags_delete(self, ctx, tag_name: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
@@ -58,7 +58,7 @@ class tags(commands.Cog):
             await ctx.respond('There are no tags in this server.', ephemeral=True)
 
     @bridge.bridge_command(description="Modify a tag's content")
-    @commands.has_permissions(administrator=True)
+    @bridge.has_permissions(administrator=True)
     async def tags_modify(self, ctx, tag_name: str, *, new_response: str):
         guild_tags = self.tags.get(str(ctx.guild.id), {})
         if tag_name in guild_tags:
