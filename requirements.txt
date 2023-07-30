@@ -1,7 +1,6 @@
 py-cord
 asyncio
 datetime
-time
 urllib3
 re
 openai
