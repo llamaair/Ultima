@@ -560,7 +560,7 @@ async def on_ready():
 async def on_guild_join(guild):
     marc = client.get_user(719527356368289802)
     try:
-        await marc.send(f"Hey, I just joined a new guild!\n\n**Name**: {guild.name}\n**Member Count**:{guild.member_count}")
+        await marc.send(f"Hey, I just joined a new guild!\n\n**Name**: {guild.name}\n**Member Count**: {guild.member_count}")
     except:
         print(f"Joiend guild {guild.name}")
         
