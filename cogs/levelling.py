@@ -92,7 +92,10 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
     async def on_message(self, message):
         with open("levelguilds.json") as f:
             automodguild = json.load(f)
-        if message.guild.id not in automodguild:
+        try:
+            if message.guild.id not in automodguild:
+                return
+        except:
             return
         if message.author.bot == False:
             with open('levels.json', 'r') as f:

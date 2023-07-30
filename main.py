@@ -967,7 +967,7 @@ async def sync(ctx):
 @client.bridge_command(description="Send a invite link for Ultima")
 async def invite(ctx):
     await ctx.respond(
-        "You can invite Ultima here: https://discord.com/api/oauth2/authorize?client_id=935860231051829258&permissions=8&scope=bot"
+        "You can invite Ultima here: https://discord.com/api/oauth2/authorize?client_id=1113874631489753148&permissions=8&scope=applications.commands%20bot"
     )
 
 
