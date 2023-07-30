@@ -12,7 +12,6 @@ import openai
 from typing import List
 import aiohttp
 import logging
-from threading import Thread
 
 from db import Database
 
@@ -22,7 +21,6 @@ import requests
 from bs4 import BeautifulSoup
 
 from discord.ext.pages import Paginator, Page
-from flask import Flask
 
 from discord.utils import get
 from discord.ext import commands
