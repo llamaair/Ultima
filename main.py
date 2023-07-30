@@ -568,6 +568,8 @@ async def on_guild_join(guild):
 async def on_disconnect():
    await db.close()
    print("Database connection closed!")
+   await db.connect()
+
        
 @client.bridge_command()
 async def ttt(ctx):
