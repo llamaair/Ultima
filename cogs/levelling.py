@@ -13,18 +13,6 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
     def __init__(self, bot): # this is a special method that is called when the cog is loaded
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        with open('levels.json', 'r') as f:
-            users = json.load(f)
-
-        if not f'{member.id}' in users:
-            users[f'{member.id}'] = {}
-            users[f'{member.id}']['experience'] = 0
-            users[f'{member.id}']['level'] = 1
-
-        with open('levels.json', 'r'):
-            json.dump(users, f)
 
     @bridge.bridge_command(description="Enable and disable the leveling system")
     @bridge.has_permissions(administrator = True)
@@ -96,6 +84,32 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
 
         with open('levels.json', 'w') as f:
             json.dump(users, f)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        with open("levelguilds.json") as f:
+            automodguild = json.load(f)
+        if message.guild.id not in automodguild:
+            return
+        if message.author.bot == False:
+            with open('levels.json', 'r') as f:
+                users = json.load(f)
+
+            if not f'{message.author.id}' in users:
+                users[f'{message.author.id}'] = {}
+                users[f'{message.author.id}']['experience'] = 0
+                users[f'{message.author.id}']['level'] = 1
+
+            users[f'{message.author.id}']['experience'] += 5
+            experience = users[f'{message.author.id}']['experience']
+            lvl_start = users[f'{message.author.id}']['level']
+            lvl_end = int(experience ** (1 / 4))
+            if lvl_start < lvl_end:
+                await message.channel.send(f'{message.author.mention} has reached level {lvl_end}! **GG**')
+                users[f'{message.author.id}']['level'] = lvl_end
+
+            with open('levels.json', 'w') as f:
+                json.dump(users, f)
 
                 
 
