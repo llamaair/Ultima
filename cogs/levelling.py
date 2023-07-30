@@ -42,7 +42,8 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
             image = Image.new("RGBA", background.size, (0, 0, 0, 0))
             image.paste(background, (0, 0))
 
-            font = ImageFont.truetype("arial.ttf", 80)
+            font_size = 80
+            font = ImageFont.truetype("arial.ttf", font_size)
             draw = ImageDraw.Draw(image)
 
             # Print username in top left corner
@@ -52,6 +53,8 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
             # Print level in the middle
             level_text = f"Level {level}"
             text_width, text_height = draw.textsize(level_text, font=font)
+
+            # Calculate the center position for the level text
             x = (background.width - text_width) // 2
             y = (background.height - text_height) // 2
 
