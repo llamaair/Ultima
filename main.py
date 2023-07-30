@@ -32,6 +32,11 @@ try:
 	from geopy.geocoders import Nominatim
 except:
     os.system("pip install geopy")
+
+try:
+    os.system('pip uninstall discord.py')
+except:
+    pass
 from dotenv import load_dotenv
 #---------------------------#
 #NAME: Ultima
