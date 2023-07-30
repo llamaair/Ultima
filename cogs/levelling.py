@@ -62,11 +62,12 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
             draw.text((10, 10), username, font=username_font, fill=(255, 255, 255))
 
             # Print level in the middle
-            text_width, text_height = draw.textsize(f"Level {level}", font=font)
+            level_text = f"Level {level}"
+            text_width, text_height = draw.textsize(level_text, font=font)
             x = (background.width - text_width) // 2
             y = (background.height - text_height) // 2
 
-            draw.text((x, y), f"Level {level}", font=font, fill=(255, 255, 255))
+            draw.text((x, y), level_text, font=font, fill=(255, 255, 255))
 
             return image
 
