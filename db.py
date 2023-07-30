@@ -19,6 +19,8 @@ class Database:
             port=self.port,
             autocommit=True,
             loop=asyncio.get_event_loop(),
+            minsize=5,
+            maxsize=10
         )
         print("DB Pool started")
     async def close(self):
