@@ -22,6 +22,9 @@ class Database:
             minsize=5,
             maxsize=10
         )
+        async with self.pool.acquire() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute("SET SESSION wait_timeout = 864000")
         print("DB Pool started")
     async def close(self):
         self.pool.close()
@@ -37,44 +40,31 @@ class Database:
         query_insert = "INSERT INTO economy_balance (user_id, wallet, bank) VALUES (%s, %s, %s)"
 
         # Check if the user exists in the database
-        async with self.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(query_select, (user_id,))
-                result = await cursor.fetchone()
+        result = await self.execute(query_select, user_id)
 
         if result:
             # User exists, return both wallet and bank balances
-            return result[0], result[1]
+            return result[0][0], result[0][1]
         else:
             # User doesn't exist, create a new row with default wallet and bank balances
             default_wallet = 0
             default_bank = 0
-            async with self.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute(query_insert, (user_id, default_wallet, default_bank))
-                    await conn.commit()
+            await self.execute(query_insert, user_id, default_wallet, default_bank)
             return default_wallet, default_bank
-    
+
     async def get_wallet_balance(self, user_id):
         query_select = "SELECT wallet FROM economy_balance WHERE user_id = %s"
         query_insert = "INSERT INTO economy_balance (user_id, wallet, bank) VALUES (%s, %s, %s)"
 
-        async with self.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(query_select, (user_id,))
-                result = await cursor.fetchone()
+        result = await self.execute(query_select, user_id)
 
         if result:
-            return result[0]  # Return the wallet balance if the user exists
+            return result[0][0]  # Return the wallet balance if the user exists
         else:
             default_wallet = 0
             default_bank = 0
 
-        # Insert a new row with default wallet and bank balances
-            async with self.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute(query_insert, (user_id, default_wallet, default_bank))
-                    await conn.commit()
+            await self.execute(query_insert, user_id, default_wallet, default_bank)
 
             return default_wallet
     
@@ -127,7 +117,17 @@ class Database:
         await self.execute(query_update, amount, user_id)
 
     async def execute(self, query, *args):
-        async with self.pool.acquire() as conn:
-            async with conn.cursor() as cur:
-                await cur.execute(query, args)
-                return await cur.fetchall()
+        try:
+            async with self.pool.acquire() as conn:
+                async with conn.cursor() as cur:
+                    await cur.execute(query, args)
+                    return await cur.fetchall()
+        except aiomysql.exceptions.OperationalError:
+            # Reconnect in case of a connection issue
+            print("Lost connection, reconnecting...")
+            await self.connect()
+            # Retry the execution of the query
+            async with self.pool.acquire() as conn:
+                async with conn.cursor() as cur:
+                    await cur.execute(query, args)
+                    return await cur.fetchall()
