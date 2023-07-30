@@ -30,11 +30,6 @@ class moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @bridge.bridge_command()
-    async def testo(self, ctx):
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.nickscan(ctx))
-
     @bridge.bridge_command(description="Kick people")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, user:discord.User, reason="No reason provided"):

@@ -46,7 +46,7 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
         embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} server leveling!")
         await ctx.respond(embed=embed)
 
-    @bridge.bridge_command()
+    @bridge.bridge_command(description="Get your current level")
     async def level(self, ctx, member: discord.Member = None):
         def generate_level_up_image(username, level):
             background = Image.open("background.png")

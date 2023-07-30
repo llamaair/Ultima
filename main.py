@@ -480,7 +480,7 @@ async def ticketing(ctx, system:discord.Option(choices=['Basic', 'Advanced'])):
     await ctx.send(embed=embed, view=MyView())
    
     
-@client.bridge_command()
+@client.bridge_command(description="Unban a user")
 async def unban(ctx, userid):
     try:
       user = await client.fetch_user(int(userid))
@@ -627,7 +627,7 @@ async def apps(ctx):
    await ctx.send(embed=discord.Embed(title="Applications", description="Press one of the buttons below to start the form for developer or moderator applications."), view=MyViewa())
     
     
-@client.bridge_command()
+@client.bridge_command(description="Set the prefix for this server")
 @commands.has_permissions(administrator=True)
 async def setprefix(ctx, prefix):
     with open('prefixes.json', 'r') as f:
@@ -765,6 +765,7 @@ async def weather(ctx, *, city: str):
         await ctx.respond("City not found.")
 
 @client.bridge_command()
+@commands.is_owner()
 async def serverlist(ctx):
     activeservers=client.guilds
     embed=discord.Embed(title="Server list")
