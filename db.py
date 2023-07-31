@@ -117,6 +117,21 @@ class Database:
         await self.execute(query_update, amount, user_id)
 
     async def execute(self, query, *args):
+        """
+        Executes a command to the Ultima MySql DB.
+
+        Parameters
+        ----------
+        query :class:`str`
+            The query to execute
+        args :class:`str`
+            Other args to pass to the execute
+        
+        Returns
+        -------
+        fetchall()
+
+        """
         try:
             async with self.pool.acquire() as conn:
                 async with conn.cursor() as cur:
