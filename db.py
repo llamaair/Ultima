@@ -122,7 +122,7 @@ class Database:
                 async with conn.cursor() as cur:
                     await cur.execute(query, args)
                     return await cur.fetchall()
-        except aiomysql.exceptions.OperationalError:
+        except:
             # Reconnect in case of a connection issue
             print("Lost connection, reconnecting...")
             await self.connect()
