@@ -7,7 +7,8 @@ class tags(commands.Cog):
         self.bot = bot
         self.tags = self.load_tags()
 
-    def load_tags(self):
+    @staticmethod
+    def load_tags():
         try:
             with open('tags.json', 'r') as file:
                 return json.load(file)
