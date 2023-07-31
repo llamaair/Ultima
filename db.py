@@ -11,6 +11,33 @@ class Database:
         self.pool = None
     
     async def connect(self):
+        """
+        Connect to the database
+
+        Parameters
+        ----------
+        host: :class:`str`
+            The Database endpoint
+        user: :class:`str`
+            The Username
+        password: :class:`str`
+            The Host Password
+        db: :class:`str`
+            The database
+        port: :class:`int`
+            The port for the endpoint
+        autocommit: :class:`bool`
+            If actions should autocommit
+        minsize: :class:`int`
+            The minimum pool size
+        maxsize: :class:`int`
+            The maximum pool size
+
+        Returns
+        -------
+        :class:`str`: "DB Pool started"
+
+        """
         self.pool = await aiomysql.create_pool(
             host=self.host,
             user=self.user,
