@@ -1322,6 +1322,7 @@ async def economy():
 
 @economy.command()
 async def set(ctx, member:discord.Member, wallet: int, bank: int):
+    await ctx.defer()
     # Get the user ID from the message author
     user_id = member.id
 
@@ -1332,6 +1333,7 @@ async def set(ctx, member:discord.Member, wallet: int, bank: int):
 
 @economy.command(description="See your bank balance!")
 async def balance(ctx):
+  await ctx.defer()
   wallet, bank = await db.get_user_balance(ctx.author.id)
 
   em = discord.Embed(title=f"{ctx.author.name}'s balance.", color=discord.Color.teal())
@@ -1341,6 +1343,7 @@ async def balance(ctx):
 
 @economy.command(description="See another members' balance")
 async def memberbalance(ctx,member:discord.Member):
+  await ctx.defer()
   wallet, bank = await db.get_user_balance(member.id)
 
   em = discord.Embed(title=f"{member.name}'s balance.", color=discord.Color.teal())
@@ -1352,6 +1355,7 @@ async def memberbalance(ctx,member:discord.Member):
 @economy.command(description="Beg for coins!")
 @commands.cooldown(1, 300, commands.BucketType.user)
 async def beg(ctx):
+  await ctx.defer()
   user_id = ctx.author.id
 
   earnings = random.randint(10, 50)
@@ -1363,6 +1367,7 @@ async def beg(ctx):
 @economy.command(description="Go to work")
 @commands.cooldown(1, 300, commands.BucketType.user)
 async def work(ctx):
+  await ctx.defer()
   user_id = ctx.author.id
   earnings = random.randint(1, 10)
   await db.add_to_wallet(user_id, earnings)
@@ -1371,6 +1376,7 @@ async def work(ctx):
 @economy.command(description="Get your daily reward!")
 @commands.cooldown(1, 86400, commands.BucketType.user)
 async def daily(ctx):
+  await ctx.defer()
   user_id = ctx.author.id
 
   earnings = random.randint(50, 101)
@@ -1382,6 +1388,7 @@ async def daily(ctx):
 @economy.command(description="Do a bank robbery!")
 @commands.cooldown(1, 2000, commands.BucketType.user)
 async def rob(ctx):
+  await ctx.defer()
   user_id = ctx.author.id
 
   earnings = random.randint(300, 800)
@@ -1406,6 +1413,7 @@ async def rob(ctx):
 
 @economy.command(description="Give some of your money to another member!")
 async def pay(ctx, amount: int, member: discord.Member):
+    await ctx.defer()
     if amount <= 0:
         return await ctx.respond(":x: Amount must be a positive number!")
 
@@ -1427,6 +1435,7 @@ async def pay(ctx, amount: int, member: discord.Member):
 @economy.command(description="Rob another member!")
 @commands.cooldown(1, 1000, commands.BucketType.user)
 async def robmember(ctx,member:discord.Member):
+  await ctx.defer()
 
   earnings = random.randint(100, 500)
 
@@ -1464,6 +1473,7 @@ async def robmember(ctx,member:discord.Member):
 
 @economy.command(description="Transfer money from your wallet to the bank")
 async def deposit(ctx,amount:int):
+  await ctx.defer()
   dep_bal = await db.get_wallet_balance(ctx.author.id)
   if dep_bal < amount:
      return await ctx.respond("Make sure you have enough credits in your wallet!")
@@ -1474,6 +1484,7 @@ async def deposit(ctx,amount:int):
 
 @economy.command(description="Transfer money from your bank to the wallet")
 async def withdraw(ctx,amount:int):
+  await ctx.defer()
   dep_wallet, dep_bank = await db.get_user_balance(ctx.author.id)
   if dep_bank < amount:
      return await ctx.respond("Make sure you have enough credits in your bank!")
@@ -1484,6 +1495,7 @@ async def withdraw(ctx,amount:int):
 
 @economy.command(description="Show the leaderboard of users with the most credits")
 async def leaderboard(ctx):
+    await ctx.defer()
     query = "SELECT user_id, (wallet + bank) AS total_amount FROM economy_balance ORDER BY total_amount DESC LIMIT 10"
 
     async with db.pool.acquire() as conn:
@@ -1522,7 +1534,7 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
-client5.load_extension('DeltaBot.maindeltabot')
+#client5.load_extension('DeltaBot.maindeltabot')
 
 async def bot_main():
     print("Bot starting...")
