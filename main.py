@@ -827,7 +827,8 @@ my_pages = [
 @client.bridge_command(description="Ultima help")
 async def help(ctx):
    paginator = Paginator(pages=my_pages)
-   await paginator.respond(ctx.interaction)
+   try: await paginator.respond(ctx.interaction)
+   except: await paginator.send(ctx)
 
 
 @client.bridge_command(aliases=['ai'], description="Chat with the Ultima AI")
