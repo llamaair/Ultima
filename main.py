@@ -1323,10 +1323,8 @@ async def economy():
 @economy.command()
 async def set(ctx, member:discord.Member, wallet: int, bank: int):
     await ctx.defer()
-    # Get the user ID from the message author
     user_id = member.id
 
-    # Insert the user's balance into the database
     await db.insert_user_balance(user_id, wallet, bank)
 
     await ctx.send(f"User balance for {member.mention} has been set: Wallet: {wallet}, Bank: {bank}")
@@ -1425,7 +1423,6 @@ async def pay(ctx, amount: int, member: discord.Member):
     if amount > sender_balance:
         return await ctx.respond("Please make sure you have enough money in your wallet!")
 
-    # Assuming 'db' is the instance of your database class
     await db.add_to_wallet(ctx.author.id, -amount)
     await db.add_to_wallet(member.id, amount)
 
@@ -1534,7 +1531,7 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
-#client5.load_extension('DeltaBot.maindeltabot')
+client5.load_extension('DeltaBot.maindeltabot')
 
 async def bot_main():
     print("Bot starting...")
