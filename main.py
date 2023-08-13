@@ -330,7 +330,7 @@ class ModApp(discord.ui.Modal):
         
 
         await chan.send("----------------------------------\n**New mod application!**")
-        await chan.send("Age: {self.children[0].value}\n\nExperiences: {self.children[1].value}\n\nModerated other servers: {self.children[2].value}\n\nWhy: {self.children[3].value}\n\nWhat can you do for the server: {self.children[4].value}")
+        await chan.send(f"Age: {self.children[0].value}\n\nExperiences: {self.children[1].value}\n\nModerated other servers: {self.children[2].value}\n\nWhy: {self.children[3].value}\n\nWhat can you do for the server: {self.children[4].value}")
         #await chan.send(self.children[1].value)
         #await chan.send(self.children[2].value)
         #await chan.send(self.children[3].value)
