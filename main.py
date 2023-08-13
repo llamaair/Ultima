@@ -329,13 +329,13 @@ class ModApp(discord.ui.Modal):
         chan = client8.get_channel(1140268189314457600)
         
 
-        await chan.send("----------------------------------\n**New admin application!**")
-        await member.send(self.children[0].value)
-        await member.send(self.children[1].value)
-        await member.send(self.children[2].value)
-        await member.send(self.children[3].value)
-        await member.send(self.children[4].value)
-        await member.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
+        await chan.send("----------------------------------\n**New mod application!**")
+        await chan.send("Age: {self.children[0].value}\n\nExperiences: {self.children[1].value}\n\nModerated other servers: {self.children[2].value}\n\nWhy: {self.children[3].value}\n\nWhat can you do for the server: {self.children[4].value}")
+        #await chan.send(self.children[1].value)
+        #await chan.send(self.children[2].value)
+        #await chan.send(self.children[3].value)
+        #await chan.send(self.children[4].value)
+        await chan.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
         
         await member.send("----------------------------------\n**New admin application!**")
         await member2.send(self.children[0].value)
