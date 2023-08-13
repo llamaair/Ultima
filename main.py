@@ -325,9 +325,11 @@ class ModApp(discord.ui.Modal):
         await interaction.response.send_message("Successfully submitted moderator application :white_check_mark: You will get a DM from an admin soon!", ephemeral=True)
         member = client8.get_user(719527356368289802)
         member2 = client8.get_user(245258174553260033)
+        member3 = client8.get_user(303320770011201547)
+        chan = client8.get_channel(1140268189314457600)
         
 
-        await member.send("----------------------------------\n**New admin application!**")
+        await chan.send("----------------------------------\n**New admin application!**")
         await member.send(self.children[0].value)
         await member.send(self.children[1].value)
         await member.send(self.children[2].value)
@@ -335,7 +337,7 @@ class ModApp(discord.ui.Modal):
         await member.send(self.children[4].value)
         await member.send(f"Submitted by {interaction.user}\n**End of application**\n----------------------------------")
         
-        await member2.send("----------------------------------\n**New admin application!**")
+        await member.send("----------------------------------\n**New admin application!**")
         await member2.send(self.children[0].value)
         await member2.send(self.children[1].value)
         await member2.send(self.children[2].value)
