@@ -165,11 +165,21 @@ class Database:
                     await cur.execute(query, args)
                     return await cur.fetchall()
         except:
-            # Reconnect in case of a connection issue
-            print("Lost connection, reconnecting...")
-            await self.connect()
-            # Retry the execution of the query
-            async with self.pool.acquire() as conn:
-                async with conn.cursor() as cur:
-                    await cur.execute(query, args)
-                    return await cur.fetchall()
+            try:
+                # Reconnect in case of a connection issue
+                print("Lost connection, reconnecting...")
+                await self.connect()
+                # Retry the execution of the query
+                async with self.pool.acquire() as conn:
+                    async with conn.cursor() as cur:
+                        await cur.execute(query, args)
+                        return await cur.fetchall()
+            except:
+                print("Lost connection, reconnecting...")
+                await self.close()
+                await self.connect()
+                # Retry the execution of the query
+                async with self.pool.acquire() as conn:
+                    async with conn.cursor() as cur:
+                        await cur.execute(query, args)
+                        return await cur.fetchall()
