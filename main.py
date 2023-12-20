@@ -589,7 +589,7 @@ async def strike(ctx, user:discord.User):
             role3=get(ctx.guild.roles, name="Strike 3")
             if role3 in user.roles:
                 try:
-                    await user.ban(reason="No reason provided")
+                    await user.kick(reason="No reason provided")
                     await ctx.respond("User kicked...", ephemeral=True)
                 except:
                     pass
