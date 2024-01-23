@@ -1,0 +1,15 @@
+py-cord
+requests
+python-dotenv
+openai==0.28
+asyncpraw
+translate
+wavelink
+pynacl
+pandas
+geopy
+bs4
+flask
+pymysql
+Pillow==9.4.0
+psutil
