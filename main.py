@@ -37,14 +37,14 @@ try:
 except:
     print("D.py not uninstalled")
 
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 #---------------------------#
 #NAME: Quirlix
 #Status: Working
 #Version: 4.0.1
 #Creator: Marc13, UmayKamaboko and trembanto
 #---------------------------#
-#load_dotenv()
+load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 TOKEN5 = os.getenv("DISCORD_TOKEN5")
 TOKEN8 = os.getenv("DISCORD_TOKEN8")
