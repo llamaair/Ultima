@@ -539,7 +539,7 @@ async def about(ctx):
     embed.add_field(name="Total Guilds", value=str(total_guilds))
     embed.add_field(name="Total Members", value=str(total_members))
     embed.add_field(name="Total Shards", value=str(total_shards))
-    embed.add_field(name="RAM Usage", value=f"{ram_usage:.2f} MB")
+    embed.add_field(name="RAM Usage", value=f"{ram_usage:.2f} GB")
     embed.add_field(name="CPU Usage", value=f"{cpu_usage:.2f}%")
     await ctx.respond(embed=embed)
 
@@ -562,11 +562,16 @@ async def on_ready():
 
 @client.listen()
 async def on_guild_join(guild):
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
     marc = client.get_user(719527356368289802)
     try:
         await marc.send(f"Hey, I just joined a new guild!\n\n**Name**: {guild.name}\n**Member Count**: {guild.member_count}")
     except:
         print(f"Joiend guild {guild.name}")
+
+@client.listen()
+async def on_guild_leave(guild):
+   await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
         
 @client.event
 async def on_disconnect():
@@ -1093,9 +1098,7 @@ async def uptime(ctx):
   await ctx.respond(embed=embed)
 
 
-
-
-@client.bridge_command(description="Pull the latest version from github and restart the bot")
+@client.bridge_command(description="Owner-only command")
 @commands.is_owner()
 async def restart(ctx):
   await ctx.respond("Restarting bot",ephemeral=True)
@@ -1137,7 +1140,7 @@ async def joke(ctx):
         jokk = joke['delivery']
         if "little girl and a fridge?" in jok or "orgasm" in jok or "masturbating" in jok or "sex" in jok or "sex" in jokk or "pussy" in jokk:
             jok = "This joke cannot be displayed as it is NSFW"
-            jokk = ":skull:"
+            jokk = "Please attempt to regenerate a joke."
         embed = discord.Embed(title=jok, description=jokk)
         await ctx.respond(embed=embed)
 
@@ -1760,7 +1763,7 @@ async def leaderboard(ctx):
 
     total = sorted(total,reverse=True)    
 
-    em = discord.Embed(title = f"Top {limit} Richest People" , description = "This is decided based on the amount of money in the bank and wallet",color = random.randrange(0, 0xffffff))
+    em = discord.Embed(title = f"Top {limit} richest People" , description = "This is decided based on the amount of money in the bank and wallet",color = random.randrange(0, 0xffffff))
     index = 1
     for amt in total:
       id_ = leader_board[amt]
@@ -1774,7 +1777,7 @@ async def leaderboard(ctx):
     em.set_footer(text =f"Requested By {ctx.author}")
     await ctx.respond(embed = em)
   except AttributeError:
-    await ctx.respond(":x: There are not that many account stored in my database.")
+    await ctx.respond(":x: Insufficent accounts stored in database", ephemeral=True)
 
 @client5.bridge_command()
 async def fleetapp(ctx):
@@ -1792,7 +1795,7 @@ client.load_extension('cogs.report')
 client.load_extension('cogs.autorole')
 client.load_extension('cogs.starboard')
 client.load_extension('cogs.afk')
-client.load_extension('cogs.image')
+#client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
