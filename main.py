@@ -12,7 +12,7 @@ from typing import List
 import aiohttp
 import logging
 
-from db import Database
+#from db import Database
 
 import psutil
 
@@ -31,19 +31,25 @@ try:
 	from geopy.geocoders import Nominatim
 except:
     os.system("pip install geopy")
+    
+try:
+    os.system("pip uninstall -y discord.py")
+except:
+    print("D.py not uninstalled")
 
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 #---------------------------#
-#NAME: Ultima
+#NAME: Quirlix
 #Status: Working
 #Version: 4.0.1
 #Creator: Marc13, UmayKamaboko and trembanto
 #---------------------------#
-load_dotenv()
+#load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 TOKEN5 = os.getenv("DISCORD_TOKEN5")
 TOKEN8 = os.getenv("DISCORD_TOKEN8")
 openai.api_key = os.getenv("OPENAI_KEY")
+openai.api_base = "http://us-nyc.pylex.me:8730/v1"
 oapi_key = openai.api_key
 intents = discord.Intents.all()
 
@@ -52,9 +58,9 @@ DB_USER = "u77345_B1HfvsHZDE"
 DB_PASSWORD = "F16tUi@Zjzrr3dyC.3cPaN.^"
 DB_DATABASE = "s77345_economy_database"
 
-db = Database(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)
+#db = Database(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)
 
-class Ultima(bridge.Bot):
+class Quirlix(bridge.Bot):
    TOKEN = os.getenv("DISCORD_TOKEN")
    intents = discord.Intents.all()
    help_command=None
@@ -67,7 +73,7 @@ def get_prefix(client, message):
     custom_prefix = prefixes.get(server_id, '!')  # Default prefix is '!'
     return custom_prefix
 
-client = Ultima(intents=Ultima().intents, help_command=Ultima().help_command, command_prefix=get_prefix)
+client = Quirlix(intents=Quirlix().intents, help_command=Quirlix().help_command, command_prefix=get_prefix)
 
 client5 = bridge.Bot(command_prefix="!", intents=intents, help_command=None)
 
@@ -529,7 +535,7 @@ async def about(ctx):
     ram_usage = psutil.virtual_memory().used / (1024 ** 3)
     cpu_usage = psutil.cpu_percent()
 
-    embed = discord.Embed(title="About Ultima", color=discord.Color.blue())
+    embed = discord.Embed(title="About Quirlix", color=discord.Color.blue())
     embed.add_field(name="Total Guilds", value=str(total_guilds))
     embed.add_field(name="Total Members", value=str(total_members))
     embed.add_field(name="Total Shards", value=str(total_shards))
@@ -540,7 +546,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
-    await db.connect()
+    #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
     global startTime
@@ -549,14 +555,10 @@ async def on_ready():
         client.add_view(MyView())
         client.add_view(advancedticket())
         client.add_view(CloseTicket())
-        client5.add_view(DeltaApp())
         client.persistent_views_added = True
         print("Persistent views added")
-        presence.start()
-        try:
-          await client5.start(TOKEN5)
-        except:
-           pass
+        #presence.start()
+        
 
 @client.listen()
 async def on_guild_join(guild):
@@ -568,9 +570,9 @@ async def on_guild_join(guild):
         
 @client.event
 async def on_disconnect():
-   await db.close()
+   #await db.close()
    print("Database connection closed!")
-   await db.connect()
+   #await db.connect()
    print("Reconnected to DB")
 
        
@@ -702,7 +704,7 @@ async def iss(ctx):
     latitude = str(data['iss_position']['latitude'])
     longitude = str(data['iss_position']['longitude'])
 
-    geolocator = Nominatim(user_agent="Ultima Bot")
+    geolocator = Nominatim(user_agent="Quirlix Bot")
     location = geolocator.reverse(latitude+","+longitude)
 
     try:
@@ -724,13 +726,13 @@ async def iss(ctx):
 @client.event
 async def on_application_command_error(ctx: discord.ApplicationContext, error: discord.DiscordException):
     if isinstance(error, commands.CommandOnCooldown):
-        await ctx.respond("This command is currently on cooldown!")
+        await ctx.respond("This command is currently on cooldown!", ephemeral=True)
     elif isinstance(error, commands.MissingPermissions):
-        await ctx.respond("You do not have the required permissions to do this!")
+        await ctx.respond("You do not have the required permissions to do this!", ephemeral=True)
     elif isinstance(error, commands.BotMissingPermissions):
         await ctx.respond("I do not have enough permissions to do this!")
     elif isinstance(error, commands.NSFWChannelRequired):
-        await ctx.respond("This command can only be used in an NSFW channel!")
+        await ctx.respond("This command can only be used in an NSFW channel!", ephemeral=True)
     else:
         raise error
 
@@ -803,7 +805,7 @@ async def ytsearch(ctx, *, search1):
 my_pages = [
     Page(
         embeds=[
-            discord.Embed(title="Ultima", description="Ultima is a multipurpose bot offering economy, automod, moderation, fun & utility commands, ticketing, polls and much more!\n\nMake sure to vote for our bot on top.gg: https://top.gg/bot/1113874631489753148\n\nIf you need support, join our support server: https://discord.gg/HHxRfnYEZb"),
+            discord.Embed(title="Quirlix", description="Quirlix is a multipurpose bot offering economy, automod, moderation, fun & utility commands, ticketing, polls and much more!\n\nMake sure to vote for our bot on top.gg: https://top.gg/bot/1113874631489753148\n\nIf you need support, join our support server: https://discord.gg/HHxRfnYEZb"),
         ],
     ),
     Page(
@@ -826,37 +828,27 @@ my_pages = [
     ),
 ]
 
-@client.bridge_command(description="Ultima help")
+@client.bridge_command(description="Quirlix help")
 async def help(ctx):
    paginator = Paginator(pages=my_pages)
    try: await paginator.respond(ctx.interaction)
    except: await paginator.send(ctx)
 
 
-@client.bridge_command(aliases=['ai'], description="Chat with the Ultima AI")
+@client.bridge_command(aliases=['ai'], description="Chat with the Quirlix AI")
 async def gpt(ctx, query):
   await ctx.defer()
-  query2 = f"You are a discord bot developed by Marc13, trembanto and UmayKamaboko. Act mean and sarcastic, but if someone asks you who you were made by, respond with Marc13 trembanto and Umay, anyways, you are not here to provide helpful information, with that in mind respond to the following: {query}"
-  response = openai.Completion.create(
-  		model="text-davinci-003",
-  		prompt=query,
-  		temperature=0.3,
-  		max_tokens=4000,
-  		top_p=1,
-  		frequency_penalty=1,
-  		presence_penalty=1,
-  		stop=[" Human:", " AI:"]
-		)
-  text = response['choices'][0]['text']
-  for item in ["hi", "hello", "hey"]:
-     if item.lower() in query:
-        text = "Hey, what's up?"
-  await ctx.respond(text)
+  chat_completion = openai.ChatCompletion.create(
+  model="gpt-3.5-turbo-16k",
+      messages=[{"role": "user", "content":query}],
+  )
+  await ctx.respond(chat_completion.choices[0].message.content)
   
-@client.bridge_command(description="Get bot's latency")
+@client.bridge_command(description='Checks for the bot ping')
 async def ping(ctx):
-    latency = (str(client.latency)).split('.')[1][1:3]
-    await ctx.respond(f"Pong! Replied in {latency} ms")
+    latency = str(round(client.latency * 1000))  # Convert to milliseconds and round
+    latency = latency.zfill(3)  # Pad with leading zeros if necessary
+    await ctx.respond(f'Pong! Latency: {latency} ms')
     
 @client.bridge_command(description="Host a giveaway")
 @bridge.has_permissions(administrator=True)
@@ -966,14 +958,14 @@ async def membercount(ctx):
     
 @client.bridge_command(description="Sync commands")
 @commands.is_owner()
-async def sync(ctx):
-    await client.sync_commands(force=True)
+async def sync(ctx, force:bool=False):
+    await client.sync_commands(force=force)
     await ctx.respond("Successfully resynced client commands")
 
-@client.bridge_command(description="Send a invite link for Ultima")
+@client.bridge_command(description="Send a invite link for Quirlix")
 async def invite(ctx):
     await ctx.respond(
-        "You can invite Ultima here: https://discord.com/api/oauth2/authorize?client_id=1113874631489753148&permissions=8&scope=applications.commands%20bot"
+        "You can invite Quirlix here: https://discord.com/api/oauth2/authorize?client_id=1113874631489753148&permissions=8&scope=applications.commands%20bot"
     )
 
 
@@ -1093,18 +1085,11 @@ async def reminder(ctx, time, *, reminder):
         return
     await ctx.respond(embed=embed)
 
-@client.bridge_command(description="Print info about the servers Ultima is used in")
-async def servers(ctx):
-  embed = discord.Embed()
-  dd = len(client.guilds)
-  embed.add_field(name=":crown: Server Amount", value=dd)
-  await ctx.respond(embed = embed)
-
 
 @client.bridge_command(description="See how long the bot has been up for")
 async def uptime(ctx):
   uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-  embed = discord.Embed(title="Ultima Uptime", description=f"Ultima has been up for {uptime}", color=discord.Colour.green())
+  embed = discord.Embed(title="Quirlix Uptime", description=f"Quirlix has been up for {uptime}", color=discord.Colour.green())
   await ctx.respond(embed=embed)
 
 
@@ -1176,24 +1161,24 @@ async def invites(ctx, member: discord.Member=None):
       total_invites += i.uses
   await ctx.respond(f"{user.name} has invited {total_invites} member{'' if total_invites == 1 else 's'}!")
 
-@client.bridge_command(description="Post a meme!")
+@client.bridge_command(description="Get a random meme")
 async def meme(ctx):
-  global lastMeme
-  memelist=["https://cdn.discordapp.com/attachments/1062778746303680574/1062788689727602898/05c73f974ebbc739fa720e677029f2a5.png","https://cdn.discordapp.com/attachments/1062778746303680574/1062788672887476234/5b1ec1ca8975f12ea2f24f307873f014.png","https://cdn.discordapp.com/attachments/1062778746303680574/1062788385938362388/bde967cac7de114f8d7a587a8862e8a9.png","https://cdn.discordapp.com/attachments/1062778746303680574/1062787897402605619/2c44aa4096423a7f8426dabec159cbf0.png","","https://cdn.discordapp.com/attachments/1062778746303680574/1062787146311794839/37ad1a2814db78e5c7b3fbac7429f371.png" ,"https://cdn.discordapp.com/attachments/1062778746303680574/1062787067068821564/IMG_2220.jpg", "https://cdn.discordapp.com/attachments/1054423887598854165/1062785610164744222/7bf8cbf4f37461087bd8e83f8671edb1.png", "https://cdn.discordapp.com/attachments/1062778746303680574/1062786023622443088/7d7c1a38f1b09d123535945eb22cc7ac.png", "https://cdn.discordapp.com/attachments/1062778746303680574/1062786191822422046/267140c36ae0b4698fb43c28ea35ecc4.png", "https://cdn.discordapp.com/attachments/1062778746303680574/1062786299276308600/5365ad123560b8f2b2100846042adb50.png"]
-  meme = random.choice(memelist)
-  if meme==lastMeme:
-    meme = random.choice(memelist)
-    await ctx.respond(meme)
-    lastMeme = meme
-  else:
-    await ctx.respond(meme)
-    lastMeme = meme
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://api.imgflip.com/get_memes") as response:
+            if response.status == 200:
+                # Parse the response to get a list of memes
+                meme_data = await response.json()
+                memes = meme_data["data"]["memes"]
+                
+                random.shuffle(memes)
+                
+                random_meme_url = memes[0]["url"]
+                
+                await ctx.respond(random_meme_url)
+            else:
+                await ctx.respond("Failed to fetch a meme. Try again later.")
 
 
-
-@client.bridge_command(description="Get a link to the Ultima website")
-async def website(ctx):
-  await ctx.respond("http://fetchbot.org")
 
 @client.bridge_command(description="Lock a channel!")
 @bridge.has_permissions(manage_channels=True)
@@ -1294,13 +1279,6 @@ async def imagesearch(ctx, image):
   embed.set_footer(text=f"{image}")
   await ctx.respond(embed=embed)
 
-@client.bridge_command(description="Look up a github repo or user!")
-async def github(ctx,owner,repo=None):
-  if repo==None:
-    await ctx.respond(f"https://github.com/{owner}")
-  else:
-    await ctx.respond(f"https://github.com/{owner}/{repo}")
-
 
 @client.bridge_command(description="Set a slowmode!")
 @bridge.has_permissions(manage_channels=True)
@@ -1313,205 +1291,490 @@ async def createday(ctx):
   your_date = datetime.date(2022, 1, 26)
   today = datetime.date.today()
   delta = (today - your_date).days
-  await ctx.respond(f"Ultima was created {delta} days ago")
+  await ctx.respond(f"Quirlix was created {delta} days ago")
 
 
 #ECONOMY COMMANDS BELOW ONLY
 
 @client.bridge_group()
-async def economy():
+async def economy(ctx):
     pass
 
-@economy.command()
-async def set(ctx, member:discord.Member, wallet: int, bank: int):
-    await ctx.defer()
-    user_id = member.id
+async def open_account(user):
+  users = await get_bank_data()
 
-    await db.insert_user_balance(user_id, wallet, bank)
+  if str(user.id) in users:
+    return False
+  else:
+    users[str(user.id)] = {}
+    users[str(user.id)]["Wallet"] = 0
+    users[str(user.id)]["Bank"] = 0
 
-    await ctx.send(f"User balance for {member.mention} has been set: Wallet: {wallet}, Bank: {bank}")
+  with open("bank.json", 'w') as f:
+    json.dump(users, f)
 
-@economy.command(description="See your bank balance!")
+  return True
+
+async def open_inventory(userinv):
+  usersinv = await get_inventory_data()
+
+  if str(userinv.id) in usersinv:
+    return False
+  else:
+    usersinv[str(userinv.id)] = {}
+    usersinv[str(userinv.id)]["Inventory"] = 0
+
+  with open("inventory.json", "w") as f:
+    json.dump(usersinv, f)
+  
+
+async def get_bank_data():
+  with open("bank.json", 'r') as f:
+    users = json.load(f)
+  
+  return users
+
+async def get_inventory_data():
+  with open("inventory.json", 'r') as f:
+    userinv = json.load(f)
+
+  return userinv
+
+
+
+async def update_bank(user,change = 0,mode = "Wallet"):
+  users = await get_bank_data()
+  users[str(user.id)][mode] += change
+  with open("bank.json","w") as f :
+    json.dump(users,f)
+  bal = [users[str(user.id)]    ["Wallet"],users[str(user.id)]["Bank"]]
+  return bal
+
+async def setmoney(user,change = 0,mode = "wallet"):
+  users = await get_bank_data()
+  users[str(user.id)][mode] = change
+  with open("bank.json","w") as f :
+    json.dump(users,f)
+  bal = [users[str(user.id)]  ["Wallet"],users[str(user.id)]["Bank"]]
+  return bal
+
+@economy.command(description="Set someone's balance")
+@commands.is_owner()
+async def set(ctx,member:discord.Member,amount:int,mode="Wallet"):
+  possible = ["Wallet","Bank"]
+  if mode not in possible : 
+    await ctx.respond(f":x: Where is {mode} ? Please enter bank or wallet.")
+    return
+  await open_account(member)
+  await setmoney(member,amount,mode)
+  await ctx.respond(f":white_check_mark: Set {member.mention}'s {mode} to {amount}")
+  return
+
+@economy.command(description="View your bank balance")
 async def balance(ctx):
-  await ctx.defer()
-  wallet, bank = await db.get_user_balance(ctx.author.id)
+  await open_account(ctx.author)
+
+  user = ctx.author
+
+  users = await get_bank_data()
+
+  wallet_amt = users[str(user.id)]["Wallet"]
+  bank_amt = users[str(user.id)]["Bank"]
 
   em = discord.Embed(title=f"{ctx.author.name}'s balance.", color=discord.Color.teal())
-  em.add_field(name="Wallet Balance", value=wallet)
-  em.add_field(name="Bank Balance", value=bank)
+  em.add_field(name="Wallet Balance", value=wallet_amt)
+  em.add_field(name="Bank Balance", value=bank_amt)
   await ctx.respond(embed=em)
 
-@economy.command(description="See another members' balance")
+@economy.command(description="See another member's balance")
 async def memberbalance(ctx,member:discord.Member):
-  await ctx.defer()
-  wallet, bank = await db.get_user_balance(member.id)
+  await open_account(member)
+
+  user = member
+
+  users = await get_bank_data()
+
+  wallet_amt = users[str(user.id)]["Wallet"]
+  bank_amt = users[str(user.id)]["Bank"]
 
   em = discord.Embed(title=f"{member.name}'s balance.", color=discord.Color.teal())
-  em.add_field(name="Wallet Balance", value=wallet)
-  em.add_field(name="Bank Balance", value=bank)
+  em.add_field(name="Wallet Balance", value=wallet_amt)
+  em.add_field(name="Bank Balance", value=bank_amt)
+  await ctx.respond(embed=em)
+
+@economy.command(description="View your inventory")
+async def inventory(ctx):
+  await open_inventory(ctx.author)
+
+  userinv = ctx.author
+
+  usersinv = await get_inventory_data()
+
+  items = usersinv[str(userinv.id)]["Inventory"]
+
+  if items==1:
+    items="Gun"
+  elif items==2:
+    items="Armour"
+  elif items==3:
+    items="Mouse"
+    
+
+  em = discord.Embed(title=f"{ctx.author.name}s inventory", color=discord.Color.teal())
+  em.add_field(name="Inventory", value=items)
+  await ctx.respond(embed=em)
+
+@economy.command(description="View another member's inventory")
+async def memberinventory(ctx,member:discord.Member):
+  await open_inventory(member)
+
+  userinv = member
+
+  usersinv = await get_inventory_data()
+
+  items = usersinv[str(userinv.id)]["Inventory"]
+
+  if items==1:
+    items="Gun"
+  elif items==2:
+    items="Armour"
+  elif items==3:
+    items="Mouse"
+    
+
+  em = discord.Embed(title=f"{member.name}s inventory", color=discord.Color.teal())
+  em.add_field(name="Inventory", value=items)
   await ctx.respond(embed=em)
   
 
 @economy.command(description="Beg for coins!")
 @commands.cooldown(1, 300, commands.BucketType.user)
 async def beg(ctx):
-  await ctx.defer()
-  user_id = ctx.author.id
+  await open_account(ctx.author)
 
-  earnings = random.randint(10, 50)
+  user = ctx.author
 
-  await db.add_to_wallet(user_id, earnings)
+  users = await get_bank_data()
 
-  await ctx.respond(f"Someone gave you {earnings} credits!")
+  earnings = random.randint(1, 21)
 
-@economy.command(description="Go to work")
-@commands.cooldown(1, 300, commands.BucketType.user)
-async def work(ctx):
-  await ctx.defer()
-  user_id = ctx.author.id
-  earnings = random.randint(1, 10)
-  await db.add_to_wallet(user_id, earnings)
-  await ctx.respond(f"You earned {earnings} credits for going to work!")
-    
+  await ctx.respond(f"Someone gave you {earnings} coins")
+
+  users[str(user.id)]["Wallet"] += earnings
+
+  with open("bank.json", 'w') as f:
+    json.dump(users, f)
+
 @economy.command(description="Get your daily reward!")
 @commands.cooldown(1, 86400, commands.BucketType.user)
 async def daily(ctx):
-  await ctx.defer()
-  user_id = ctx.author.id
+  await open_account(ctx.author)
+
+  user = ctx.author
+
+  users = await get_bank_data()
 
   earnings = random.randint(50, 101)
 
-  await db.add_to_wallet(user_id, earnings)
+  await ctx.respond(f"You earned {earnings} from selling some stuff online!")
 
-  await ctx.respond(f"You got {earnings} credits as your daily reward!")
+  users[str(user.id)]["Bank"] += earnings
 
-@economy.command(description="Do a bank robbery!")
-@commands.cooldown(1, 2000, commands.BucketType.user)
+  with open("bank.json", 'w') as f:
+    json.dump(users, f)
+
+@economy.command(description="Rob the bank")
+@commands.cooldown(1, 3000, commands.BucketType.user)
 async def rob(ctx):
-  await ctx.defer()
-  user_id = ctx.author.id
+  await open_account(ctx.author)
+
+  user = ctx.author
+
+  users = await get_bank_data()
 
   earnings = random.randint(300, 800)
 
-  decider = random.randint(0,1)
+  wallet_amt = users[str(user.id)]["Wallet"]
 
-  wallet_amt = await db.get_wallet_balance(user_id)
+  decider = random.randint(0,2)
 
   if decider == 1:
-    await ctx.respond(f"You just robbed the bank and got {earnings} credits!")
-    await db.add_to_wallet(user_id, earnings)
+    await ctx.respond(f"You just robbed the bank and got {earnings}!")
+
+    users[str(user.id)]["Wallet"] += earnings
+
+    with open("bank.json", 'w') as f:
+      json.dump(users, f)
   else:
     if wallet_amt > 500:
       await ctx.respond("The police managed to catch you when you robbed the bank :pensive: They also took 500 credits from you")
-      await db.add_to_wallet(user_id, -500)
+      users[str(user.id)]["Wallet"] -=500
+
+      with open("bank.json", 'w') as f:
+        json.dump(users, f)
     else:
-      if wallet_amt > 0:
-        await ctx.respond(f"The police managed to catch you when you robbed the bank, and they also took {wallet_amt} credits from you! :pensive:")
-        await db.add_to_wallet(user_id, -wallet_amt)
-      else:
-         await ctx.respond(f"The police managed to catch you when you robbed the bank :pensive:")
+      await ctx.respond(f"The police managed to catch you when you robbed the bank, and they also took {wallet_amt} credits from you! :pensive:")
+      users[str(user.id)]["Wallet"] -=wallet_amt
+
+      with open("bank.json", 'w') as f:
+        json.dump(users, f)
 
 @economy.command(description="Give some of your money to another member!")
-async def pay(ctx, amount: int, member: discord.Member):
-    await ctx.defer()
-    if amount <= 0:
-        return await ctx.respond(":x: Amount must be a positive number!")
+async def pay(ctx,amount,member:discord.Member):
+  if amount == None : 
+    return await ctx.respond(":x: Please enter  a proper amount of money!")
+  try :
+    int(amount)
+  except : 
+    return await ctx.respond(":x: Amount can only be a number!")
+  await open_account(ctx.author)
+  await open_account(member)
+  if member == ctx.author :
+    await ctx.respond("It's not a good idea to pay yourself")
+                
+    return
+  bal = await update_bank(ctx.author)
+  if amount == "all":
+    amount = bal[0]
+  try :
+    amount = int(amount)
+  except :
+    await ctx.respond("Please enter a valid number")
+    return
+  if amount>bal[0]:
+    await ctx.respond("Please make sure you have enough money in your wallet!")
+    return
+  if amount<0:
+    await ctx.respond("Please enter a number bigger than 1")
+                
+    return 
 
-    if member == ctx.author:
-        return await ctx.respond("It's not a good idea to pay yourself")
+  await update_bank(ctx.author,-1*amount,"Wallet")
+  await update_bank(member,amount,"Wallet")  
 
-    sender_balance = await db.get_wallet_balance(ctx.author.id)
-
-    if amount > sender_balance:
-        return await ctx.respond("Please make sure you have enough money in your wallet!")
-
-    await db.add_to_wallet(ctx.author.id, -amount)
-    await db.add_to_wallet(member.id, amount)
-
-    await ctx.respond(f":white_check_mark: Transaction completed! {amount} credits have been transferred to {member.name}")
-    
+  await ctx.respond(f":white_check_mark: Transaction completed! {amount} has been transfered to {member.name}")
+  
 
 @economy.command(description="Rob another member!")
 @commands.cooldown(1, 1000, commands.BucketType.user)
 async def robmember(ctx,member:discord.Member):
-  await ctx.defer()
+  await open_account(ctx.author)
+  await open_account(member)
+  user = ctx.author
+
+  mem = member
+
+  users = await get_bank_data()
 
   earnings = random.randint(100, 500)
 
-  robber_bal = await db.get_wallet_balance(ctx.author.id)
-  victim_bal = await db.get_wallet_balance(member.id)
+  wallet_aamt = users[str(user.id)]["Wallet"]
 
-  decider = random.randint(0,1)
+  decider = random.randint(0,2)
 
-  if victim_bal < earnings:
-    if victim_bal < 0:
+  wallet_amt = users[str(mem.id)]["Wallet"]
+
+  if wallet_amt < earnings:
+    if wallet_amt < 0:
       await ctx.respond("It's not worth it :pensive:")
       return
-    elif victim_bal == 0:
+    elif wallet_amt == 0:
       await ctx.respond("It's not worth it :pensive:")
       return
     else:
-      earnings = victim_bal
+      earnings = wallet_amt
 
   
   if decider == 1:
     await ctx.respond(f"You just robbed {member} and got {earnings} credits!")
-    await db.add_to_wallet(ctx.author.id, earnings)
-    await db.add_to_wallet(member.id, -earnings)
+
+    users[str(user.id)]["Wallet"] +=earnings
+    users[str(mem.id)]["Wallet"] -=earnings
+
+    with open("bank.json", 'w') as f:
+      json.dump(users, f)
   else:
-    responselist=[f"{member} knew how to defend themselves and took 100 credits from you instead!", f"{member} killed you and took 100 credits from you!"]
+    responselist=[f"{mem} knew how to defend themselfs and took 100 credits from you instead!", f"{mem} killed you and took 100 credits from you!", "A dog killed you and ate 100 credits!"]
     choice = random.choice(responselist)
     await ctx.respond(choice)
-    if robber_bal > 100:
-      await db.add_to_wallet(ctx.author.id, -100)
-      await db.add_to_wallet(member.id, 100)
+    if wallet_aamt > 100:
+      users[str(user.id)]["Wallet"] -= 100
+
+      with open("bank.json", "w") as f:
+        json.dump(users, f)
     else:
-       return
+      ammountt = wallet_aamt
+      users[str(user.id)]["Wallet"] -=ammountt
+
+      with open("bank.json", 'w') as f:
+        json.dump(users, f)
       
     
 
 @economy.command(description="Transfer money from your wallet to the bank")
-async def deposit(ctx,amount:int):
-  await ctx.defer()
-  dep_bal = await db.get_wallet_balance(ctx.author.id)
-  if dep_bal < amount:
-     return await ctx.respond("Make sure you have enough credits in your wallet!")
-  await db.add_to_bank(ctx.author.id, amount)
-  await db.add_to_wallet(ctx.author.id, -amount)
+async def deposit(ctx,amount):
+  if amount == None : 
+    return await ctx.respond(":x: Please enter  a proper amount of money!")
+  try :
+    int(amount)
+  except : 
+    return await ctx.respond(":x: Amount can only be a number!")
+  await open_account(ctx.author)
+          
+  bal = await update_bank(ctx.author)
+  amount = int(amount)
+  if amount>bal[0]:
+    await ctx.respond(":x: You don't have the enough amount !")
+                  
+    return
+  if amount<0:
+    await ctx.respond(":x: Please enter a number bigger than 1.")
+                  
+    return 
 
-  await ctx.respond(f":moneybag: You just deposited {amount} credits.")
+  await update_bank(ctx.author,-1*amount)
+  await update_bank(ctx.author,amount,"Bank")  
 
-@economy.command(description="Transfer money from your bank to the wallet")
-async def withdraw(ctx,amount:int):
-  await ctx.defer()
-  dep_wallet, dep_bank = await db.get_user_balance(ctx.author.id)
-  if dep_bank < amount:
-     return await ctx.respond("Make sure you have enough credits in your bank!")
-  await db.add_to_bank(ctx.author.id, -amount)
-  await db.add_to_wallet(ctx.author.id, amount)
+  await ctx.respond(f":moneybag: You just deposited {amount} dollars.")
 
-  await ctx.respond(f":moneybag: You just deposited {amount} credits.")
+@economy.command(description="Transfer money from your wallet to the bank")
+async def withdraw(ctx,amount):
+  if amount == None : 
+    return await ctx.respond(":x: Please enter  a proper amount of money!")
+  try :
+    int(amount)
+  except : 
+    return await ctx.respond(":x: Amount can only be a number!")
+  await open_account(ctx.author)
+  bal = await update_bank(ctx.author)
+  amount = int(amount)
+  if amount>bal[1]:
+    await ctx.respond(":x: You don't have the enough amount !")
+                
+    return
+  if amount<0:
+    await ctx.respond(":x: Please enter a number bigger than 1.")
+                    
+    return 
+        
+  await update_bank(ctx.author,amount)
+  await update_bank(ctx.author,-1*amount,"Bank")  
 
-@economy.command(description="Show the leaderboard of users with the most credits")
+  await ctx.respond(f":moneybag: You withdrew {amount} dollars.")
+
+@economy.command(description="Buy something")
+async def buy(ctx,item):
+  await open_account(ctx.author)
+  await open_inventory(ctx.author)
+
+  user=ctx.author
+
+  userinv=ctx.author
+
+  cost=2500
+  
+  users=await get_bank_data()
+
+  usersinv=await get_inventory_data()
+
+  wallet_amt = users[str(user.id)]["Wallet"]
+  bank_amt = users[str(user.id)]["Bank"]
+
+  if wallet_amt < cost:
+    if bank_amt > cost:
+      await ctx.respond(f"You don't have enough money in your wallet! Try to buy something online instead with your online wallet! This item costs {cost} credits.")
+      return
+    else:
+      await ctx.respond(f"Buying something costs {cost} currently! You have less than that!")
+      return
+  
+  if item.lower()=="gun":
+    itemcode=1
+    
+    await ctx.respond(f"You just bought {item}! It has been stored in your inventory.")
+
+    users[str(user.id)]["Wallet"] -= cost
+
+    with open("bank.json", "w") as f:
+      json.dump(users, f)
+
+    usersinv[str(userinv.id)]["Inventory"] = itemcode
+
+    with open("inventory.json", "w") as f:
+      json.dump(usersinv, f)
+  elif item.lower()=="armour":
+    itemcode=2
+
+    await ctx.respond(f"You just bought {item}! It has been stored in your inventory.")
+
+    users[str(user.id)]["Wallet"] -= cost
+
+    with open("bank.json", "w") as f:
+      json.dump(users, f)
+
+    usersinv[str(userinv.id)]["Inventory"] = itemcode
+
+    with open("inventory.json", "w") as f:
+      json.dump(usersinv, f)
+
+  elif item.lower()=="mouse":
+    itemcode=3
+
+    await ctx.respond(f"You just bought {item}! It has been stored in your inventory.")
+
+    users[str(user.id)]["Wallet"] -= cost
+
+    with open("bank.json", "w") as f:
+      json.dump(users, f)
+
+    usersinv[str(userinv.id)]["Inventory"] = itemcode
+
+    with open("inventory.json", "w") as f:
+      json.dump(usersinv, f)
+  
+  else:
+    await ctx.respond("This is not a valid item! Use /shop to get a list of purchasable items!")
+
+
+@economy.command(description="View the shop")
+async def shop(ctx):
+  embed=discord.Embed(
+    title="Shop"
+  )
+  embed.add_field(name="Buy things with money!", value="Gun\nArmour\nMouse")
+  await ctx.respond(embed=embed)
+
+@economy.command(description="View the leaderboard")
 async def leaderboard(ctx):
-    await ctx.defer()
-    query = "SELECT user_id, (wallet + bank) AS total_amount FROM economy_balance ORDER BY total_amount DESC LIMIT 10"
+  limit = 3
+  try :
+            
+    users = await get_bank_data()
+    leader_board = {}
+    total = []
+    for user in users:
+      name = int(user)
+      total_amount = users[user]["Wallet"] + users[user]["Bank"]
+      leader_board[total_amount] = name
+      total.append(total_amount)
 
-    async with db.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute(query)
-            results = await cursor.fetchall()
+    total = sorted(total,reverse=True)    
 
-    leaderboard_embed = discord.Embed(title="Leaderboard", color=discord.Color.gold())
-
-    for index, (user_id, total_amount) in enumerate(results, start=1):
-        user = client.get_user(user_id)
-        if user:
-            leaderboard_embed.add_field(name=f"{index}. {user.name}", value=f"Total Amount: {total_amount}", inline=False)
-        else:
-            leaderboard_embed.add_field(name=f"{index}. Unknown User", value=f"Total Amount: {total_amount}", inline=False)
-
-    await ctx.respond(embed=leaderboard_embed)
+    em = discord.Embed(title = f"Top {limit} Richest People" , description = "This is decided based on the amount of money in the bank and wallet",color = random.randrange(0, 0xffffff))
+    index = 1
+    for amt in total:
+      id_ = leader_board[amt]
+      member = client.get_user(id_)
+      name = member.name
+      em.add_field(name = f"{index}. {name}" , value = f"{amt}",  inline = False)
+      if index == limit:
+        break
+      else:
+        index += 1
+    em.set_footer(text =f"Requested By {ctx.author}")
+    await ctx.respond(embed = em)
+  except AttributeError:
+    await ctx.respond(":x: There are not that many account stored in my database.")
 
 @client5.bridge_command()
 async def fleetapp(ctx):
@@ -1533,7 +1796,7 @@ client.load_extension('cogs.image')
 client.load_extension('cogs.recording')
 client.load_extension('cogs.tags')
 
-client5.load_extension('DeltaBot.maindeltabot')
+#client5.load_extension('DeltaBot.maindeltabot')
 
 async def bot_main():
     print("Bot starting...")
