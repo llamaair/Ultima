@@ -47,22 +47,6 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
       puggo = random.choice(puglist)
       await ctx.respond(puggo)
 
-
-    @bridge.bridge_command(description="Get a picture of a fat cat!")
-    async def fatcat(self, ctx):
-        await ctx.respond(
-        "https://live.staticflickr.com/3652/3513292420_6becf54bbf.jpg")
-
-
-    @bridge.bridge_command(description="Get a picture of a fat dog!")
-    async def fatdog(self, ctx):
-        fatdoglist = [
-        "https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fentries%2Ficons%2Fmobile%2F000%2F029%2F671%2Fwide_dog_cover2_.jpg",
-        "https://s.abcnews.com/images/Entertainment/HT_vincent4_dog_ml_160413_16x9_608.jpg"
-    ]
-        fatdogchoise = random.choice(fatdoglist)
-        await ctx.respond(fatdogchoise)
-
     @bridge.bridge_command(description="Print a random fact")
     async def fact(self, ctx):
         factlinks = [
@@ -91,13 +75,13 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         
     @bridge.bridge_command(description="Get a random challenge!")
     async def challenge(self, ctx):
-        challengelist=["Eat a hamburger in 20 seconds", "Say yeet in your most southern accent", "Don't speak today", "Stop watching TV", "Eat slower today", "Do 15 sit-ups", "Learn to draw a face", "Don't drink soda today", "Do something you are scared of", "Abuse FetchBot"]
+        challengelist=["Eat a hamburger in 20 seconds", "Say yeet in your most southern accent", "Don't speak today", "Don't watch TV, YouTube and TikTok for a whole day.", "Eat slower today", "Do 15 sit-ups", "Learn to draw a face", "Don't drink soda today", "Do something you are scared of", "Abuse FetchBot"]
         challenge = random.choice(challengelist)
         await ctx.respond(challenge)
     
     @bridge.bridge_command(description="Ask me a question!")
     async def ask(self, ctx, *, question):
-        responselist=['Yes', 'No', 'Maybe', 'Sure!', 'Of course!', 'Why not', 'I am tired! Ask me later instead.', 'I have no idea', 'Stupid humans...', 'Maybe?', 'Why are you asking me?']
+        responselist=['Yes', 'No', 'Maybe', 'Sure!', 'Of course!', 'Why not', 'I am tired! Ask me later instead.', 'I have no idea', 'Stupid humans...', 'Maybe?', 'Why are you asking me?', 'whaaat??']
         response = random.choice(responselist)
         await ctx.respond(response)
 

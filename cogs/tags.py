@@ -19,10 +19,6 @@ class tags(commands.Cog):
         with open('tags.json', 'w') as file:
             json.dump(self.tags, file)
 
-    @bridge.bridge_group()
-    async def tags(self, ctx):
-        pass
-
     @bridge.bridge_command(description="Create a new tag")
     @bridge.has_permissions(administrator=True)
     async def tags_create(self, ctx, tag_name: str, *, tag_response: str):

@@ -60,7 +60,7 @@ class afk(commands.Cog):
         for item in rolla:
             if f"<@{item}>" in message.content:
                 stat = rollv.get(str(item))
-                await message.reply(stat)
+                await message.reply(f"User is AFK: {stat}")
 
 
 

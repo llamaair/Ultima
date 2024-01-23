@@ -6,7 +6,7 @@ from discord.ext import bridge
 from datetime import timedelta
 
 global badword
-badword = ["ass", "fucker", "fuck", "cunt", "bitch", "anal", "nigga", "nigger", "pussy", "dick", "slut", "whore", "cock", "arse"]
+badword = ["ass", "fucker", "fuck", "cunt", "bitch", "anal", "nigga", "nigger", "pussy", "dick", "slut", "whore", "cock", "arse", "nigg"]
 
 class Vieww(discord.ui.View):
     @discord.ui.button(label="Yes", style=discord.ButtonStyle.primary)
@@ -34,7 +34,7 @@ class moderation(commands.Cog):
     @bridge.has_permissions(kick_members=True)
     async def kick(self, ctx, user:discord.User, reason="No reason provided"):
         if user.guild_permissions.administrator:
-            return await ctx.respond("You can't kick another admin!")
+            return await ctx.respond(embed=discord.Embed(title="Failure", description="Failed to kick member. You cannot kick another admin.", color=discord.Colour.red()))
         try:
             await ctx.guild.kick(user, reason=reason)
             embed = discord.Embed(title="Kicked", description=f"You have been kicked from {ctx.guild}!", color=discord.Colour.red())
@@ -44,13 +44,13 @@ class moderation(commands.Cog):
             except:
                 pass
         except Exception as e:
-            await ctx.respond(f"Unable to kick this member")
+            await ctx.respond(embed=discord.Embed(title="Failure", description="Failed to kick member. Unknown error.", color=discord.Colour.red()))
     
     @bridge.bridge_command(description="Ban people")
     @bridge.has_permissions(ban_members=True)
     async def ban(self, ctx, user:discord.User, reason="No reason provided"):
         if user.guild_permissions.administrator:
-            return await ctx.respond("You can't ban another admin!")
+            return await ctx.respond(embed=discord.Embed(title="Failure", description="Failed to kick member. You cannot ban another admin.", color=discord.Colour.red()))
         try:
             await ctx.guild.ban(user, reason=reason)
             embed = discord.Embed(title="Banned", description=f"You have been banned from {ctx.guild}!", color=discord.Colour.red())
@@ -60,7 +60,7 @@ class moderation(commands.Cog):
             except:
                 pass
         except Exception as e:
-            await ctx.respond(f"Unable to ban this member")
+            await ctx.respond(embed=discord.Embed(title="Failure", description="Failed to ban member. Unknown error.", color=discord.Colour.red()))
     
     @bridge.bridge_command(description="Delete messages")
     @bridge.has_permissions(manage_messages=True)

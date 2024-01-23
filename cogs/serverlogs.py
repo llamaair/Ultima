@@ -27,7 +27,7 @@ class serverlogs(commands.Cog): # create a class for our cog that inherits from 
         with open("loguilds.json", "w+") as f:
             json.dump(automodguild, f)
 
-        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} serverlogs!")
+        embed = discord.Embed(title="Success!", color=discord.Colour.green(), description=f"Successfully {ena} serverlogs!\n\nMake sure you have a channel named `server-logs` - where the logs automatically will be sent.")
         await ctx.respond(embed=embed, ephemeral=True)
 
     @commands.Cog.listener()

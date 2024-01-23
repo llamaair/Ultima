@@ -48,7 +48,7 @@ class levelling(commands.Cog): # create a class for our cog that inherits from c
             users[id]['level'] = 1
 
         lvl = users[id]['level']
-        await ctx.respond(discord.Embed(title=f"{member.name}'s level", description=f"{member.name} is at level {lvl}!"))
+        await ctx.respond(embed=discord.Embed(title=f"{member.name}'s level", description=f"{member.name} is at level {lvl}!"))
 
         with open('levels.json', 'w') as f:
             json.dump(users, f)
