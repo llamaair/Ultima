@@ -88,15 +88,15 @@ global lastMeme
 lastMeme = 0
 
 async def connect_nodes():
-  """Connect to our Lavalink nodes."""
-  await client.wait_until_ready() # wait until the bot is ready
-
-  await wavelink.NodePool.create_node(
-    bot=client,
-    host='0.0.0.0',
-    port=2333,
-    password='AltoLink'
-  )
+   await client.wait_until_ready()
+   nodes = [
+      wavelink.Node(
+         identifier="Node1",
+         uri="http://0.0.0.0:443",
+         password="AltoLink"
+      )
+   ]
+   await wavelink.Pool.connect(nodes=nodes, client=client)
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -473,8 +473,8 @@ async def play(ctx, search: str):
   if not song: # check if the song is not found
     return await ctx.respond("No song found.") # return an error message
 
-  await vc.play(song) # play the song
-  await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
+  await vc.play(song) # Else, we play it
+  await ctx.respond(f"Now playing: `{song.title}`")
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
@@ -577,7 +577,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
-    await connect_nodes()
+    #await connect_nodes()
     #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
@@ -592,8 +592,11 @@ async def on_ready():
         #presence.start()
 
 @client.event
-async def on_wavelink_node_ready(node: wavelink.Node):
-  print(f"{node.identifier} is ready.") # print a message
+async def on_wavelink_node_ready(payload: wavelink.NodeReadyEventPayload):
+  # Everytime a node is successfully connected, we
+  # will print a message letting it know.
+  print(f"Node with ID {payload.session_id} has connected")
+  print(f"Resumed session: {payload.resumed}")
         
 
 @client.listen()
