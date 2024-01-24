@@ -87,7 +87,7 @@ client8.persistent_views_added=False
 global lastMeme
 lastMeme = 0
 
-"""async def connect_nodes():
+async def connect_nodes():
    await client.wait_until_ready()
    nodes = [
       wavelink.Node(
@@ -96,7 +96,7 @@ lastMeme = 0
          password="AltoLink"
       )
    ]
-   await wavelink.Pool.connect(nodes=nodes, client=client)"""
+   await wavelink.Pool.connect(nodes=nodes, client=client)
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -458,7 +458,7 @@ class CloseTicket(discord.ui.View):
     
 #MUSIC
 import typing
-"""@client.bridge_command(description="Play a music track")
+@client.bridge_command(description="Play a music track")
 async def play(ctx, search: str):
   vc = typing.cast(wavelink.Player, ctx.voice_client)
 
@@ -479,7 +479,7 @@ async def play(ctx, search: str):
     return await ctx.respond("No song found.") # we return an error message
 
   await vc.play(song) # Else, we play it
-  await ctx.respond(f"Now playing: `{song.title}`")"""
+  await ctx.respond(f"Now playing: `{song.title}`")
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
@@ -582,7 +582,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
-    #await connect_nodes()
+    await connect_nodes()
     #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
@@ -596,12 +596,12 @@ async def on_ready():
         print("Persistent views added")
         #presence.start()
 
-"""@client.event
+@client.event
 async def on_wavelink_node_ready(payload: wavelink.NodeReadyEventPayload):
   # Everytime a node is successfully connected, we
   # will print a message letting it know.
   print(f"Node with ID {payload.session_id} has connected")
-  print(f"Resumed session: {payload.resumed}")"""
+  print(f"Resumed session: {payload.resumed}")
         
 
 @client.listen()
