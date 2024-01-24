@@ -75,13 +75,6 @@ class tools(commands.Cog): # create a class for our cog that inherits from comma
         embed.set_footer(icon_url = ctx.author.avatar.url,text =f"Requested By {ctx.author}")
         await ctx.respond(embed=embed)
 
-    @bridge.bridge_command(description="Send a Thanks to another member")
-    async def thanks(self, ctx, member: discord.User):
-        await ctx.respond("Thanks sent", ephemeral = True)
-        embed = discord.Embed(title="Thanks!", description=f"You just received a thank you from {ctx.author.mention} :tada:")
-        await member.send(embed=embed)
-
-
     @bridge.bridge_command(description="Get the server's current boostcount")
     async def boostcount(self, ctx):
         embed = discord.Embed(title = f'{ctx.guild.name}\'s Boost Count', description = f'{str(ctx.guild.premium_subscription_count)}')
@@ -89,7 +82,7 @@ class tools(commands.Cog): # create a class for our cog that inherits from comma
 
     @bridge.bridge_command(description="Get a invite link to our discord server!")
     async def support(self, ctx):
-        await ctx.respond("Have you found an issue with FetchBot or a bug, or just want to chat with other people using FetchBot? Join our discord server; https://discord.gg/uBEK23mmmK")
+        await ctx.respond("Have you found an issue with Quirlix or a bug, or just want to chat with other people using Quirlix? Join our discord server; https://discord.gg/uBEK23mmmK")
     
     @bridge.bridge_group()
     async def math(self, ctx):
