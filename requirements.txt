@@ -4,7 +4,7 @@ python-dotenv
 openai==0.28
 asyncpraw
 translate
-wavelink
+wavelink==2.4.0
 pynacl
 pandas
 geopy
