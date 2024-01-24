@@ -88,15 +88,15 @@ global lastMeme
 lastMeme = 0
 
 async def connect_nodes():
-   await client.wait_until_ready()
-   nodes = [
-      wavelink.Node(
-         identifier="Node1",
-         uri="http://0.0.0.0:443",
-         password="AltoLink"
-      )
-   ]
-   await wavelink.Pool.connect(nodes=nodes, client=client)
+  """Connect to our Lavalink nodes."""
+  await client.wait_until_ready() # wait until the bot is ready
+
+  await wavelink.NodePool.create_node(
+    bot=client,
+    host='0.0.0.0',
+    port=2333,
+    password='AltoLink'
+  )
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -460,26 +460,21 @@ class CloseTicket(discord.ui.View):
 import typing
 @client.bridge_command(description="Play a music track")
 async def play(ctx, search: str):
-  vc = typing.cast(wavelink.Player, ctx.voice_client)
+  vc = ctx.voice_client # define our voice client
 
-  if not vc: # We firstly check if there is a voice client
-    vc = await ctx.author.voice.channel.connect(cls=wavelink.Player) # If there isn't, we connect it to the channel
+  if not vc: # check if the bot is not in a voice channel
+    vc = await ctx.author.voice.channel.connect(cls=wavelink.Player) # connect to the voice channel
 
-  # Now we are going to check if the invoker of the command
-  # is in the same voice channel than the voice client, when defined.
-  # If not, we return an error message.
-  if ctx.author.voice.channel.id != vc.channel.id:
-    return await ctx.respond("You must be in the same voice channel as the bot.")
+  if ctx.author.voice.channel.id != vc.channel.id: # check if the bot is not in the voice channel
+    return await ctx.respond("You must be in the same voice channel as the bot.") # return an error message
 
-  # Now we search for the song. You can optionally
-  # pass the "source" keyword, of type "wavelink.TrackSource"
-  song = await wavelink.Playable.search(search)
+  song = await wavelink.YouTubeTrack.search(query=search, return_first=True) # search for the song
 
-  if not song: # In case the song is not found
-    return await ctx.respond("No song found.") # we return an error message
+  if not song: # check if the song is not found
+    return await ctx.respond("No song found.") # return an error message
 
-  await vc.play(song) # Else, we play it
-  await ctx.respond(f"Now playing: `{song.title}`")
+  await vc.play(song) # play the song
+  await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
@@ -597,11 +592,8 @@ async def on_ready():
         #presence.start()
 
 @client.event
-async def on_wavelink_node_ready(payload: wavelink.NodeReadyEventPayload):
-  # Everytime a node is successfully connected, we
-  # will print a message letting it know.
-  print(f"Node with ID {payload.session_id} has connected")
-  print(f"Resumed session: {payload.resumed}")
+async def on_wavelink_node_ready(node: wavelink.Node):
+  print(f"{node.identifier} is ready.") # print a message
         
 
 @client.listen()
