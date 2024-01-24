@@ -92,7 +92,7 @@ async def connect_nodes():
    nodes = [
       wavelink.Node(
          identifier="Node1",
-         uri="http://0.0.0.0:443",
+         uri="http://0.0.0.0:2333",
          password="AltoLink"
       )
    ]
