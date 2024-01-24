@@ -655,7 +655,7 @@ async def setprefix(ctx, prefix):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
-    await ctx.respond(f"The prefix for this server has been set to: {prefix}")
+    await ctx.respond(f"The prefix for this server has been set to: {prefix}", ephemeral=True)
 
 @client5.event
 async def on_ready():
@@ -731,7 +731,18 @@ async def iss(ctx):
 @client.event
 async def on_application_command_error(ctx: discord.ApplicationContext, error: discord.DiscordException):
     if isinstance(error, commands.CommandOnCooldown):
-        await ctx.respond("This command is currently on cooldown!", ephemeral=True)
+        retry_after_seconds = error.retry_after
+        if retry_after_seconds < 60:
+            await ctx.respond(f"This command is currently on cooldown! Try again in {retry_after_seconds} seconds.", ephemeral=True)
+        elif retry_after_seconds < 3600:
+            minutes = int(retry_after_seconds // 60)
+            seconds = int(retry_after_seconds % 60)
+            await ctx.respond(f"This command is currently on cooldown! Try again in {minutes} minutes and {seconds} seconds.", ephemeral=True)
+        else:
+            hours = int(retry_after_seconds // 3600)
+            minutes = int((retry_after_seconds % 3600) // 60)
+            seconds = int(retry_after_seconds % 60)
+            await ctx.respond(f"This command is currently on cooldown! Try again in {hours} hours, {minutes} minutes, and {seconds} seconds.", ephemeral=True)
     elif isinstance(error, commands.MissingPermissions):
         await ctx.respond("You do not have the required permissions to do this!", ephemeral=True)
     elif isinstance(error, commands.BotMissingPermissions):
