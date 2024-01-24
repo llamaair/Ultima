@@ -577,7 +577,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
-    await connect_nodes()
+    #await connect_nodes()
     #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
