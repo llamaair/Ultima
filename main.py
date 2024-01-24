@@ -92,8 +92,8 @@ async def connect_nodes():
    nodes = [
       wavelink.Node(
          identifier="Node1",
-         uri="http://0.0.0.0:2333",
-         password="AltoLink"
+         uri="http://lavalink.sillydev.co.uk:6023",
+         password="discord.gg/sillydev"
       )
    ]
    await wavelink.Pool.connect(nodes=nodes, client=client)
