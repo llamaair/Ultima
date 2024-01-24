@@ -790,21 +790,6 @@ async def weather(ctx, *, city: str):
             await ctx.respond(embed=embed)
     else:
         await ctx.respond("City not found.")
-
-@client.bridge_command()
-@commands.is_owner()
-async def serverlist(ctx):
-    activeservers=client.guilds
-    embed=discord.Embed(title="Server list")
-    marc = client.get_user(719527356368289802)
-    for guild in activeservers:
-        embed.add_field(name=f"{guild.name}", value=f"{guild.member_count} members")
-    if ctx.author.id==719527356368289802:
-        await ctx.respond(embed=embed)
-    elif ctx.author.id==763066260233650226:
-        await ctx.respond(embed=embed)
-    else:
-        await ctx.respond("Insufficent permissions")
         
 
 @client.bridge_command(aliases=['yt' ,'ytcmd'], description="Search for a youtube video")
@@ -1014,14 +999,17 @@ async def reroll(ctx, channel: discord.TextChannel, id_):
     await channel.send(f"Congratulations! The new winner is {winner.mention}!")
 
 
-@client.bridge_command(description="Create an embed!")
-async def embed(ctx, title, description, image:discord.Attachment=None, thumbnail:discord.Attachment=None):
+@client.bridge_command(description="Create and send an embed")
+async def embed(ctx, title, description, image:discord.Attachment=None, thumbnail:discord.Attachment=None, tochannel:discord.TextChannel=None):
     embed = discord.Embed(title=title, description=description)
     if thumbnail is not None:
       embed.set_thumbnail(url=thumbnail)
     if image is not None:
       embed.set_image(url=image)
-    await ctx.send(embed=embed)
+    if tochannel is not None:
+      await tochannel.send(embed=embed)
+    else:
+      await ctx.send(embed=embed)
     await ctx.respond("Successfully created embed!", ephemeral=True)
     
 @client.bridge_command(description="Play rock, paper, scissors!")
@@ -1055,16 +1043,15 @@ async def rps(ctx, *, player_choice:discord.Option(choices=['rock', 'paper', 'sc
             )
 
 
-@client.bridge_command(description="Echo a message")
+@client.bridge_command(description="Make the bot say something")
 @bridge.has_permissions(administrator=True)
-async def echo(ctx, *, message):
+async def say(ctx, *, message):
     if message == None:
-        await ctx.respond("Please enter a message to echo.")
+        await ctx.respond("Please enter a message for the bot to say.", ephemeral=True)
     if ctx.author == client.user:
         return
-    await ctx.respond("Successfully performed echo", ephemeral=True)
     await ctx.send(message)
-    return
+    await ctx.respond("Successfully completed say", ephemeral=True)
 
 @client.bridge_command(description="Set a reminder")
 async def reminder(ctx, time, *, reminder):
@@ -1131,7 +1118,7 @@ async def dadjoke(ctx):
                 joke = data['joke']
                 await ctx.respond(joke)
             else:
-                await ctx.respond("Failed to fetch dad joke.")
+                await ctx.respond("Failed to fetch a dad joke.", ephemeral=True)
 
 @client.bridge_command(description="Get a random joke")
 @commands.is_nsfw()
