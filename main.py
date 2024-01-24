@@ -450,6 +450,7 @@ class CloseTicket(discord.ui.View):
     
     @discord.ui.button(label="Close ticket", style=discord.ButtonStyle.danger, emoji="🔒", custom_id="persistent_view:red")
     async def button_callback(self, button, interaction):
+        await interaction.response.defer()
         await interaction.response.send_message(":white_check_mark: Closing this ticket...")
         await asyncio.sleep(2)
         await interaction.channel.delete()
