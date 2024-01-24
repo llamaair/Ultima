@@ -13,7 +13,7 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         self.bot = bot
 
 
-    @bridge.bridge_command(description="Get a cute cat picture")
+    @bridge.bridge_command(description="Fetch a cat image")
     async def cat(self, ctx):
         response = requests.get('https://api.thecatapi.com/v1/images/search')
         if response.status_code == 200:
@@ -22,7 +22,7 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         else:
             await ctx.respond('Unable to retrieve cat picture.', ephemeral=True)
             
-    @bridge.bridge_command(description="Get a cute dog picture")
+    @bridge.bridge_command(description="Fetch a dog image")
     async def dog(self, ctx):
         response = requests.get('https://dog.ceo/api/breeds/image/random')
         if response.status_code == 200:
