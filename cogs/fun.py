@@ -68,7 +68,15 @@ class fun(commands.Cog): # create a class for our cog that inherits from command
         'Somali pirates have such a hatred for Western culture, that the British Navy uses music from Britney Spears to scare them off.',
         'The country of Russia is bigger than Pluto.',
         'Many oranges are actually green.',
-        'Playing dance music can help ward off mosquitoes.'
+        'Playing dance music can help ward off mosquitoes.',
+        'Movie trailers got their name because they were originally shown after the movie.',
+        'Salt used to be a currency.',
+        'Women blink nearly twice as much as men.',
+        'On average, 100 people choke to death on ballpoint pens every year.',
+        'Only one person in two billion will live to be 116 or older.',
+        'A snail can sleep for three years.',
+        'Americans, on average, eat 18 acres of pizza every day.',
+        'The "pound" key on your keyboard (#) is called an octotroph.'
     ]
         factlinkchosen = random.choice(factlinks)
         await ctx.respond(factlinkchosen)
