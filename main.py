@@ -1466,7 +1466,7 @@ async def beg(ctx):
   with open("bank.json", 'w') as f:
     json.dump(users, f)
 
-@economy.command(description="Get your daily reward!")
+@economy.command(description="Claim your daily reward!")
 @commands.cooldown(1, 86400, commands.BucketType.user)
 async def daily(ctx):
   await open_account(ctx.author)
@@ -1477,9 +1477,9 @@ async def daily(ctx):
 
   earnings = random.randint(50, 101)
 
-  await ctx.respond(f"You earned {earnings} from selling some stuff online!")
+  await ctx.respond(f"You earned {earnings} as your daily reward!")
 
-  users[str(user.id)]["Bank"] += earnings
+  users[str(user.id)]["Wallet"] += earnings
 
   with open("bank.json", 'w') as f:
     json.dump(users, f)
