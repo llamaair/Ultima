@@ -11,7 +11,7 @@ import openai
 from typing import List
 import aiohttp
 import logging
-import wavelink
+#import wavelink
 
 #from db import Database
 
@@ -581,7 +581,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
-    await connect_nodes()
+    #await connect_nodes()
     #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
