@@ -11,6 +11,7 @@ import openai
 from typing import List
 import aiohttp
 import logging
+import wavelink
 
 #from db import Database
 
@@ -86,7 +87,14 @@ client8.persistent_views_added=False
 global lastMeme
 lastMeme = 0
 
-
+async def connect_nodes():
+   await client.wait_until_ready()
+   await wavelink.NodePool.create_node(
+      bot=client,
+      host='localhost',
+      port=2333,
+      password='AltoLink'
+   )
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -445,6 +453,21 @@ class CloseTicket(discord.ui.View):
         await interaction.channel.delete()
         
     
+#MUSIC
+
+@client.bridge_command(description="Search for and play a music track")
+async def play(ctx, search:str):
+   vc = ctx.voice_client
+   if not vc:
+      vc = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+   if ctx.author.voice.channel.id != vc.channel.id:
+      return await ctx.respond("You must be in the same voice channel as the bot.", ephemeral=True)
+   song = await wavelink.YouTubeTrack.search(query=search, return_first=True)
+   if not song:
+      return await ctx.respond("No track matching your search was found.", ephemeral=True)
+   await vc.play(song)
+   await ctx.respond(f"Now playing: `{vc.source.title}`")
+
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
     api_key = 'c4b2f2b7c2784a379c3967c6170220da'
@@ -546,6 +569,7 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
+    await connect_nodes()
     #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
@@ -558,6 +582,10 @@ async def on_ready():
         client.persistent_views_added = True
         print("Persistent views added")
         #presence.start()
+
+@client.event
+async def on_wavelink_node_ready(node:wavelink.Node):
+   print(f"{node.identifier} is ready.")
         
 
 @client.listen()
