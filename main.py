@@ -87,7 +87,7 @@ client8.persistent_views_added=False
 global lastMeme
 lastMeme = 0
 
-async def connect_nodes():
+"""async def connect_nodes():
    await client.wait_until_ready()
    nodes = [
       wavelink.Node(
@@ -96,7 +96,7 @@ async def connect_nodes():
          password="AltoLink"
       )
    ]
-   await wavelink.Pool.connect(nodes=nodes, client=client)
+   await wavelink.Pool.connect(nodes=nodes, client=client)"""
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -457,7 +457,7 @@ class CloseTicket(discord.ui.View):
     
 #MUSIC
 import typing
-@client.bridge_command(description="Play a music track")
+"""@client.bridge_command(description="Play a music track")
 async def play(ctx, search: str):
   vc = typing.cast(wavelink.Player, ctx.voice_client)
 
@@ -478,7 +478,7 @@ async def play(ctx, search: str):
     return await ctx.respond("No song found.") # we return an error message
 
   await vc.play(song) # Else, we play it
-  await ctx.respond(f"Now playing: `{song.title}`")
+  await ctx.respond(f"Now playing: `{song.title}`")"""
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
