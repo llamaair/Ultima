@@ -1498,7 +1498,7 @@ async def beg(ctx):
 
   earnings = random.randint(1, 21)
 
-  await ctx.respond(f"Someone gave you {earnings} coins")
+  await ctx.respond(f"Someone gave you {earnings} credits")
 
   users[str(user.id)]["Wallet"] += earnings
 
@@ -1514,9 +1514,9 @@ async def daily(ctx):
 
   users = await get_bank_data()
 
-  earnings = random.randint(50, 101)
+  earnings = random.randint(51, 101)
 
-  await ctx.respond(f"You earned {earnings} as your daily reward!")
+  await ctx.respond(f"You just claimed your daily reward of {earnings} credits")
 
   users[str(user.id)]["Wallet"] += earnings
 
