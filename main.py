@@ -581,6 +581,7 @@ async def on_ready():
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
     global startTime
     startTime = time.time()
+    await connect_nodes()
     if not client.persistent_views_added:
         client.add_view(MyView())
         client.add_view(advancedticket())
