@@ -93,7 +93,7 @@ async def connect_nodes():
 
   await wavelink.NodePool.create_node(
     bot=client,
-    host='0.0.0.0',
+    host='84.247.182.233',
     port=22334,
     password='AltoLink'
   ) # create a node
