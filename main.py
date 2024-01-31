@@ -594,13 +594,6 @@ async def on_ready():
         client.persistent_views_added = True
         print("Persistent views added")
         #presence.start()
-
-@client.event
-async def on_wavelink_node_ready(payload: wavelink.NodeReadyEventPayload):
-  # Everytime a node is successfully connected, we
-  # will print a message letting it know.
-  print(f"Node with ID {payload.session_id} has connected")
-  print(f"Resumed session: {payload.resumed}")
         
 
 @client.listen()
