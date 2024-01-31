@@ -88,14 +88,15 @@ global lastMeme
 lastMeme = 0
 
 async def connect_nodes():
-   await client.wait_until_ready()
-   nodes = [
-      wavelink.Node(
-         uri="84.247.182.233:22334",
-         password="AltoLink"
-      )
-   ]
-   await wavelink.Pool.connect(nodes=nodes, client=client)
+  """Connect to our Lavalink nodes."""
+  await client.wait_until_ready() # wait until the bot is ready
+
+  await wavelink.NodePool.create_node(
+    bot=client,
+    host='0.0.0.0',
+    port=22334,
+    password='AltoLink'
+  ) # create a node
 
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
@@ -457,7 +458,7 @@ class CloseTicket(discord.ui.View):
     
 #MUSIC
 import typing
-@client.bridge_command(description="Play a music track")
+@client.bridge_command()
 async def play(ctx, search: str):
   vc = ctx.voice_client # define our voice client
 
@@ -472,8 +473,8 @@ async def play(ctx, search: str):
   if not song: # check if the song is not found
     return await ctx.respond("No song found.") # return an error message
 
-  await vc.play(song) # Else, we play it
-  await ctx.respond(f"Now playing: `{song.title}`")
+  await vc.play(song) # play the song
+  await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
@@ -572,6 +573,10 @@ async def about(ctx):
     embed.add_field(name="RAM Usage", value=f"{ram_usage:.2f} GB")
     embed.add_field(name="CPU Usage", value=f"{cpu_usage:.2f}%")
     await ctx.respond(embed=embed)
+
+@client.event
+async def on_wavelink_node_ready(node: wavelink.Node):
+  print(f"{node.identifier} is ready.") # print a message
 
 @client.event
 async def on_ready():
