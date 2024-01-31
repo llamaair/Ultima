@@ -91,7 +91,6 @@ async def connect_nodes():
    await client.wait_until_ready()
    nodes = [
       wavelink.Node(
-         identifier="Node1",
          uri="84.247.182.233:22334",
          password="youshallnotpass"
       )
@@ -577,7 +576,6 @@ async def about(ctx):
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user.name}")
-    await connect_nodes()
     #await db.connect()
     await client.change_presence(activity=discord.Activity(
         type=discord.ActivityType.watching, name=f"{len(client.guilds)} servers"))
