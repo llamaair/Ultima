@@ -471,7 +471,7 @@ async def play(ctx, search: str):
   if ctx.author.voice.channel.id != vc.channel.id: # check if the bot is not in the voice channel
     return await ctx.respond("You must be in the same voice channel as the bot.") # return an error message
 
-  song = await spotify.SpotifyTrack.search(query=search, return_first=True) # search for the song
+  song = await wavelink.SoundCloudTrack.search(query=search, return_first=True) # search for the song
 
   if not song: # check if the song is not found
     return await ctx.respond("No song found.") # return an error message
