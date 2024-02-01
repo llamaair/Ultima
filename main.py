@@ -461,9 +461,12 @@ class CloseTicket(discord.ui.View):
     
 #MUSIC
 import typing
-@client.bridge_command()
+@client.bridge_command(description="Search for and play a SoundCloud track")
 async def play(ctx, search: str):
   vc = ctx.voice_client # define our voice client
+
+  if not ctx.author.voice.channel:
+     return await ctx.respond("You must be in a voice channel to use this command", ephemeral=True)
 
   if not vc: # check if the bot is not in a voice channel
     vc = await ctx.author.voice.channel.connect(cls=wavelink.Player) # connect to the voice channel
@@ -478,6 +481,10 @@ async def play(ctx, search: str):
 
   await vc.play(song) # play the song
   await ctx.respond(f"Now playing: `{vc.source.title}`") # return a message
+
+@client.bridge_command(description="Pause a soundcloud track")
+async def pause(ctx):
+   await wavelink.Player.pause()
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
