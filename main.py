@@ -87,6 +87,8 @@ client8.persistent_views_added=False
 global lastMeme
 lastMeme = 0
 
+from wavelink.ext import spotify
+
 async def connect_nodes():
   """Connect to our Lavalink nodes."""
   await client.wait_until_ready() # wait until the bot is ready
@@ -95,7 +97,8 @@ async def connect_nodes():
     bot=client,
     host='84.247.182.233',
     port=22334,
-    password='AltoLink'
+    password='AltoLink',
+    spotify_client=spotify.SpotifyClient(client_id="ce80eb15ca094256a4c8e95faf020754", client_secret="7618db6af59942e79dd0f1f00dcde2af")
   ) # create a node
 
 #logger = logging.getLogger('discord')
@@ -468,7 +471,7 @@ async def play(ctx, search: str):
   if ctx.author.voice.channel.id != vc.channel.id: # check if the bot is not in the voice channel
     return await ctx.respond("You must be in the same voice channel as the bot.") # return an error message
 
-  song = await wavelink.YouTubeTrack.search(query=search, return_first=True) # search for the song
+  song = await spotify.SpotifyTrack.search(query=search, return_first=True) # search for the song
 
   if not song: # check if the song is not found
     return await ctx.respond("No song found.") # return an error message
