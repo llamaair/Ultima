@@ -489,7 +489,7 @@ async def pause(ctx):
     if not vc or not vc.is_playing():
         return await ctx.respond("No track is currently playing.")
 
-    vc.pause()
+    await vc.pause()
     await ctx.respond("Track paused.")
 
 @client.bridge_command(description="Resume a paused SoundCloud track")
@@ -499,7 +499,7 @@ async def resume(ctx):
     if not vc or not vc.is_paused():
         return await ctx.respond("No track is currently paused.")
 
-    vc.resume()
+    await vc.resume()
     await ctx.respond("Track resumed.")
 
 @client.bridge_command(description="Disconnect from the voice channel and stop playing")
@@ -509,7 +509,7 @@ async def stop(ctx):
     if not vc:
         return await ctx.respond("I'm not connected to a voice channel.")
 
-    vc.stop()
+    await vc.stop()
     await vc.disconnect()
     await ctx.respond("Disconnected and stopped playing.")
 
