@@ -484,7 +484,34 @@ async def play(ctx, search: str):
 
 @client.bridge_command(description="Pause a soundcloud track")
 async def pause(ctx):
-   await wavelink.Player.pause()
+    vc = ctx.voice_client
+
+    if not vc or not vc.is_playing():
+        return await ctx.respond("No track is currently playing.")
+
+    vc.pause()
+    await ctx.respond("Track paused.")
+
+@client.bridge_command(description="Resume a paused SoundCloud track")
+async def resume(ctx):
+    vc = ctx.voice_client
+
+    if not vc or not vc.is_paused():
+        return await ctx.respond("No track is currently paused.")
+
+    vc.resume()
+    await ctx.respond("Track resumed.")
+
+@client.bridge_command(description="Disconnect from the voice channel and stop playing")
+async def stop(ctx):
+    vc = ctx.voice_client
+
+    if not vc:
+        return await ctx.respond("I'm not connected to a voice channel.")
+
+    vc.stop()
+    await vc.disconnect()
+    await ctx.respond("Disconnected and stopped playing.")
 
 @client.bridge_command(description="Get the latest news!")
 async def news(ctx, countrycode):
